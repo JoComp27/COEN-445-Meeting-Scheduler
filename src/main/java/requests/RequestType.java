@@ -1,4 +1,4 @@
-package messagetype;
+package requests;
 
 public enum RequestType {
 
