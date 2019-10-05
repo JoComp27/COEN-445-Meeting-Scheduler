@@ -16,18 +16,24 @@ public class Server implements Runnable{
          * the range should be 49152 - 65535.*/
 
         try(DatagramSocket serverSocket = new DatagramSocket(9999)) {
+            byte[] buffer = new byte[65535];
             /**Messages here and sends to client*/
-            String message = "The message, for now it's a test";
-            DatagramPacket datagramPacket = new DatagramPacket(
-                    message.getBytes(),     //Bytes of the message
-                    message.length(),       //Length of the message
-                    InetAddress.getLocalHost(),     //Through the local Host
-                    clientPort                      //To the clientPort
-            );
-            serverSocket.send(datagramPacket);      //Method to send packet to client
+            while(true){
+                DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
+                serverSocket.receive(DpReceive);        //Receive Data in Buffer
+                String message = new String(DpReceive.getData())
+                System.out.println("Client says: " + message);
+
+                /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
+                 * COMPLETE THIS PORTION OF THE CODE*/
+
+                if(message.equals("Bye")){
+                    System.out.println("Client says bye. Exiting");
+                    break;
+                }
+            }
+
         }catch (SocketException e){
-            e.printStackTrace();
-        }catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
