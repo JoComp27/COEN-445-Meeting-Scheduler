@@ -1,20 +1,21 @@
 package requests;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class RequestMessage extends Message {
 
     private int requestQueryNumber;
-    private Date date;
+    private Calendar calendar;
     private int minimum;
     private List<String> participants;
     private String topic;
 
-    public RequestMessage(RequestType requestType, int requestQueryNumber, Date date, int minimum, List<String> participants, String topic) {
-        super(requestType);
+    public RequestMessage(int requestQueryNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
+        super(RequestType.Request);
         this.requestQueryNumber = requestQueryNumber;
-        this.date = date;
+        this.calendar = calendar;
         this.minimum = minimum;
         this.participants = participants;
         this.topic = topic;
@@ -24,8 +25,8 @@ public class RequestMessage extends Message {
         return requestQueryNumber;
     }
 
-    public Date getDate() {
-        return date;
+    public Calendar getCalendar() {
+        return calendar;
     }
 
     public int getMinimum() {
@@ -42,11 +43,52 @@ public class RequestMessage extends Message {
 
     @Override
     public String serialize(Message message) {
-        return null;
+        String stringMessage = "";
+
+        stringMessage += RequestType.Request.ordinal() + "_"; //Message ID
+        stringMessage += requestQueryNumber + "_";
+        stringMessage += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";  // DATE & TIME
+        stringMessage += minimum + "_";  // MINIMUM
+
+        for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
+            stringMessage += participants.get(i) + ",";
+        }
+
+
+        stringMessage += "_" +  topic + "_"; // TOPIC
+
+        return stringMessage;
     }
 
     @Override
     public Message deserialize(String message) {
-        return null;
+
+        String[] subMessages = message.split("_");
+
+        String[] cal = new String[1];
+
+        for(int i = 0; i < 4; i++){
+            cal = subMessages[2].split(",");
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
+
+        List<String> participants = new ArrayList<>();
+        String[] users = subMessages[4].split(",");
+
+        for(String user : users){
+            participants.add(user);
+        }
+
+        RequestMessage objMessage = new RequestMessage(
+                Integer.parseInt(subMessages[1]),
+                c,
+                Integer.parseInt(subMessages[3]),
+                participants,
+                subMessages[5]
+                );
+
+        return objMessage;
     }
 }

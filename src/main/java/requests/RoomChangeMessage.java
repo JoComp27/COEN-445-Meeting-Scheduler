@@ -1,8 +1,8 @@
 package requests;
 
-public class CancelMessage extends Message {
+public class RoomChangeMessage extends Message {
 
-    public CancelMessage(RequestType requestType) {
+    public RoomChangeMessage(RequestType requestType) {
         super(requestType);
     }
 
