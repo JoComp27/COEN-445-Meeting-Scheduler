@@ -2,8 +2,8 @@ package requests;
 
 public class AcceptMessage extends Message{
 
-    public AcceptMessage(RequestType requestType) {
-        super(requestType);
+    public AcceptMessage() {
+        super(RequestType.Accept);
     }
 
     @Override

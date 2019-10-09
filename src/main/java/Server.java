@@ -1,6 +1,9 @@
-package requests
-import java.net.*
-import java.io.*
+package requests;
+import java.net.*;
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
 
 public class Server implements Runnable{
     /**Port where the server will be listening to clients*/
@@ -8,6 +11,14 @@ public class Server implements Runnable{
 
     public Server(int clientPort){
        this.clientPort = clientPort;
+    }
+
+    public void main(String[] args){
+        run();
+    }
+
+    public void manageMessage(String message){
+        System.out.println("Manage the threads.");
     }
 
     @Override
@@ -22,11 +33,15 @@ public class Server implements Runnable{
             while(true){
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
-                String message = new String(DpReceive.getData())
+                String message = new String(DpReceive.getData());
                 System.out.println("Client says: " + message);
 
                 /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
-                 * COMPLETE THIS PORTION OF THE CODE*/
+                 * COMPLETE THIS PORTION OF THE CODE
+                 *
+                 * Add in Thread and feed in the message*/
+                //This would be the thread managing method
+                manageMessage(message);
 
                 if(message.equals("Bye")){
                     System.out.println("Client says bye. Exiting");
@@ -35,6 +50,8 @@ public class Server implements Runnable{
             }
 
         }catch (SocketException e){
+            e.printStackTrace();
+        }catch(IOException e){
             e.printStackTrace();
         }
 
