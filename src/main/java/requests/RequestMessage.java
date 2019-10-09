@@ -3,7 +3,7 @@ package requests;
 import java.util.Date;
 import java.util.List;
 
-public class RequestRequest extends Request{
+public class RequestMessage extends Message {
 
     private int requestQueryNumber;
     private Date date;
@@ -11,7 +11,7 @@ public class RequestRequest extends Request{
     private List<String> participants;
     private String topic;
 
-    public RequestRequest(RequestType requestType, int requestQueryNumber, Date date, int minimum, List<String> participants, String topic) {
+    public RequestMessage(RequestType requestType, int requestQueryNumber, Date date, int minimum, List<String> participants, String topic) {
         super(requestType);
         this.requestQueryNumber = requestQueryNumber;
         this.date = date;
@@ -41,13 +41,12 @@ public class RequestRequest extends Request{
     }
 
     @Override
-    public String toString() {
-        return requestQueryNumber +
-                "_" + date.get +
-                ", minimum=" + minimum +
-                ", participants=" + participants +
-                ", topic='" + topic + '\'' +
-                ", requestType=" + requestType +
-                '}';
+    public String serialize(Message message) {
+        return null;
+    }
+
+    @Override
+    public Message deserialize(String message) {
+        return null;
     }
 }

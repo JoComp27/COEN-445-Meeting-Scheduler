@@ -2,14 +2,14 @@ package requests;
 
 import java.util.Date;
 
-public class InviteRequest extends Request{
+public class InviteMessage extends Message {
 
     private int meetingNumber;
     private Date date;
     private String topic;
     private String requester;
 
-    public InviteRequest(RequestType requestType, int meetingNumber, Date date, String topic, String requester) {
+    public InviteMessage(RequestType requestType, int meetingNumber, Date date, String topic, String requester) {
         super(requestType);
         this.meetingNumber = meetingNumber;
         this.date = date;
@@ -31,5 +31,15 @@ public class InviteRequest extends Request{
 
     public String getRequester() {
         return requester;
+    }
+
+    @Override
+    public String serialize(Message message) {
+        return null;
+    }
+
+    @Override
+    public Message deserialize(String message) {
+        return null;
     }
 }

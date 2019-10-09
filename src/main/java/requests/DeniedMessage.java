@@ -1,10 +1,10 @@
 package requests;
 
-public class DeniedRequest extends Request {
+public class DeniedMessage extends Message {
 
     private int requestQueryNumber;
 
-    public DeniedRequest(RequestType requestType, int requestQueryNumber) {
+    public DeniedMessage(RequestType requestType, int requestQueryNumber) {
         super(requestType);
         this.requestQueryNumber = requestQueryNumber;
     }
@@ -16,5 +16,15 @@ public class DeniedRequest extends Request {
     @Override
     public String toString() {
         return requestType.name() + "_" + requestQueryNumber + "_UNAVAILABLE";
+    }
+
+    @Override
+    public String serialize(Message message) {
+        return null;
+    }
+
+    @Override
+    public Message deserialize(String message) {
+        return null;
     }
 }
