@@ -15,6 +15,7 @@ public class Server implements Runnable{
         /**Create new server and binds to a free port. From source of the internet
          * the range should be 49152 - 65535.*/
 
+        /**The port address is chosen randomly*/
         try(DatagramSocket serverSocket = new DatagramSocket(9999)) {
             byte[] buffer = new byte[65535];
             /**Messages here and sends to client*/
