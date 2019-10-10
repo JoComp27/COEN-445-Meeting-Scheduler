@@ -34,7 +34,7 @@ public class InviteMessage extends Message {
     }
 
     @Override
-    public String serialize(Message message) {
+    public String serialize() {
         return null;
     }
 

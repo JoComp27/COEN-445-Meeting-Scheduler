@@ -42,10 +42,10 @@ public class RequestMessage extends Message {
     }
 
     @Override
-    public String serialize(Message message) {
+    public String serialize() {
         String stringMessage = "";
 
-        stringMessage += RequestType.Request.ordinal() + "_"; //Message ID
+        stringMessage += getRequestType().ordinal() + "_"; //Message ID
         stringMessage += requestQueryNumber + "_";
         stringMessage += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";  // DATE & TIME
         stringMessage += minimum + "_";  // MINIMUM

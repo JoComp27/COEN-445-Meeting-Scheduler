@@ -7,7 +7,7 @@ public class AddMessage extends Message {
     }
 
     @Override
-    public String serialize(Message message) {
+    public String serialize() {
         return null;
     }
 

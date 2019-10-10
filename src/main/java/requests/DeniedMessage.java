@@ -4,8 +4,8 @@ public class DeniedMessage extends Message {
 
     private int requestQueryNumber;
 
-    public DeniedMessage(RequestType requestType, int requestQueryNumber) {
-        super(requestType);
+    public DeniedMessage(int requestQueryNumber) {
+        super(RequestType.Denied);
         this.requestQueryNumber = requestQueryNumber;
     }
 
@@ -19,7 +19,7 @@ public class DeniedMessage extends Message {
     }
 
     @Override
-    public String serialize(Message message) {
+    public String serialize() {
         return null;
     }
 
