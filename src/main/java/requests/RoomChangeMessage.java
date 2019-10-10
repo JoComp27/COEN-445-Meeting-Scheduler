@@ -1,8 +1,8 @@
 package requests;
 
-public class ScheduledMessage extends Message{
+public class RoomChangeMessage extends Message {
 
-    public ScheduledMessage(RequestType requestType) {
+    public RoomChangeMessage(RequestType requestType) {
         super(requestType);
     }
 

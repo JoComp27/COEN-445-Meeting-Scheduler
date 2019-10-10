@@ -1,13 +1,13 @@
 package requests;
 
-public class CancelMessage extends Message {
+public class AddMessage extends Message {
 
-    public CancelMessage(RequestType requestType) {
+    public AddMessage(RequestType requestType) {
         super(requestType);
     }
 
     @Override
-    public String serialize(Message message) {
+    public String serialize() {
         return null;
     }
 

@@ -3,10 +3,10 @@ package requests;
 public enum RequestType {
 
     //Server Requests
-    Denied, Invite, Confirm, Cancel, Scheduled,
+    Denied, Invite, Confirm, ServerCancel, Scheduled,
     NotScheduled, Added, RoomChange,
 
     //Client Requests
-    Request,  Accept, Reject, Withdraw,  Add
+    Request,  Accept, Reject, Withdraw,  Add, RequesterCancel
 
 }

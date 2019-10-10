@@ -12,7 +12,7 @@ public abstract class Message {
         return requestType;
     }
 
-    public abstract String serialize(Message message);
+    public abstract String serialize();
 
     public abstract Message deserialize(String message);
 }

@@ -1,8 +1,8 @@
 package requests;
 
-public class ScheduledMessage extends Message{
+public class RequesterCancelMessage extends Message{
 
-    public ScheduledMessage(RequestType requestType) {
+    public RequesterCancelMessage(RequestType requestType) {
         super(requestType);
     }
 
