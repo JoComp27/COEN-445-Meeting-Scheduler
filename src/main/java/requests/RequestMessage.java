@@ -81,14 +81,13 @@ public class RequestMessage extends Message {
             participants.add(user);
         }
 
-        RequestMessage objMessage = new RequestMessage(
+
+        return new RequestMessage(
                 Integer.parseInt(subMessages[1]),
                 c,
                 Integer.parseInt(subMessages[3]),
                 participants,
                 subMessages[5]
-                );
-
-        return objMessage;
+        );
     }
 }
