@@ -55,7 +55,7 @@ public class RequestMessage extends Message {
         }
 
 
-        stringMessage += "_" +  topic + "_"; // TOPIC
+        stringMessage += "_" +  topic; // TOPIC
 
         return stringMessage;
     }
