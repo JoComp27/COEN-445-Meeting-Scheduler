@@ -5,7 +5,7 @@ public class AddMessage extends Message {
     private int meetingNumber;
 
     public AddMessage(int meetingNumber) {
-        super(requestType.Add);
+        super(RequestType.Add);
         this.meetingNumber = meetingNumber;
     }
 

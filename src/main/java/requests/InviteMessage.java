@@ -48,7 +48,7 @@ public class InviteMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public InviteMessage deserialize(String message) {
 
         String[] arrMsg = message.split("_");
 

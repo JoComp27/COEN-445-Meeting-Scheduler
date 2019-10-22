@@ -6,7 +6,7 @@ public class RoomChangeMessage extends Message {
     private int newRoomNumber;
 
     public RoomChangeMessage(int meetingNumber, int newRoomNumber) {
-        super(requestType.RoomChange);
+        super(RequestType.RoomChange);
         this.meetingNumber = meetingNumber;
         this.newRoomNumber = newRoomNumber;
     }

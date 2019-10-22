@@ -2,18 +2,27 @@ package requests;
 
 public class RejectMessage extends Message{
 
+    int meetingNumber;
 
-    public RejectMessage(RequestType requestType) {
-        super(requestType);
+    public RejectMessage(int meetingNumber) {
+        super(RequestType.Reject);
+        this.meetingNumber = meetingNumber;
+    }
+
+    public int getMeetingNumber() {
+        return meetingNumber;
     }
 
     @Override
     public String serialize() {
-        return null;
+        return requestType.ordinal() + "_" + meetingNumber;
     }
 
     @Override
     public Message deserialize(String message) {
-        return null;
+
+        String[] splitString = message.split("_");
+
+        return new RejectMessage(Integer.parseInt(splitString[1]));
     }
 }

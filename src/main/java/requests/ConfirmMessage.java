@@ -6,7 +6,7 @@ public class ConfirmMessage extends Message {
     private int roomNumber;
 
     public ConfirmMessage(int meetingNumber, int roomNumber) {
-        super(requestType.Confirm);
+        super(RequestType.Confirm);
         this.meetingNumber = meetingNumber;
         this.roomNumber = roomNumber;
     }
