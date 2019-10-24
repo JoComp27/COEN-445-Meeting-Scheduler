@@ -1,11 +1,11 @@
 package requests;
 
-public class RejectMessage extends Message{
+public class RequesterCancelMessage extends Message{
 
     int meetingNumber;
 
-    public RejectMessage(int meetingNumber) {
-        super(RequestType.Reject);
+    public RequesterCancelMessage(int meetingNumber) {
+        super(RequestType.RequesterCancel);
         this.meetingNumber = meetingNumber;
     }
 
@@ -21,8 +21,8 @@ public class RejectMessage extends Message{
     @Override
     public Message deserialize(String message) {
 
-        String[] splitString = message.split("_");
+        String[] splitMessage = message.split("_");
 
-        return new RejectMessage(Integer.parseInt(splitString[1]));
+        return new RequesterCancelMessage(Integer.parseInt(splitMessage[1]));
     }
 }

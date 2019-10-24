@@ -1,11 +1,11 @@
 package requests;
 
-public class RejectMessage extends Message{
+public class AddMessage extends Message {
 
-    int meetingNumber;
+    private int meetingNumber;
 
-    public RejectMessage(int meetingNumber) {
-        super(RequestType.Reject);
+    public AddMessage(int meetingNumber) {
+        super(RequestType.Add);
         this.meetingNumber = meetingNumber;
     }
 
@@ -15,14 +15,14 @@ public class RejectMessage extends Message{
 
     @Override
     public String serialize() {
+
         return requestType.ordinal() + "_" + meetingNumber;
     }
 
     @Override
     public Message deserialize(String message) {
+        String[] msg = message.split("_");
 
-        String[] splitString = message.split("_");
-
-        return new RejectMessage(Integer.parseInt(splitString[1]));
+        return new AddMessage(Integer.parseInt(msg[1]));
     }
 }
