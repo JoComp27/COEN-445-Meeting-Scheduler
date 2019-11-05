@@ -1,6 +1,7 @@
 import requests.RequestType;
 
 import java.net.*;
+import java.util.Scanner;
 import java.io.*;
 import java.lang.*;
 
@@ -25,6 +26,7 @@ public class Client{
 
         try {
             this.serverAddress = InetAddress.getByName(serverAddress);
+//            this.serverAddress = InetAddress.getLocalHost();
             this.selfAddress = InetAddress.getLocalHost();
 
         } catch (UnknownHostException e) {
@@ -42,16 +44,52 @@ public class Client{
 
     public void run() {
 
-        //Create thread to listen to messages
-        new Thread(new ClientListen(serverAddress)).start();
+    	Scanner sc = new Scanner(System.in); 
+        DatagramSocket ds = null;
+		try {
+			ds = new DatagramSocket();
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+         
+        byte buf[] = null; 
 
-        while(true){
-            // INSERT UI FOR WHAT USER WANTS TO DO
+    	
+        // loop while user not enters "bye" 
+        while (true) 
+        { 
+            String inp = sc.nextLine(); 
+  
+            // convert the String input into the byte array. 
+            buf = inp.getBytes(); 
+  
+            DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999); 
+  
+             try {
+				ds.send(DpSend);
+				System.out.println("MESSAGE SENT");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+  
+            // break the loop if user enters "bye" 
+            if (inp.equals("bye")) 
+                break; 
+        } 
 
-            //SENDING A REQUEST MESSAGE
-        }
-
-        //
+    	
+//        //Create thread to listen to messages
+//        new Thread(new ClientListen(serverAddress)).start();
+//
+//        while(true){
+//            // INSERT UI FOR WHAT USER WANTS TO DO
+//
+//            //SENDING A REQUEST MESSAGE
+//        }
+//
+//        //
 
     }
 

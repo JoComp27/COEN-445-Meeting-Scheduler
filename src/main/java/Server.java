@@ -3,15 +3,11 @@ import java.io.*;
 import java.lang.*;
 
 public class Server implements Runnable{
-    /**Port where the server will be listening to clients*/
-    private final int clientPort;
 
-    public Server(int clientPort){
-       this.clientPort = clientPort;
-    }
-
-    public void main(String[] args){
-        run();
+    public static void main(String[] args){
+        System.out.println("SERVER LAUNCHED");
+    	Server server = new Server();
+        server.run();
     }
 
     public void manageMessage(String message){
@@ -28,8 +24,10 @@ public class Server implements Runnable{
             byte[] buffer = new byte[65535];
             /**Messages here and sends to client*/
             while(true){
+            	System.out.println("SERVER STARTED TO LISTEN");
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
+                System.out.println(DpReceive.getData());
                 String message = new String(DpReceive.getData());
                 System.out.println("Client says: " + message);
 
