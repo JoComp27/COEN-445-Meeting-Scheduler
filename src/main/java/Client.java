@@ -26,20 +26,35 @@ public class Client{
 
         try {
             this.serverAddress = InetAddress.getByName(serverAddress);
-//            this.serverAddress = InetAddress.getLocalHost();
             this.selfAddress = InetAddress.getLocalHost();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-
-
     }
 
     public static void main(String args[]) throws IOException {
+
+        if(args.length == 0){
+            System.out.println("Server IP is missing");
+            return;
+        }
+
         Client client = new Client(args[0]);
         client.run();
+    }
+
+    private void sendMessageToServer(String message) throws IOException {
+
+        // convert the String input into the byte array.
+        byte buf[] = message.getBytes();
+
+        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999);
+
+        ds.send(DpSend);
+        System.out.println("MESSAGE SENT");
+
     }
 
     public void run() throws IOException {
@@ -47,25 +62,19 @@ public class Client{
     	Scanner sc = new Scanner(System.in);
         DatagramSocket ds = new DatagramSocket();
 
-        byte buf[] = null;
+
     	
         // loop while user not enters "bye" 
         while (true) 
         { 
             String inp = sc.nextLine(); 
   
-            // convert the String input into the byte array. 
-            buf = inp.getBytes(); 
-  
-            DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999); 
-
-            ds.send(DpSend);
-            System.out.println("MESSAGE SENT");
+            sendMessageToServer(inp);
   
             // break the loop if user enters "bye" 
             if (inp.equals("bye")) 
                 break; 
-        } 
+        }
 
     	
 //        //Create thread to listen to messages
