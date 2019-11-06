@@ -1,10 +1,21 @@
+import requests.RequestMessage;
 import requests.RequestType;
 
+import java.lang.reflect.Array;
 import java.net.*;
 import java.io.*;
 import java.lang.*;
+import java.util.*;
 
 public class Server implements Runnable{
+
+    HashMap<String, String> requestMap;
+    HashMap<String, ArrayList<RequestMessage>> scheduleMap;
+
+    public Server (){
+        this.requestMap = new HashMap<>();
+        this.scheduleMap = new HashMap<>();
+    }
 
     public static void main(String[] args){
         System.out.println("SERVER LAUNCHED");
@@ -42,6 +53,7 @@ public class Server implements Runnable{
                  *
                  * Add in Thread and feed in the message*/
 
+                /**Creating a new thread of each new request*/
                 ServerHandle serverHandle = new ServerHandle(message);
                 new Thread(serverHandle).start();
 
@@ -78,22 +90,24 @@ public class Server implements Runnable{
 
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
-                case RoomChange:
+                case Request:
+
+                    break;
+                case Accept:
                     //Do something
-                case Added:
+                    break;
+                case Reject:
                     //Do something
-                case Denied:
+                    break;
+                case Withdraw:
                     //Do something
-                case Invite:
+                    break;
+                case Add:
                     //Do something
-                case Confirm:
+                    break;
+                case RequesterCancel:
                     //Do something
-                case Scheduled:
-                    //Do something
-                case NotScheduled:
-                    //Do something
-                case ServerCancel:
-                    //Do something
+                    break;
                 default:
                     System.out.println("Request type does not correspond. Exiting.");
                     break;
