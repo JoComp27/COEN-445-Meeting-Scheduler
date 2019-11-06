@@ -1,3 +1,5 @@
+import requests.RequestType;
+
 import java.net.*;
 import java.io.*;
 import java.lang.*;
@@ -8,10 +10,6 @@ public class Server implements Runnable{
         System.out.println("SERVER LAUNCHED");
     	Server server = new Server();
         server.run();
-    }
-
-    public void manageMessage(String message){
-        System.out.println("Manage the threads.");
     }
 
     @Override
@@ -43,8 +41,9 @@ public class Server implements Runnable{
                  * COMPLETE THIS PORTION OF THE CODE
                  *
                  * Add in Thread and feed in the message*/
-                //This would be the thread managing method
-                manageMessage(message);
+
+                ServerHandle serverHandle = new ServerHandle(message);
+                new Thread(serverHandle).start();
 
                 if(message.equals("Bye")){
                     System.out.println("Client says bye. Exiting");
@@ -59,4 +58,49 @@ public class Server implements Runnable{
         }
 
     }
+
+    public class ServerHandle implements Runnable{
+
+        String message;
+
+        public ServerHandle(String message){
+            this.message = message;
+        }
+
+        /**Takes the message received from the datagramPacket and separate the message using the "_"*/
+        @Override
+        public void run() {
+            String[] receivedMessage = message.split("_");
+
+            //Gets the request type to treat the message.
+            int messageType = Integer.parseInt(receivedMessage[0]);
+            RequestType receivedRequestType = RequestType.values()[messageType];
+
+            /**Cases to how to treat each of the requestTypes.*/
+            switch(receivedRequestType){
+                case RoomChange:
+                    //Do something
+                case Added:
+                    //Do something
+                case Denied:
+                    //Do something
+                case Invite:
+                    //Do something
+                case Confirm:
+                    //Do something
+                case Scheduled:
+                    //Do something
+                case NotScheduled:
+                    //Do something
+                case ServerCancel:
+                    //Do something
+                default:
+                    System.out.println("Request type does not correspond. Exiting.");
+                    break;
+
+            }
+
+        }
+    }
+
 }
