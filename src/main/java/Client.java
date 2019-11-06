@@ -47,7 +47,13 @@ public class Client{
     	Scanner sc = new Scanner(System.in); 
         DatagramSocket ds = null;
 		try {
-			ds = new DatagramSocket();
+			ds = new DatagramSocket(null);
+			try {
+				ds.bind(new InetSocketAddress(InetAddress.getByName("172.31.96.105"), 9999));
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
