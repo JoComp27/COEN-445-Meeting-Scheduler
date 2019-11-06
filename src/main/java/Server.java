@@ -1,17 +1,26 @@
+import requests.RequestMessage;
+import requests.RequestType;
+
+import java.lang.reflect.Array;
 import java.net.*;
 import java.io.*;
 import java.lang.*;
+import java.util.*;
 
 public class Server implements Runnable{
+
+    HashMap<String, String> requestMap;
+    HashMap<String, ArrayList<RequestMessage>> scheduleMap;
+
+    public Server (){
+        this.requestMap = new HashMap<>();
+        this.scheduleMap = new HashMap<>();
+    }
 
     public static void main(String[] args){
         System.out.println("SERVER LAUNCHED");
     	Server server = new Server();
         server.run();
-    }
-
-    public void manageMessage(String message){
-        System.out.println("Manage the threads.");
     }
 
     @Override
@@ -43,8 +52,10 @@ public class Server implements Runnable{
                  * COMPLETE THIS PORTION OF THE CODE
                  *
                  * Add in Thread and feed in the message*/
-                //This would be the thread managing method
-                manageMessage(message);
+
+                /**Creating a new thread of each new request*/
+                ServerHandle serverHandle = new ServerHandle(message);
+                new Thread(serverHandle).start();
 
                 if(message.equals("Bye")){
                     System.out.println("Client says bye. Exiting");
@@ -59,4 +70,51 @@ public class Server implements Runnable{
         }
 
     }
+
+    public class ServerHandle implements Runnable{
+
+        String message;
+
+        public ServerHandle(String message){
+            this.message = message;
+        }
+
+        /**Takes the message received from the datagramPacket and separate the message using the "_"*/
+        @Override
+        public void run() {
+            String[] receivedMessage = message.split("_");
+
+            //Gets the request type to treat the message.
+            int messageType = Integer.parseInt(receivedMessage[0]);
+            RequestType receivedRequestType = RequestType.values()[messageType];
+
+            /**Cases to how to treat each of the requestTypes.*/
+            switch(receivedRequestType){
+                case Request:
+
+                    break;
+                case Accept:
+                    //Do something
+                    break;
+                case Reject:
+                    //Do something
+                    break;
+                case Withdraw:
+                    //Do something
+                    break;
+                case Add:
+                    //Do something
+                    break;
+                case RequesterCancel:
+                    //Do something
+                    break;
+                default:
+                    System.out.println("Request type does not correspond. Exiting.");
+                    break;
+
+            }
+
+        }
+    }
+
 }
