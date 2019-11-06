@@ -35,6 +35,7 @@ public class Server implements Runnable{
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
                 System.out.println(DpReceive.getData());
+                System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
                 System.out.println("Client says: " + message);
 

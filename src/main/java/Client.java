@@ -42,25 +42,12 @@ public class Client{
         client.run();
     }
 
-    public void run() {
+    public void run() throws IOException {
 
-    	Scanner sc = new Scanner(System.in); 
-        DatagramSocket ds = null;
-		try {
-			ds = new DatagramSocket(null);
-			try {
-				ds.bind(new InetSocketAddress(InetAddress.getByName("172.31.96.105"), 9999));
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-         
-        byte buf[] = null; 
+    	Scanner sc = new Scanner(System.in);
+        DatagramSocket ds = new DatagramSocket();
 
+        byte buf[] = null;
     	
         // loop while user not enters "bye" 
         while (true) 
@@ -71,14 +58,9 @@ public class Client{
             buf = inp.getBytes(); 
   
             DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999); 
-  
-             try {
-				ds.send(DpSend);
-				System.out.println("MESSAGE SENT");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+
+            ds.send(DpSend);
+            System.out.println("MESSAGE SENT");
   
             // break the loop if user enters "bye" 
             if (inp.equals("bye")) 
