@@ -37,16 +37,26 @@ public class Server implements Runnable{
     	
         /**The port address is chosen randomly*/
         try(DatagramSocket serverSocket = new DatagramSocket(9999)) {
-            byte[] buffer = new byte[65535];
+            byte[] buffer = new byte[1000];
             /**Messages here and sends to client*/
             while(true){
             	System.out.println("SERVER STARTED TO LISTEN");
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
-                System.out.println(DpReceive.getData());
-                System.out.println(DpReceive.getAddress());
+
+                //System.out.println(DpReceive.getData());
+                //System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
                 System.out.println("Client says: " + message);
+
+                String sendToClient = "From the server";
+                byte[] bufferSend =  sendToClient.getBytes();
+                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
+                System.out.println("DpReceive Port " + DpReceive.getPort());
+                //DpSend.setPort(DpReceive.getPort());
+                System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
+                DpSend.setSocketAddress(DpReceive.getSocketAddress());
+                serverSocket.send(DpSend);
 
                 /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                  * COMPLETE THIS PORTION OF THE CODE
@@ -85,34 +95,34 @@ public class Server implements Runnable{
             String[] receivedMessage = message.split("_");
 
             //Gets the request type to treat the message.
-            int messageType = Integer.parseInt(receivedMessage[0]);
-            RequestType receivedRequestType = RequestType.values()[messageType];
-
-            /**Cases to how to treat each of the requestTypes.*/
-            switch(receivedRequestType){
-                case Request:
-
-                    break;
-                case Accept:
-                    //Do something
-                    break;
-                case Reject:
-                    //Do something
-                    break;
-                case Withdraw:
-                    //Do something
-                    break;
-                case Add:
-                    //Do something
-                    break;
-                case RequesterCancel:
-                    //Do something
-                    break;
-                default:
-                    System.out.println("Request type does not correspond. Exiting.");
-                    break;
-
-            }
+//            int messageType = Integer.parseInt(receivedMessage[0]);
+//            RequestType receivedRequestType = RequestType.values()[messageType];
+//
+//            /**Cases to how to treat each of the requestTypes.*/
+//            switch(receivedRequestType){
+//                case Request:
+//
+//                    break;
+//                case Accept:
+//                    //Do something
+//                    break;
+//                case Reject:
+//                    //Do something
+//                    break;
+//                case Withdraw:
+//                    //Do something
+//                    break;
+//                case Add:
+//                    //Do something
+//                    break;
+//                case RequesterCancel:
+//                    //Do something
+//                    break;
+//                default:
+//                    System.out.println("Request type does not correspond. Exiting.");
+//                    break;
+//
+//            }
 
         }
     }
