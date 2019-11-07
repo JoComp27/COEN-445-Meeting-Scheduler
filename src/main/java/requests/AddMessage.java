@@ -2,14 +2,19 @@ package requests;
 
 public class AddMessage extends Message {
 
-    private int meetingNumber;
+    private Integer meetingNumber;
 
-    public AddMessage(int meetingNumber) {
+    public AddMessage(){
+        super(RequestType.Add);
+        this.meetingNumber = null;
+    }
+
+    public AddMessage(Integer meetingNumber) {
         super(RequestType.Add);
         this.meetingNumber = meetingNumber;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -20,9 +25,9 @@ public class AddMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
         String[] msg = message.split("_");
 
-        return new AddMessage(Integer.parseInt(msg[1]));
+        this.meetingNumber = Integer.parseInt(msg[1]);
     }
 }

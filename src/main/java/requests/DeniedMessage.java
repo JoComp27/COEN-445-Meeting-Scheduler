@@ -2,17 +2,23 @@ package requests;
 
 public class DeniedMessage extends Message {
 
-    private int requestQueryNumber;
+    private Integer requestNumber;
     private String unavailable;
 
-    public DeniedMessage(int requestQueryNumber, String unavailable) {
+    public DeniedMessage() {
         super(RequestType.Denied);
-        this.requestQueryNumber = requestQueryNumber;
+        this.requestNumber = null;
+        this.unavailable = null;
+    }
+
+    public DeniedMessage(Integer requestNumber, String unavailable) {
+        super(RequestType.Denied);
+        this.requestNumber = requestNumber;
         this.unavailable = unavailable;
     }
 
-    public int getRequestQueryNumber() {
-        return requestQueryNumber;
+    public Integer getRequestNumber() {
+        return requestNumber;
     }
 
     public String getUnavailable() {
@@ -21,16 +27,15 @@ public class DeniedMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + requestQueryNumber + "_" + unavailable;
+        return requestType.ordinal() + "_" + requestNumber + "_" + unavailable;
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] array = message.split("_");
 
-        DeniedMessage msg = new DeniedMessage(Integer.parseInt(array[1]), array[2]);
-
-        return msg;
+        this.requestNumber = Integer.parseInt(array[1]);
+        this.unavailable = array[2];
     }
 }
