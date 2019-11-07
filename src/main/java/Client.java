@@ -66,7 +66,7 @@ public class Client{
 
     }
 
-    private void handleServerCancel(ServerCancelMessage message){
+    private void handleServerCancel(ServerCancelMessage message){ 
 
     }
 
