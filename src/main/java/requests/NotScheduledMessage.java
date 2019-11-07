@@ -6,30 +6,39 @@ import java.util.List;
 
 public class NotScheduledMessage extends Message {
 
-    private int requestQueryNumber;
+    private Integer requestNumber;
     private Calendar calendar;
-    private int minimum;
+    private Integer minimum;
     private List<String> participants;
     private String topic;
 
-    public NotScheduledMessage(int requestQueryNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
+    public NotScheduledMessage() {
         super(RequestType.NotScheduled);
-        this.requestQueryNumber = requestQueryNumber;
+        this.requestNumber = null;
+        this.calendar = null;
+        this.minimum = null;
+        this.participants = null;
+        this.topic = null;
+    }
+
+    public NotScheduledMessage(Integer requestNumber, Calendar calendar, Integer minimum, List<String> participants, String topic) {
+        super(RequestType.NotScheduled);
+        this.requestNumber = requestNumber;
         this.calendar = calendar;
         this.minimum = minimum;
         this.participants = participants;
         this.topic = topic;
     }
 
-    public int getRequestQueryNumber() {
-        return requestQueryNumber;
+    public Integer getRequestNumber() {
+        return requestNumber;
     }
 
     public Calendar getCalendar() {
         return calendar;
     }
 
-    public int getMinimum() {
+    public Integer getMinimum() {
         return minimum;
     }
 
@@ -46,7 +55,7 @@ public class NotScheduledMessage extends Message {
         String stringMessage = "";
 
         stringMessage += getRequestType().ordinal() + "_"; //Message ID
-        stringMessage += requestQueryNumber + "_";
+        stringMessage += requestNumber + "_";
         stringMessage += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";  // DATE & TIME
         stringMessage += minimum + "_";  // MINIMUM
 
@@ -61,7 +70,7 @@ public class NotScheduledMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] subMessages = message.split("_");
 
@@ -77,17 +86,15 @@ public class NotScheduledMessage extends Message {
         List<String> participants = new ArrayList<>();
         String[] users = subMessages[4].split(",");
 
-        for(String user : users){
+        for(String user : users) {
             participants.add(user);
         }
 
+        this.requestNumber = Integer.parseInt(subMessages[1]);
+        this.calendar = c;
+        this.minimum = Integer.parseInt(subMessages[3]);
+        this.participants = participants;
+        this.topic = subMessages[5];
 
-        return new NotScheduledMessage(
-                Integer.parseInt(subMessages[1]),
-                c,
-                Integer.parseInt(subMessages[3]),
-                participants,
-                subMessages[5]
-        );
     }
 }

@@ -2,16 +2,16 @@ package requests;
 
 public class RoomChangeMessage extends Message {
 
-    private int meetingNumber;
+    private Integer meetingNumber;
     private int newRoomNumber;
 
-    public RoomChangeMessage(int meetingNumber, int newRoomNumber) {
+    public RoomChangeMessage(Integer meetingNumber, int newRoomNumber) {
         super(RequestType.RoomChange);
         this.meetingNumber = meetingNumber;
         this.newRoomNumber = newRoomNumber;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -26,8 +26,10 @@ public class RoomChangeMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
         String[] msg = message.split("_");
-        return new RoomChangeMessage(Integer.parseInt(msg[1]), Integer.parseInt(msg[2]));
+        this.meetingNumber = Integer.parseInt(msg[1]);
+        this.newRoomNumber = Integer.parseInt(msg[2]);
+
     }
 }

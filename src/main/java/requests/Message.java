@@ -14,5 +14,5 @@ public abstract class Message {
 
     public abstract String serialize();
 
-    public abstract Message deserialize(String message);
+    public abstract void deserialize(String message);
 }

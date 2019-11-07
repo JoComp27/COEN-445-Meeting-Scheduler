@@ -2,12 +2,12 @@ package requests;
 
 public class ScheduledMessage extends Message{
 
-    int requestNumber;
-    int meetingNumber;
+    Integer requestNumber;
+    Integer meetingNumber;
     int roomNumber;
     String[] listOfConfirmedParticipants;
 
-    public ScheduledMessage(int requestNumber, int meetingNumber, int roomNumber, String[] listOfConfirmedParticipants) {
+    public ScheduledMessage(Integer requestNumber, Integer meetingNumber, int roomNumber, String[] listOfConfirmedParticipants) {
         super(RequestType.Scheduled);
         this.requestNumber = requestNumber;
         this.meetingNumber = meetingNumber;
@@ -15,11 +15,11 @@ public class ScheduledMessage extends Message{
         this.listOfConfirmedParticipants = listOfConfirmedParticipants;
     }
 
-    public int getRequestNumber() {
+    public Integer getRequestNumber() {
         return requestNumber;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -51,12 +51,16 @@ public class ScheduledMessage extends Message{
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] splitMessage = message.split("_");
 
         String[] participants = splitMessage[4].split(",");
 
-        return new ScheduledMessage(Integer.parseInt(splitMessage[1]), Integer.parseInt(splitMessage[2]), Integer.parseInt(splitMessage[3]), participants);
+        this.requestNumber = Integer.parseInt(splitMessage[1]);
+        this.meetingNumber = Integer.parseInt(splitMessage[2]);
+        this.roomNumber = Integer.parseInt(splitMessage[3]);
+        this.listOfConfirmedParticipants = participants;
+
     }
 }

@@ -16,19 +16,6 @@ public class Client{
 
     public Client(String serverAddress){
         this.requestNumber = 0;
-        try {
-            this.ds = new DatagramSocket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            this.serverAddress = InetAddress.getByName(serverAddress);
-            this.selfAddress = InetAddress.getLocalHost();
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -49,9 +36,7 @@ public class Client{
         byte buf[] = message.getBytes();
         byte[] buffer = new byte[100];
         DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999);
-        System.out.println("LOCAL SOCKET ADDRESS " + ds.getLocalSocketAddress());
-        System.out.println("Port " + ds.getPort());
-        System.out.println("Local Port " + ds.getLocalPort());
+
         ds.send(DpSend);
         System.out.println("MESSAGE SENT");
 
@@ -59,22 +44,17 @@ public class Client{
         ds.receive(DpReceive);        //Receive Data in Buffer
         String messageFromServer = new String(DpReceive.getData());
         System.out.println("Server says: " + messageFromServer);
-    }
 
+    }
     public void run() throws IOException {
 
     	Scanner sc = new Scanner(System.in);
-        DatagramSocket ds = new DatagramSocket();
-
-
-
-        // loop while user not enters "bye" 
+        // loop while user not enters "bye"
         while (true) 
         { 
             String inp = sc.nextLine(); 
   
             sendMessageToServer(inp);
-
             // break the loop if user enters "bye" 
             if (inp.equals("bye")) 
                 break; 
