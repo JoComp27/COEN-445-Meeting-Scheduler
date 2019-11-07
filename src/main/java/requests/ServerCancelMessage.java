@@ -2,17 +2,23 @@ package requests;
 
 public class ServerCancelMessage extends Message {
 
-    int requestNumber;
+    Integer requestNumber;
     String reason;
 
-    public ServerCancelMessage(int requestNumber, String reason) {
+    public ServerCancelMessage() {
+        super(RequestType.ServerCancel);
+        this.requestNumber = null;
+        this.reason = null;
+    }
+
+    public ServerCancelMessage(Integer requestNumber, String reason) {
         super(RequestType.ServerCancel);
         this.requestNumber = requestNumber;
         this.reason = reason;
 
     }
 
-    public int getRequestNumber() {
+    public Integer getRequestNumber() {
         return requestNumber;
     }
 
@@ -26,9 +32,11 @@ public class ServerCancelMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
         String[] stringArrayMessage = message.split("_");
 
-        return new ServerCancelMessage(Integer.parseInt(stringArrayMessage[1]), stringArrayMessage[2]);
+        this.requestNumber = Integer.parseInt(stringArrayMessage[1]);
+        this.reason = stringArrayMessage[2];
+
     }
 }

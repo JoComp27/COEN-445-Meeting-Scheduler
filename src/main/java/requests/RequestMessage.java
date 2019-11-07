@@ -6,23 +6,23 @@ import java.util.List;
 
 public class RequestMessage extends Message {
 
-    private int requestQueryNumber;
+    private Integer requestNumber;
     private Calendar calendar;
     private int minimum;
     private List<String> participants;
     private String topic;
 
-    public RequestMessage(int requestQueryNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
+    public RequestMessage(Integer requestNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
         super(RequestType.Request);
-        this.requestQueryNumber = requestQueryNumber;
+        this.requestNumber = requestNumber;
         this.calendar = calendar;
         this.minimum = minimum;
         this.participants = participants;
         this.topic = topic;
     }
 
-    public int getRequestQueryNumber() {
-        return requestQueryNumber;
+    public Integer getRequestNumber() {
+        return requestNumber;
     }
 
     public Calendar getCalendar() {
@@ -46,7 +46,7 @@ public class RequestMessage extends Message {
         String stringMessage = "";
 
         stringMessage += getRequestType().ordinal() + "_"; //Message ID
-        stringMessage += requestQueryNumber + "_";
+        stringMessage += requestNumber + "_";
         stringMessage += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";  // DATE & TIME
         stringMessage += minimum + "_";  // MINIMUM
 
@@ -61,7 +61,7 @@ public class RequestMessage extends Message {
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] subMessages = message.split("_");
 
@@ -81,13 +81,11 @@ public class RequestMessage extends Message {
             participants.add(user);
         }
 
+        this.requestNumber = Integer.parseInt(subMessages[1]);
+        this.calendar = c;
+        this.minimum = Integer.parseInt(subMessages[3]);
+        this.participants = participants;
+        this.topic = subMessages[5];
 
-        return new RequestMessage(
-                Integer.parseInt(subMessages[1]),
-                c,
-                Integer.parseInt(subMessages[3]),
-                participants,
-                subMessages[5]
-        );
     }
 }

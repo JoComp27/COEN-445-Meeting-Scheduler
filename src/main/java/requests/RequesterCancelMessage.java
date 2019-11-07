@@ -2,14 +2,19 @@ package requests;
 
 public class RequesterCancelMessage extends Message{
 
-    int meetingNumber;
+    Integer meetingNumber;
 
-    public RequesterCancelMessage(int meetingNumber) {
+    public RequesterCancelMessage() {
+        super(RequestType.RequesterCancel);
+        this.meetingNumber = null;
+    }
+
+    public RequesterCancelMessage(Integer meetingNumber) {
         super(RequestType.RequesterCancel);
         this.meetingNumber = meetingNumber;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -19,10 +24,11 @@ public class RequesterCancelMessage extends Message{
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] splitMessage = message.split("_");
 
-        return new RequesterCancelMessage(Integer.parseInt(splitMessage[1]));
+        this.meetingNumber = Integer.parseInt(splitMessage[1]);
+
     }
 }

@@ -5,12 +5,20 @@ import java.util.Date;
 
 public class InviteMessage extends Message {
 
-    private int meetingNumber;
+    private Integer meetingNumber;
     private Calendar calendar;
     private String topic;
     private String requester;
 
-    public InviteMessage(int meetingNumber, Calendar calendar, String topic, String requester) {
+    public InviteMessage() {
+        super(RequestType.Invite);
+        this.meetingNumber = null;
+        this.calendar = null;
+        this.topic = null;
+        this.requester = null;
+    }
+
+    public InviteMessage(Integer meetingNumber, Calendar calendar, String topic, String requester) {
         super(RequestType.Invite);
         this.meetingNumber = meetingNumber;
         this.calendar = calendar;
@@ -18,7 +26,7 @@ public class InviteMessage extends Message {
         this.requester = requester;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -48,7 +56,7 @@ public class InviteMessage extends Message {
     }
 
     @Override
-    public InviteMessage deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] arrMsg = message.split("_");
 
@@ -61,7 +69,10 @@ public class InviteMessage extends Message {
         Calendar c = Calendar.getInstance();
         c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
 
+        this.meetingNumber = Integer.parseInt(arrMsg[1]);
+        this.calendar = c;
+        this.topic = arrMsg[3];
+        this.requester = arrMsg[4];
 
-        return new InviteMessage(Integer.parseInt(arrMsg[1]), c, arrMsg[3], arrMsg[4]);
     }
 }
