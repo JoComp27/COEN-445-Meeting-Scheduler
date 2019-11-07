@@ -59,7 +59,7 @@ public class Client{
                 break; 
         }
 
-    	
+
 //        //Create thread to listen to messages
 //        new Thread(new ClientListen(serverAddress)).start();
 //
@@ -80,6 +80,40 @@ public class Client{
         public ClientListen(InetAddress serverAddress){
             this.serverAddress = serverAddress;
         }
+
+        private void handleDenied(DeniedMessage message) {
+
+
+
+    }
+
+    private void handleInvite(InviteMessage message) {
+
+    }
+
+    private void handleConfirm(ConfirmMessage message){
+
+    }
+
+    private void handleServerCancel(ServerCancelMessage message){
+
+    }
+
+    private void handleScheduled(ScheduledMessage message){
+
+    }
+
+    private void handleNotSchedules(NotScheduledMessage message) {
+
+    }
+
+    private void handleAdded(AddedMessage message){
+
+    }
+
+    private void handleRoomChange(RoomChangeMessage message) {
+
+    }
 
         @Override
         public void run() {
@@ -132,15 +166,36 @@ public class Client{
             RequestType receivedRequestType = RequestType.values()[messageType];
 
             switch(receivedRequestType){
-                case Request :
+                case Denied :
+                    DeniedMessage deniedMessage = new DeniedMessage();
+                    deniedMessage.deserialize(message);
+                    handleDenied(deniedMessage);
+                    break;
+                case Invite :
 
                     break;
+                case Confirm :
 
+                    break;
+                case ServerCancel :
 
-            }
+                    break;
+                case Scheduled :
+
+                    break;
+                case NotScheduled :
+
+                    break;
+                case Added :
+
+                    break;
+                case RoomChange :
+
+                    break;
 
         }
 
     }
 
 }
+
