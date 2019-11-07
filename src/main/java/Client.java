@@ -25,7 +25,6 @@ public class Client{
             System.out.println("Server IP is missing");
             return;
         }
-
         Client client = new Client(args[0]);
         client.run();
     }
@@ -98,7 +97,6 @@ public class Client{
                     serverSocket.receive(DpReceive);        //Receive Data in Buffer
                     String message = new String(DpReceive.getData());
                     System.out.println("Server says: " + message);
-
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE
                      *
