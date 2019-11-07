@@ -1,3 +1,5 @@
+import Tools.FileReaderWriter;
+import requests.Message;
 import requests.RequestMessage;
 import requests.RequestType;
 
@@ -6,6 +8,7 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+
 
 public class Server implements Runnable{
 
@@ -46,6 +49,8 @@ public class Server implements Runnable{
                 System.out.println(DpReceive.getData());
                 System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
+                InetAddress IP = DpReceive.getAddress();
+
                 System.out.println("Client says: " + message);
 
                 /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
@@ -54,7 +59,7 @@ public class Server implements Runnable{
                  * Add in Thread and feed in the message*/
 
                 /**Creating a new thread of each new request*/
-                ServerHandle serverHandle = new ServerHandle(message);
+                ServerHandle serverHandle = new ServerHandle(message, IP);
                 new Thread(serverHandle).start();
 
                 if(message.equals("Bye")){
@@ -72,11 +77,12 @@ public class Server implements Runnable{
     }
 
     public class ServerHandle implements Runnable{
-
         String message;
+        InetAddress IP;
 
-        public ServerHandle(String message){
+        public ServerHandle(String message, InetAddress IP){
             this.message = message;
+            this.IP = IP;
         }
 
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
@@ -88,9 +94,34 @@ public class Server implements Runnable{
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 
+            FileReaderWriter file = new FileReaderWriter();
+            String currentDir = System.getProperty("user.dir");
+            String filePath = currentDir + "log.txt";
+
+            ArrayList<Message> room = new ArrayList<>();
+
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
                 case Request:
+
+                    //Message theMessage = new RequestMessage(message);
+
+                    /**Put the message inside the requestMap Hashmap.
+                     * Key is the IP, and stores the received message.*/
+                    requestMap.put(IP.toString(), message);
+                    /**Writes the message in the log file.*/
+                    try {
+                        file.WriteFile(filePath, message, true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(room.size() < 2){
+
+                    }
+
+                    //scheduleMap.put(receivedMessage[2] + "_" + receivedMessage[3],room);
+
 
                     break;
                 case Accept:
