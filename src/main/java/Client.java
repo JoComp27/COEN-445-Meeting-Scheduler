@@ -1,5 +1,4 @@
-import Tools.UdpSend;
-import requests.*;
+import requests.RequestType;
 
 import java.net.*;
 import java.util.Scanner;
@@ -8,37 +7,59 @@ import java.lang.*;
 
 public class Client{
 
+    private InetAddress serverAddress;
+    private InetAddress selfAddress;
+
+    private DatagramSocket ds;
+
     private int requestNumber;
 
-
-    public Client(){
-
+    public Client(String serverAddress){
         this.requestNumber = 0;
 
     }
 
     public static void main(String args[]) throws IOException {
-        Client client = new Client();
+
+        if(args.length == 0){
+            System.out.println("Server IP is missing");
+            return;
+        }
+        Client client = new Client(args[0]);
         client.run();
     }
 
+    private void sendMessageToServer(String message) throws IOException {
+
+        // convert the String input into the byte array.
+        byte buf[] = message.getBytes();
+        byte[] buffer = new byte[100];
+        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999);
+
+        ds.send(DpSend);
+        System.out.println("MESSAGE SENT");
+
+        DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
+        ds.receive(DpReceive);        //Receive Data in Buffer
+        String messageFromServer = new String(DpReceive.getData());
+        System.out.println("Server says: " + messageFromServer);
+
+    }
     public void run() throws IOException {
 
-    	Scanner sc = new Scanner(System.in);
-    	
-        // loop while user not enters "bye" 
-        while (true) 
-        { 
-            String inp = sc.nextLine(); 
-  
-            UdpSend.sendMessage(inp, 9999);
-  
-            // break the loop if user enters "bye" 
-            if (inp.equals("bye")) 
-                break; 
+        Scanner sc = new Scanner(System.in);
+        // loop while user not enters "bye"
+        while (true)
+        {
+            String inp = sc.nextLine();
+
+            sendMessageToServer(inp);
+            // break the loop if user enters "bye"
+            if (inp.equals("bye"))
+                break;
         }
 
-    	
+
 //        //Create thread to listen to messages
 //        new Thread(new ClientListen(serverAddress)).start();
 //
@@ -49,40 +70,6 @@ public class Client{
 //        }
 //
 //        //
-
-    }
-
-    private void handleDenied(DeniedMessage message) {
-
-
-
-    }
-
-    private void handleInvite(InviteMessage message) {
-
-    }
-
-    private void handleConfirm(ConfirmMessage message){
-
-    }
-
-    private void handleServerCancel(ServerCancelMessage message){ 
-
-    }
-
-    private void handleScheduled(ScheduledMessage message){
-
-    }
-
-    private void handleNotSchedules(NotScheduledMessage message) {
-
-    }
-
-    private void handleAdded(AddedMessage message){
-
-    }
-
-    private void handleRoomChange(RoomChangeMessage message) {
 
     }
 
@@ -110,7 +97,6 @@ public class Client{
                     serverSocket.receive(DpReceive);        //Receive Data in Buffer
                     String message = new String(DpReceive.getData());
                     System.out.println("Server says: " + message);
-
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE
                      *
@@ -146,32 +132,10 @@ public class Client{
             RequestType receivedRequestType = RequestType.values()[messageType];
 
             switch(receivedRequestType){
-                case Denied :
-                    DeniedMessage deniedMessage = new DeniedMessage();
-                    deniedMessage.deserialize(message);
-                    handleDenied(deniedMessage);
-                    break;
-                case Invite :
+                case Request :
 
                     break;
-                case Confirm :
 
-                    break;
-                case ServerCancel :
-
-                    break;
-                case Scheduled :
-
-                    break;
-                case NotScheduled :
-
-                    break;
-                case Added :
-
-                    break;
-                case RoomChange :
-
-                    break;
 
             }
 
