@@ -1,11 +1,11 @@
-import requests.RequestType;
+import requests.*;
 
 import java.net.*;
 import java.util.Scanner;
 import java.io.*;
 import java.lang.*;
 
-public class Client{
+public class Client {
 
     private InetAddress serverAddress;
     private InetAddress selfAddress;
@@ -14,14 +14,14 @@ public class Client{
 
     private int requestNumber;
 
-    public Client(String serverAddress){
+    public Client(String serverAddress) {
         this.requestNumber = 0;
 
     }
 
     public static void main(String args[]) throws IOException {
 
-        if(args.length == 0){
+        if (args.length == 0) {
             System.out.println("Server IP is missing");
             return;
         }
@@ -45,18 +45,18 @@ public class Client{
         System.out.println("Server says: " + messageFromServer);
 
     }
+
     public void run() throws IOException {
 
-    	Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         // loop while user not enters "bye"
-        while (true) 
-        { 
-            String inp = sc.nextLine(); 
-  
+        while (true) {
+            String inp = sc.nextLine();
+
             sendMessageToServer(inp);
             // break the loop if user enters "bye" 
-            if (inp.equals("bye")) 
-                break; 
+            if (inp.equals("bye"))
+                break;
         }
 
 
@@ -73,16 +73,7 @@ public class Client{
 
     }
 
-    public class ClientListen implements Runnable {
-
-        InetAddress serverAddress;
-
-        public ClientListen(InetAddress serverAddress){
-            this.serverAddress = serverAddress;
-        }
-
-        private void handleDenied(DeniedMessage message) {
-
+    private void handleDenied(DeniedMessage message) {
 
 
     }
@@ -91,15 +82,15 @@ public class Client{
 
     }
 
-    private void handleConfirm(ConfirmMessage message){
+    private void handleConfirm(ConfirmMessage message) {
 
     }
 
-    private void handleServerCancel(ServerCancelMessage message){
+    private void handleServerCancel(ServerCancelMessage message) {
 
     }
 
-    private void handleScheduled(ScheduledMessage message){
+    private void handleScheduled(ScheduledMessage message) {
 
     }
 
@@ -107,13 +98,21 @@ public class Client{
 
     }
 
-    private void handleAdded(AddedMessage message){
+    private void handleAdded(AddedMessage message) {
 
     }
 
     private void handleRoomChange(RoomChangeMessage message) {
 
     }
+
+    public class ClientListen implements Runnable {
+
+        InetAddress serverAddress;
+
+        public ClientListen(InetAddress serverAddress) {
+            this.serverAddress = serverAddress;
+        }
 
         @Override
         public void run() {
@@ -123,10 +122,10 @@ public class Client{
              * the range should be 49152 - 65535.*/
 
             /**The port address is chosen randomly*/
-            try(DatagramSocket serverSocket = new DatagramSocket(9999)) {
+            try (DatagramSocket serverSocket = new DatagramSocket(9999)) {
                 byte[] buffer = new byte[65535];
                 /**Messages here and sends to client*/
-                while(true){
+                while (true) {
                     DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                     serverSocket.receive(DpReceive);        //Receive Data in Buffer
                     String message = new String(DpReceive.getData());
@@ -140,9 +139,9 @@ public class Client{
 
                 }
 
-            }catch (SocketException e){
+            } catch (SocketException e) {
                 e.printStackTrace();
-            }catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -154,7 +153,7 @@ public class Client{
 
         String message;
 
-        public ClientHandle(String message){
+        public ClientHandle(String message) {
             this.message = message;
         }
 
@@ -165,33 +164,35 @@ public class Client{
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 
-            switch(receivedRequestType){
-                case Denied :
+            switch (receivedRequestType) {
+                case Denied:
                     DeniedMessage deniedMessage = new DeniedMessage();
                     deniedMessage.deserialize(message);
                     handleDenied(deniedMessage);
                     break;
-                case Invite :
+                case Invite:
 
                     break;
-                case Confirm :
+                case Confirm:
 
                     break;
-                case ServerCancel :
+                case ServerCancel:
 
                     break;
-                case Scheduled :
+                case Scheduled:
 
                     break;
-                case NotScheduled :
+                case NotScheduled:
 
                     break;
-                case Added :
+                case Added:
 
                     break;
-                case RoomChange :
+                case RoomChange:
 
                     break;
+
+            }
 
         }
 
