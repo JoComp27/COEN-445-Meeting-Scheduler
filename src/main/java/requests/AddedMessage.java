@@ -2,25 +2,41 @@ package requests;
 
 public class AddedMessage extends Message {
 
-    private int meetingNumber;
-    private String ipAddress;
+    private Integer meetingNumber;
+    private String socketAddress;
 
-    public AddedMessage(int meetingNumber, String ipAddress) {
+    public AddedMessage(){
+        super(RequestType.Added);
+        this.meetingNumber = null;
+        this.socketAddress = null;
+    }
+
+    public AddedMessage(Integer meetingNumber, String ipAddress) {
         super(RequestType.Added);
         this.meetingNumber = meetingNumber;
-        this.ipAddress = ipAddress;
+        this.socketAddress = ipAddress;
+    }
+
+    public Integer getMeetingNumber() {
+        return meetingNumber;
+    }
+
+    public String getSocketAddress() {
+        return socketAddress;
     }
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + ipAddress;
+        return requestType.ordinal() + "_" + meetingNumber + "_" + socketAddress;
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] msg = message.split("_");
 
-        return new AddedMessage(Integer.parseInt(msg[1]), msg[2]);
+        this.meetingNumber = Integer.parseInt(msg[1]);
+        this.socketAddress = msg[2];
+
     }
 }

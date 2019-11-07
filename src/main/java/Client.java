@@ -15,22 +15,7 @@ public class Client{
     private int requestNumber;
 
     public Client(String serverAddress){
-
         this.requestNumber = 0;
-
-        try {
-            this.ds = new DatagramSocket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            this.serverAddress = InetAddress.getByName(serverAddress);
-            this.selfAddress = InetAddress.getLocalHost();
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -40,7 +25,6 @@ public class Client{
             System.out.println("Server IP is missing");
             return;
         }
-
         Client client = new Client(args[0]);
         client.run();
     }
@@ -49,34 +33,33 @@ public class Client{
 
         // convert the String input into the byte array.
         byte buf[] = message.getBytes();
-
+        byte[] buffer = new byte[100];
         DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999);
 
         ds.send(DpSend);
         System.out.println("MESSAGE SENT");
 
-    }
+        DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
+        ds.receive(DpReceive);        //Receive Data in Buffer
+        String messageFromServer = new String(DpReceive.getData());
+        System.out.println("Server says: " + messageFromServer);
 
+    }
     public void run() throws IOException {
 
     	Scanner sc = new Scanner(System.in);
-        DatagramSocket ds = new DatagramSocket();
-
-
-    	
-        // loop while user not enters "bye" 
+        // loop while user not enters "bye"
         while (true) 
         { 
             String inp = sc.nextLine(); 
   
             sendMessageToServer(inp);
-  
             // break the loop if user enters "bye" 
             if (inp.equals("bye")) 
                 break; 
         }
 
-    	
+
 //        //Create thread to listen to messages
 //        new Thread(new ClientListen(serverAddress)).start();
 //
@@ -98,6 +81,40 @@ public class Client{
             this.serverAddress = serverAddress;
         }
 
+        private void handleDenied(DeniedMessage message) {
+
+
+
+    }
+
+    private void handleInvite(InviteMessage message) {
+
+    }
+
+    private void handleConfirm(ConfirmMessage message){
+
+    }
+
+    private void handleServerCancel(ServerCancelMessage message){
+
+    }
+
+    private void handleScheduled(ScheduledMessage message){
+
+    }
+
+    private void handleNotSchedules(NotScheduledMessage message) {
+
+    }
+
+    private void handleAdded(AddedMessage message){
+
+    }
+
+    private void handleRoomChange(RoomChangeMessage message) {
+
+    }
+
         @Override
         public void run() {
 
@@ -114,7 +131,6 @@ public class Client{
                     serverSocket.receive(DpReceive);        //Receive Data in Buffer
                     String message = new String(DpReceive.getData());
                     System.out.println("Server says: " + message);
-
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE
                      *
@@ -150,15 +166,36 @@ public class Client{
             RequestType receivedRequestType = RequestType.values()[messageType];
 
             switch(receivedRequestType){
-                case Request :
+                case Denied :
+                    DeniedMessage deniedMessage = new DeniedMessage();
+                    deniedMessage.deserialize(message);
+                    handleDenied(deniedMessage);
+                    break;
+                case Invite :
 
                     break;
+                case Confirm :
 
+                    break;
+                case ServerCancel :
 
-            }
+                    break;
+                case Scheduled :
+
+                    break;
+                case NotScheduled :
+
+                    break;
+                case Added :
+
+                    break;
+                case RoomChange :
+
+                    break;
 
         }
 
     }
 
 }
+

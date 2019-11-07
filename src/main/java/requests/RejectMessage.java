@@ -2,14 +2,19 @@ package requests;
 
 public class RejectMessage extends Message{
 
-    int meetingNumber;
+    private Integer meetingNumber;
 
-    public RejectMessage(int meetingNumber) {
+    public RejectMessage() {
+        super(RequestType.Reject);
+        this.meetingNumber = null;
+    }
+
+    public RejectMessage(Integer meetingNumber) {
         super(RequestType.Reject);
         this.meetingNumber = meetingNumber;
     }
 
-    public int getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -19,10 +24,10 @@ public class RejectMessage extends Message{
     }
 
     @Override
-    public Message deserialize(String message) {
+    public void deserialize(String message) {
 
         String[] splitString = message.split("_");
 
-        return new RejectMessage(Integer.parseInt(splitString[1]));
+        this.meetingNumber = Integer.parseInt(splitString[1]);
     }
 }
