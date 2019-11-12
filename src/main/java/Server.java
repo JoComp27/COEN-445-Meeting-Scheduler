@@ -39,8 +39,8 @@ public class Server implements Runnable{
 		}
     	
         /**The port address is chosen randomly*/
-        try(DatagramSocket serverSocket = new DatagramSocket(9999)) {
-            byte[] buffer = new byte[1000];
+        try(DatagramSocket serverSocket = new DatagramSocket(9997)) {
+            byte[] buffer = new byte[100];
             /**Messages here and sends to client*/
             while(true){
             	System.out.println("SERVER STARTED TO LISTEN");
@@ -51,17 +51,12 @@ public class Server implements Runnable{
                 //System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
                 InetAddress IP = DpReceive.getAddress();
+                System.out.println("DpReceive getAddress" + DpReceive.getAddress());
+                System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
 
                 System.out.println("Client says: " + message);
 
-                String sendToClient = "From the server";
-                byte[] bufferSend =  sendToClient.getBytes();
-                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
-                System.out.println("DpReceive Port " + DpReceive.getPort());
-                //DpSend.setPort(DpReceive.getPort());
-                System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
-                DpSend.setSocketAddress(DpReceive.getSocketAddress());
-                serverSocket.send(DpSend);
+
 
                 /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                  * COMPLETE THIS PORTION OF THE CODE
@@ -71,6 +66,15 @@ public class Server implements Runnable{
                 /**Creating a new thread of each new request*/
                 ServerHandle serverHandle = new ServerHandle(message, IP);
                 new Thread(serverHandle).start();
+
+                String sendToClient = "From the server";
+                byte[] bufferSend =  sendToClient.getBytes();
+                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
+                System.out.println("DpReceive Port " + DpReceive.getPort());
+                //DpSend.setPort(DpReceive.getPort());
+                System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
+                DpSend.setSocketAddress(DpReceive.getSocketAddress());
+                serverSocket.send(DpSend);
 
                 if(message.equals("Bye")){
                     System.out.println("Client says bye. Exiting");
@@ -101,7 +105,7 @@ public class Server implements Runnable{
             String[] receivedMessage = message.split("_");
 
             //Gets the request type to treat the message.
-
+            System.out.println("receivedMessage: " + receivedMessage[0]);
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 

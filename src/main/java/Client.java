@@ -14,8 +14,9 @@ public class Client {
 
     private int requestNumber;
 
-    public Client(String serverAddress) {
+    public Client(String serverAddress) throws UnknownHostException {
         this.requestNumber = 0;
+        this.serverAddress = InetAddress.getByName(serverAddress);
 
     }
 
@@ -34,8 +35,7 @@ public class Client {
         // convert the String input into the byte array.
         byte buf[] = message.getBytes();
         byte[] buffer = new byte[100];
-        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9999);
-
+        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9997);
         ds.send(DpSend);
         System.out.println("MESSAGE SENT");
 
@@ -47,7 +47,7 @@ public class Client {
     }
 
     public void run() throws IOException {
-
+        ds = new DatagramSocket();
         Scanner sc = new Scanner(System.in);
         // loop while user not enters "bye"
         while (true) {
@@ -122,7 +122,7 @@ public class Client {
              * the range should be 49152 - 65535.*/
 
             /**The port address is chosen randomly*/
-            try (DatagramSocket serverSocket = new DatagramSocket(9999)) {
+            try (DatagramSocket serverSocket = new DatagramSocket(9997)) {
                 byte[] buffer = new byte[65535];
                 /**Messages here and sends to client*/
                 while (true) {
