@@ -123,7 +123,7 @@ public class Client {
 
             /**The port address is chosen randomly*/
             try (DatagramSocket serverSocket = new DatagramSocket(9997)) {
-                byte[] buffer = new byte[65535];
+                byte[] buffer = new byte[100];
                 /**Messages here and sends to client*/
                 while (true) {
                     DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data

@@ -1,4 +1,5 @@
 import Tools.FileReaderWriter;
+import requests.Meeting;
 import requests.Message;
 import requests.RequestMessage;
 import requests.RequestType;
@@ -50,7 +51,7 @@ public class Server implements Runnable{
                 //System.out.println(DpReceive.getData());
                 //System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
-                InetAddress IP = DpReceive.getAddress();
+
                 System.out.println("DpReceive getAddress" + DpReceive.getAddress());
                 System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
 
@@ -62,14 +63,15 @@ public class Server implements Runnable{
                  * COMPLETE THIS PORTION OF THE CODE
                  *
                  * Add in Thread and feed in the message*/
-
-                /**Creating a new thread of each new request*/
-                ServerHandle serverHandle = new ServerHandle(message, IP);
-                new Thread(serverHandle).start();
-
                 String sendToClient = "From the server";
                 byte[] bufferSend =  sendToClient.getBytes();
                 DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
+                int port = DpReceive.getPort();
+                /**Creating a new thread of each new request*/
+                ServerHandle serverHandle = new ServerHandle(message, port);
+                new Thread(serverHandle).start();
+
+
                 System.out.println("DpReceive Port " + DpReceive.getPort());
                 //DpSend.setPort(DpReceive.getPort());
                 System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
@@ -92,17 +94,19 @@ public class Server implements Runnable{
 
     public class ServerHandle implements Runnable{
         String message;
-        InetAddress IP;
+        int port;
 
-        public ServerHandle(String message, InetAddress IP){
+        public ServerHandle(String message, int port){
             this.message = message;
-            this.IP = IP;
+
         }
 
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
         @Override
         public void run() {
             String[] receivedMessage = message.split("_");
+            List<Meeting> listMeeting = new ArrayList<>();
+
 
             //Gets the request type to treat the message.
             System.out.println("receivedMessage: " + receivedMessage[0]);
@@ -118,18 +122,34 @@ public class Server implements Runnable{
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
                 case Request:
-
+                    //Time should be the 3rd + 4th element in the array
+                    String time = receivedMessage[2] + "_" + receivedMessage[3];
                     //Message theMessage = new RequestMessage(message);
+                    if(!requestMap.containsKey(time)){
+                        requestMap.put(time, message);
 
+                        /** Testing meeting **/
+                        Calendar calendar = Calendar.getInstance();
+                        List<String> list = new ArrayList<>();
+                        list.add("ASDADS");
+                        RequestMessage requestMessage = new RequestMessage(1, calendar, 5, list, "asdfa");
+                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1);      //Accepted participants should always initialize as 1 for organizer
+                        /** End of testing**/
+
+                        /**Writes the message in the log file.*/
+                        try {
+                            file.WriteFile(filePath, message, true);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        break;
+                    }
                     /**Put the message inside the requestMap Hashmap.
                      * Key is the IP, and stores the received message.*/
-                    requestMap.put(IP.toString(), message);
-                    /**Writes the message in the log file.*/
-                    try {
-                        file.WriteFile(filePath, message, true);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+
+
 
                     if(room.size() < 2){
 
@@ -140,7 +160,25 @@ public class Server implements Runnable{
 
                     break;
                 case Accept:
-                    //Do something
+                    Meeting meeting = null;
+                    //Go through all existing meetings
+                    for(int i = 0; i < listMeeting.size(); i++) {
+                        //Go through all the participants in the existing meetings
+                        for(int j = 0; j < listMeeting.get(i).getRequestMessage().getParticipants().size(); j++) {
+                            //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
+                            if (listMeeting.get(i).getRequestMessage().getParticipants().get(j) == Integer.toString(port)){
+                                meeting = listMeeting.get(i);
+                            }
+                        }
+                    }
+                    //Go through the request and the valid participants
+                    for(int i = 0; i < meeting.getRequestMessage().getParticipants().size(); i++) {
+                        //If valid increment the accepted count
+                        if (meeting.getRequestMessage().getParticipants().get(i) == Integer.toString(port)) {
+                            meeting.incrementAcceptedParticipants();
+                        }
+                    }
+
                     break;
                 case Reject:
                     //Do something
