@@ -63,19 +63,22 @@ public class Server implements Runnable{
                  * COMPLETE THIS PORTION OF THE CODE
                  *
                  * Add in Thread and feed in the message*/
-                String sendToClient = "From the server";
-                byte[] bufferSend =  sendToClient.getBytes();
-                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
+
                 int port = DpReceive.getPort();
                 /**Creating a new thread of each new request*/
                 ServerHandle serverHandle = new ServerHandle(message, port);
                 new Thread(serverHandle).start();
 
+                //Get the message from handler
+                String messageToClient = serverHandle.getMessageToClient();
+                byte[] bufferSend =  messageToClient.getBytes();
+                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
 
                 System.out.println("DpReceive Port " + DpReceive.getPort());
                 //DpSend.setPort(DpReceive.getPort());
                 System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
                 DpSend.setSocketAddress(DpReceive.getSocketAddress());
+                //Send to client
                 serverSocket.send(DpSend);
 
                 if(message.equals("Bye")){
@@ -95,6 +98,7 @@ public class Server implements Runnable{
     public class ServerHandle implements Runnable{
         String message;
         int port;
+        String messageToClient = "";
 
         public ServerHandle(String message, int port){
             this.message = message;
@@ -106,6 +110,7 @@ public class Server implements Runnable{
         public void run() {
             String[] receivedMessage = message.split("_");
             List<Meeting> listMeeting = new ArrayList<>();
+
 
 
             //Gets the request type to treat the message.
@@ -133,8 +138,11 @@ public class Server implements Runnable{
                         List<String> list = new ArrayList<>();
                         list.add("ASDADS");
                         RequestMessage requestMessage = new RequestMessage(1, calendar, 5, list, "asdfa");
-                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1);      //Accepted participants should always initialize as 1 for organizer
+                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, port);      //Accepted participants should always initialize as 1 for organizer
                         /** End of testing**/
+
+                        //Add new RequestMessage to list of meeting
+                        //listMeeting.add(message);
 
                         /**Writes the message in the log file.*/
                         try {
@@ -161,6 +169,7 @@ public class Server implements Runnable{
                     break;
                 case Accept:
                     Meeting meeting = null;
+
                     //Go through all existing meetings
                     for(int i = 0; i < listMeeting.size(); i++) {
                         //Go through all the participants in the existing meetings
@@ -169,14 +178,25 @@ public class Server implements Runnable{
                             if (listMeeting.get(i).getRequestMessage().getParticipants().get(j) == Integer.toString(port)){
                                 meeting = listMeeting.get(i);
                             }
+                            else{
+                                messageToClient = "You are not in a scheduled meeting";
+                            }
                         }
                     }
-                    //Go through the request and the valid participants
-                    for(int i = 0; i < meeting.getRequestMessage().getParticipants().size(); i++) {
-                        //If valid increment the accepted count
-                        if (meeting.getRequestMessage().getParticipants().get(i) == Integer.toString(port)) {
-                            meeting.incrementAcceptedParticipants();
-                        }
+//                    //Go through the request and the valid participants
+//                    for(int i = 0; i < meeting.getRequestMessage().getParticipants().size(); i++) {
+//                        //If valid increment the accepted count
+//                        if (meeting.getRequestMessage().getParticipants().get(i) == Integer.toString(port)) {
+//                            meeting.incrementAcceptedParticipants();
+//                        }
+//                    }
+                    //Check if client is in the meeting AND if they already accepted the meeting
+                    if(meeting.getAcceptedMap().containsKey(port) && meeting.getAcceptedMap().get(port) == false){
+                        //Increment accepted count
+                        meeting.incrementAcceptedParticipants();
+                        //Make accepted boolean true
+                        meeting.getAcceptedMap().replace(port, true);
+                        messageToClient = "You have been added to the scheduled meeting";
                     }
 
                     break;
@@ -198,6 +218,10 @@ public class Server implements Runnable{
 
             }
 
+        }
+
+        public String getMessageToClient(){
+            return messageToClient;
         }
     }
 

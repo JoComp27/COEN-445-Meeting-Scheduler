@@ -1,5 +1,6 @@
 package requests;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Meeting {
@@ -10,13 +11,18 @@ public class Meeting {
     private String state;
     private int maxParticipants;
     private int acceptedParticipants;
+    //Key=port, bool=accepted
+    private HashMap<Integer, Boolean> acceptedMap;
+    private int organizer;
 
-    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants) {
+    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int organizer) {
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
         this.state = state;
         this.maxParticipants = maxParticipants;
         this.acceptedParticipants = acceptedParticipants;
+        this.acceptedMap = acceptedMap;
+        this.organizer = organizer;
     }
 
     public int getId() {
@@ -41,5 +47,19 @@ public class Meeting {
 
     public void incrementAcceptedParticipants(){
         acceptedParticipants++;
+    }
+
+    public HashMap<Integer, Boolean> getAcceptedMap() {
+        return acceptedMap;
+    }
+
+    public int getOrganizer() {
+        return organizer;
+    }
+
+    public void setAceeptedMap(){
+        for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
+            this.acceptedMap.put(Integer.parseInt(this.requestMessage.getParticipants().get(i)), false);
+        }
     }
 }
