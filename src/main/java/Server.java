@@ -14,7 +14,7 @@ import java.util.*;
 public class Server implements Runnable{
 
     HashMap<String, String> requestMap;
-    HashMap<String, ArrayList<RequestMessage>> scheduleMap;
+    HashMap<String, Boolean[]> scheduleMap;
 
     public Server (){
         this.requestMap = new HashMap<>();
@@ -115,23 +115,34 @@ public class Server implements Runnable{
 
             //Gets the request type to treat the message.
             System.out.println("receivedMessage: " + receivedMessage[0]);
-            int messageType = Integer.parseInt(receivedMessage[0]);
-            RequestType receivedRequestType = RequestType.values()[messageType];
+            //int messageType = Integer.parseInt(receivedMessage[0]);
+            //RequestType receivedRequestType = RequestType.values()[messageType];
+            System.out.println("receivedMessage Value of: " + RequestType.valueOf(receivedMessage[0]));
+            RequestType receivedRequestType = RequestType.valueOf(receivedMessage[0]);
 
             FileReaderWriter file = new FileReaderWriter();
             String currentDir = System.getProperty("user.dir");
             String filePath = currentDir + "log.txt";
-
             ArrayList<Message> room = new ArrayList<>();
 
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
                 case Request:
+                    String time = "";
                     //Time should be the 3rd + 4th element in the array
-                    String time = receivedMessage[2] + "_" + receivedMessage[3];
+                    if(receivedMessage.length > 2) {
+                        time = receivedMessage[2] + "_" + receivedMessage[3];
+                    }
                     //Message theMessage = new RequestMessage(message);
-                    if(!requestMap.containsKey(time)){
-                        requestMap.put(time, message);
+
+                    //If hashmap does not already have this time scheduled, add new key
+                    if(!scheduleMap.containsKey(time)){
+                        //Make first room taken
+                        scheduleMap.put(time, new Boolean[]{true, false});
+                        messageToClient = "Room is available";
+
+
+
 
                         /** Testing meeting **/
                         Calendar calendar = Calendar.getInstance();
@@ -151,7 +162,23 @@ public class Server implements Runnable{
                             e.printStackTrace();
                         }
                     }
+                    else if(scheduleMap.containsKey(time)){
+                        //If first room not taken
+                        if(!scheduleMap.get(time)[0]) {
+
+                            Boolean roomArray[] = scheduleMap.get(time);
+                            roomArray[0] = true;
+                            scheduleMap.put(time, roomArray);
+                        }
+                        else if(!scheduleMap.get(time)[1]){
+                            Boolean roomArray[] = scheduleMap.get(time);
+                            roomArray[1] = true;
+                            scheduleMap.put(time, roomArray);
+                        }
+                        messageToClient = "Room is available";
+                    }
                     else{
+                        messageToClient = "Room is not available at this time. Choose another time";
                         break;
                     }
                     /**Put the message inside the requestMap Hashmap.
