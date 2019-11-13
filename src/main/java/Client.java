@@ -74,11 +74,22 @@ public class Client {
     }
 
     private void handleDenied(DeniedMessage message) {
+    //Room Unavailable Message
 
+        //Check if request RQ# exists inside its list of request
+        //and is the owner
+
+        //If true, Delete the request that was just sent to the server
+
+        //If false, Server sent incorrect request
 
     }
 
     private void handleInvite(InviteMessage message) {
+
+        //Add the new request into your list and make it a standby status meeting
+
+        //Add option to accept or reject the newly added
 
     }
 
@@ -88,9 +99,15 @@ public class Client {
 
     private void handleServerCancel(ServerCancelMessage message) {
 
+
+
     }
 
     private void handleScheduled(ScheduledMessage message) {
+
+        //Check if request RQ# and MT# is part of my list and is in standby (Only Host should receive)
+
+        //Will update the request with the members with the list of members that have have accepted the invite
 
     }
 

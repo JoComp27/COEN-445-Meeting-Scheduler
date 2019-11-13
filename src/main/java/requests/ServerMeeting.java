@@ -3,10 +3,10 @@ package requests;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Meeting {
+public class ServerMeeting {
     //RequestType requestType;
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment
-    private int id;
+    private int meetingNumber;
     private RequestMessage requestMessage;
     private String state;
     private int maxParticipants;
@@ -15,8 +15,8 @@ public class Meeting {
     private HashMap<Integer, Boolean> acceptedMap;
     private int organizer;
 
-    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int organizer) {
-        this.id = countID.incrementAndGet();
+    public ServerMeeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int organizer) {
+        this.meetingNumber = countID.incrementAndGet();
         this.requestMessage = requestMessage;
         this.state = state;
         this.maxParticipants = maxParticipants;
@@ -24,6 +24,8 @@ public class Meeting {
         this.acceptedMap = acceptedMap;
         this.organizer = organizer;
     }
+
+    public ServerMeeting()
 
     public int getId() {
         return id;

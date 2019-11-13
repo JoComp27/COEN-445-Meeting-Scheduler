@@ -12,7 +12,7 @@ public class UdpSend {
             // convert the String input into the byte array.
             byte buf[] = message.getBytes();
 
-            DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9999);
+            DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
 
             DatagramSocket dp = new DatagramSocket();
 
