@@ -5,38 +5,45 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientMeeting {
     //RequestType requestType;
-    private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment
-    private int meetingNumber;
-    private RequestMessage requestMessage;
+    private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
+
+
     private String state;
+
+    //Common Arguments
+    private Calendar calendar;
+
+    //Requester Arguments
+    private int requestNumber;
+                //Key=port, bool=approved
+    private HashMap<Integer, Boolean> acceptedMap;
+
+    //Invitee Arguments
+    private int meetingNumber;
+    private String topic;
+    private int requester;
+
+    public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
+        this.meetingNumber = inviteMessage.getMeetingNumber();
+        this.calendar = inviteMessage.getCalendar();
+        this.topic = inviteMessage.getTopic();
+        this.requester = inviteMessage.getRequester();
+    }
+
+    public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
+        this.requestMessage
+    }
+
+
     private int maxParticipants;
     private int acceptedParticipants;
-    //Key=port, bool=accepted
-    private HashMap<Integer, Boolean> acceptedMap;
-    private int organizer;
 
-    public ClientMeeting() { //Requester Constructor
-        this.id = countID.incrementAndGet();
-        this.requestMessage = requestMessage;
-        this.state = state;
-        this.maxParticipants = maxParticipants;
-        this.acceptedParticipants = acceptedParticipants;
-        this.acceptedMap = acceptedMap;
-        this.organizer = organizer;
-    }
 
-    public ClientMeeting() { //Invitee Constructor
-
-    }
 
     public ClientMeeting()
 
     public int getId() {
         return id;
-    }
-
-    public RequestMessage getRequestMessage() {
-        return requestMessage;
     }
 
     public String getState() {

@@ -6,11 +6,11 @@ import java.util.List;
 
 public class RequestMessage extends Message {
 
-    private Integer requestNumber;
-    private Calendar calendar;
-    private int minimum;
-    private List<String> participants;
-    private String topic;
+    protected Integer requestNumber;
+    protected Calendar calendar;
+    protected int minimum;
+    protected List<String> participants;
+    protected String topic;
 
     public RequestMessage(Integer requestNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
         super(RequestType.Request);
