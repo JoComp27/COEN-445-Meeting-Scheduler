@@ -171,25 +171,39 @@ public class Client {
                     handleDenied(deniedMessage);
                     break;
                 case Invite:
-
+                    InviteMessage inviteMessage = new InviteMessage();
+                    inviteMessage.deserialize(message);
+                    handleInvite(inviteMessage);
                     break;
                 case Confirm:
-
+                    ConfirmMessage confirmMessage = new ConfirmMessage();
+                    confirmMessage.deserialize(message);
+                    handleConfirm(confirmMessage);
                     break;
                 case ServerCancel:
-
+                    ServerCancelMessage serverCancelMessage = new ServerCancelMessage();
+                    serverCancelMessage.deserialize(message);
+                    handleServerCancel(serverCancelMessage);
                     break;
                 case Scheduled:
-
+                    ScheduledMessage scheduledMessage = new ScheduledMessage();
+                    scheduledMessage.deserialize(message);
+                    handleScheduled(scheduledMessage);
                     break;
                 case NotScheduled:
-
+                    NotScheduledMessage notScheduledMessage = new NotScheduledMessage();
+                    notScheduledMessage.deserialize(message);
+                    handleNotSchedules(notScheduledMessage);
                     break;
                 case Added:
-
+                    AddedMessage addedMessage = new AddedMessage();
+                    addedMessage.deserialize(message);
+                    handleAdded(addedMessage);
                     break;
                 case RoomChange:
-
+                    RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
+                    roomChangeMessage.deserialize(message);
+                    handleRoomChange(roomChangeMessage);
                     break;
 
             }
