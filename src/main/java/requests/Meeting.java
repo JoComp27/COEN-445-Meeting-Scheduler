@@ -29,6 +29,7 @@ public class Meeting {
         return id;
     }
 
+    //This contains the list of participants because of the request message.
     public RequestMessage getRequestMessage() {
         return requestMessage;
     }

@@ -143,7 +143,13 @@ public class Server implements Runnable{
                     String time = calendar.getTime().toString();
                     List<String> list = new ArrayList<>();
                     list.add("5984");
+                    list.add("3434");
                     RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
+                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, meetingMap, 3434);
+                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(0)), false);
+                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(1)), true);
+                    meetingMap.put(list.get(0), aMeeting);
+                    meetingMap.put(list.get(1), aMeeting;
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
@@ -265,6 +271,31 @@ public class Server implements Runnable{
                      *          if true, return "already accepted"
                      *          else, change to "true". Return "Updated".
                      * */
+
+                    /** Testing meeting *
+                 Calendar calendar1 = Calendar.getInstance();
+                 calendar1.set(2019,10,9,15,0, 0);
+                 String time1 = calendar1.getTime().toString();
+                 List<String> list1 = new ArrayList<>();     //Only for testing
+                 list1.add("4545")
+                 RequestMessage requestMessage1 = new RequestMessage(1, calendar1, 1, list1, "asdfa");
+                 Meeting meeting1 = new Meeting(requestMessage1, "random", 2, 1,);
+                 String portString = Integer.valueOf(port).toString();
+                 meetingMap.put(portString, );
+                 * End of testing**/
+
+                    String meetingNumber = receivedMessage[1];
+                    if (!meetingMap.containsKey(meetingNumber)){
+                        messageToClient = "You are not invited for this meeting";
+                    }else{
+                        Meeting theMeeting = meetingMap.get(meetingNumber);
+                        if (theMeeting.getAcceptedMap().get(port) == true){
+                            messageToClient = "You have already accepted the meeting";
+                        }else{
+                            theMeeting.getAcceptedMap().put(port, true);
+                            messageToClient = "You are added to the meeting " + meetingNumber;
+                        }
+                    }
 
                     //Do something
                     break;
