@@ -172,7 +172,9 @@ public class Client {
 
     }
 
-    private void handleNotSchedules(NotScheduledMessage message) {
+    private void handleNotScheduled(NotScheduledMessage message) {
+
+
 
     }
 
@@ -275,7 +277,7 @@ public class Client {
                 case NotScheduled:
                     NotScheduledMessage notScheduledMessage = new NotScheduledMessage();
                     notScheduledMessage.deserialize(message);
-                    handleNotSchedules(notScheduledMessage);
+                    handleNotScheduled(notScheduledMessage);
                     break;
                 case Added:
                     AddedMessage addedMessage = new AddedMessage();
