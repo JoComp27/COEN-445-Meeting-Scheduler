@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientMeeting {
-    //RequestType requestType;
-    private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
-
-
-    private String state;
 
     //Common Arguments
     private Calendar calendar;
+    private String meetingType;
+    private String state;
+    private int roomNumber;
 
     //Requester Arguments
     private int requestNumber;
@@ -20,59 +18,64 @@ public class ClientMeeting {
 
     //Invitee Arguments
     private int meetingNumber;
-    private String topic;
-    private int requester;
 
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
         this.calendar = inviteMessage.getCalendar();
-        this.topic = inviteMessage.getTopic();
-        this.requester = inviteMessage.getRequester();
+        this.state = "Standby";
+        this.meetingType = "Invitee";
+
     }
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
-        this.requestMessage
+        this.requestNumber = requestMessage.getRequestNumnber();
+        this.calendar = requestMessage.getCalendar();
+        this.state = "Standby";
+        this.meetingType = "Requester";
     }
 
+    public receiveConfirmMessage(ConfirmMessage confirmMessage){
 
-    private int maxParticipants;
-    private int acceptedParticipants;
+        this.state = "Complete";
+        this.roomNumber = confirmMessage.getRoomNumber();
 
+    }
 
+    public receiveScheduledMessage(ScheduledMessage scheduledMessage){
 
-    public ClientMeeting()
+        this.state = "Complete";
+        this.meetingNumber = scheduledMessage.getMeetingNumber();
+        this.roomNumber = scheduledMessage.getRoomNumber();
+        this.acceptedMap = new HashMap<>();
 
-    public int getId() {
-        return id;
+        for(String participant : scheduledMessage.getListOfConfirmedParticipants()){
+            acceptedMap.put(participant, true);
+        }
+
+    }
+
+    public String getMeetingType() {
+        return meetingType;
     }
 
     public String getState() {
         return state;
     }
 
-    public int getMaxParticipants() {
-        return maxParticipants;
+    public Calendar getCalendar() {
+        return calendar;
     }
 
-    public int getAcceptedParticipants() {
-        return acceptedParticipants;
-    }
-
-    public void incrementAcceptedParticipants(){
-        acceptedParticipants++;
+    public int getRequestNumber() {
+        return requestNumber;
     }
 
     public HashMap<Integer, Boolean> getAcceptedMap() {
         return acceptedMap;
     }
 
-    public int getOrganizer() {
-        return organizer;
+    public int getMeetingNumber() {
+        return meetingNumber;
     }
 
-    public void setAceeptedMap(){
-        for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
-            this.acceptedMap.put(Integer.parseInt(this.requestMessage.getParticipants().get(i)), false);
-        }
-    }
 }

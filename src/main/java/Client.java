@@ -7,6 +7,8 @@ import java.lang.*;
 
 public class Client {
 
+    private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
+
     private InetAddress serverAddress;
     private InetAddress selfAddress;
 
