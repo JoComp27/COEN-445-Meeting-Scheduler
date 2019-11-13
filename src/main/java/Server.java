@@ -71,6 +71,7 @@ public class Server implements Runnable{
 
                 //Get the message from handler
                 String messageToClient = serverHandle.getMessageToClient();
+                System.out.println("Message to client1: " + serverHandle.getMessageToClient());
                 byte[] bufferSend =  messageToClient.getBytes();
                 DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
 
@@ -79,6 +80,7 @@ public class Server implements Runnable{
                 System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
                 DpSend.setSocketAddress(DpReceive.getSocketAddress());
                 //Send to client
+                System.out.println("Message to client2: " + serverHandle.getMessageToClient());
                 serverSocket.send(DpSend);
 
                 if(message.equals("Bye")){
@@ -98,7 +100,7 @@ public class Server implements Runnable{
     public class ServerHandle implements Runnable{
         String message;
         int port;
-        String messageToClient = "";
+        String messageToClient = "Initial value";
 
         public ServerHandle(String message, int port){
             this.message = message;
@@ -128,11 +130,20 @@ public class Server implements Runnable{
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
                 case Request:
-                    String time = "";
+
                     //Time should be the 3rd + 4th element in the array
-                    if(receivedMessage.length > 2) {
-                        time = receivedMessage[2] + "_" + receivedMessage[3];
-                    }
+//                    if(receivedMessage.length > 2) {
+//                        time = receivedMessage[2] + "_" + receivedMessage[3];
+//                    }
+
+                    /** Testing meeting **/
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(2019,10,9,15,0, 0);
+                    String time = calendar.getTime().toString();
+                    List<String> list = new ArrayList<>();
+                    list.add("5984");
+                    RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
+                    /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
                     //If hashmap does not already have this time scheduled, add new key
@@ -140,20 +151,16 @@ public class Server implements Runnable{
                         //Make first room taken
                         scheduleMap.put(time, new Boolean[]{true, false});
                         messageToClient = "Room is available";
+                        System.out.println("In server: " + messageToClient);
 
-
-
-
-                        /** Testing meeting **/
-                        Calendar calendar = Calendar.getInstance();
-                        List<String> list = new ArrayList<>();
-                        list.add("ASDADS");
-                        RequestMessage requestMessage = new RequestMessage(1, calendar, 5, list, "asdfa");
                         Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, port);      //Accepted participants should always initialize as 1 for organizer
-                        /** End of testing**/
+
+
+
+
 
                         //Add new RequestMessage to list of meeting
-                        //listMeeting.add(message);
+                        //listMeeting.add(meeting);
 
                         /**Writes the message in the log file.*/
                         try {
@@ -169,22 +176,36 @@ public class Server implements Runnable{
                             Boolean roomArray[] = scheduleMap.get(time);
                             roomArray[0] = true;
                             scheduleMap.put(time, roomArray);
+                            messageToClient = "Room is available";
+                            System.out.println("In server: " + messageToClient);
                         }
                         else if(!scheduleMap.get(time)[1]){
                             Boolean roomArray[] = scheduleMap.get(time);
                             roomArray[1] = true;
                             scheduleMap.put(time, roomArray);
+                            messageToClient = "Room is available";
+                            System.out.println("In server: " + messageToClient);
                         }
-                        messageToClient = "Room is available";
+                        else{
+                            messageToClient = "Room is not available at this time. Choose another time";
+                            System.out.println("In server: " + messageToClient);
+                            break;
+                        }
                     }
                     else{
                         messageToClient = "Room is not available at this time. Choose another time";
+                        System.out.println("In server: " + messageToClient);
                         break;
                     }
                     /**Put the message inside the requestMap Hashmap.
                      * Key is the IP, and stores the received message.*/
 
-
+                    for(String typeKey : scheduleMap.keySet()){
+                        String key = typeKey.toString();
+                        String value = Arrays.toString(scheduleMap.get(typeKey));
+                        System.out.println("Hashmap");
+                        System.out.println(key + ": " + value);
+                    }
 
                     if(room.size() < 2){
 
