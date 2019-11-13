@@ -13,8 +13,9 @@ import java.util.*;
 
 public class Server implements Runnable{
 
-    HashMap<String, String> requestMap;
-    HashMap<String, Boolean[]> scheduleMap;
+    HashMap<String, String> requestMap;         //String IP Address, String request message
+    HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
+    HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
 
     public Server (){
         this.requestMap = new HashMap<>();
@@ -104,7 +105,7 @@ public class Server implements Runnable{
 
         public ServerHandle(String message, int port){
             this.message = message;
-
+            this.port = port;
         }
 
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
@@ -255,6 +256,16 @@ public class Server implements Runnable{
                     //Do something
                     break;
                 case Add:
+
+                    /**receivedMessage[] -> 0 is Add, 1 Meeting Number
+                     * Take meeting number, go to meetingMap search for that key.
+                     * if exist, get the Meeting object, use method getAcceptedMap with "port".
+                     *      if port does not exist, exit and return message "not invited"
+                     *      else fetch the status of the requestor.
+                     *          if true, return "already accepted"
+                     *          else, change to "true". Return "Updated".
+                     * */
+
                     //Do something
                     break;
                 case RequesterCancel:
