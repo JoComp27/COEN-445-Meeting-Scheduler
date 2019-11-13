@@ -5,16 +5,15 @@ import requests.ScheduledMessage;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientMeeting {
 
     //Common Arguments
-    private Calendar calendar;
-    private String meetingType;
-    private String state;
-    private boolean currentAnswer;
-    private int roomNumber;
+    private Calendar calendar; // Date and time of the meeting
+    private boolean userType; // False -> Invitee ; True -> Requester
+    private boolean state; // False -> Standby ; True -> Confirmed
+    private boolean currentAnswer; // User's current reply to request
+    private int roomNumber; // Room number assigned to meeting
 
     //Requester Arguments
     private int requestNumber;
@@ -27,29 +26,29 @@ public class ClientMeeting {
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
         this.calendar = inviteMessage.getCalendar();
-        this.state = "Standby";
-        this.meetingType = "Invitee";
+        this.state = false;
+        this.userType = false;
 
     }
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
         this.requestNumber = requestMessage.getRequestNumber();
         this.calendar = requestMessage.getCalendar();
-        this.state = "Standby";
-        this.meetingType = "Requester";
+        this.state = false;
+        this.userType = true;
         this.currentAnswer = true;
     }
 
     public void receiveConfirmMessage(ConfirmMessage confirmMessage){
 
-        this.state = "Complete";
+        this.state = true;
         this.roomNumber = confirmMessage.getRoomNumber();
 
     }
 
     public void receiveScheduledMessage(ScheduledMessage scheduledMessage){
 
-        this.state = "Complete";
+        this.state = true;
         this.meetingNumber = scheduledMessage.getMeetingNumber();
         this.roomNumber = scheduledMessage.getRoomNumber();
         this.acceptedMap = new HashMap<>();
@@ -60,11 +59,11 @@ public class ClientMeeting {
 
     }
 
-    public String getMeetingType() {
-        return meetingType;
+    public boolean getUserType() {
+        return userType;
     }
 
-    public String getState() {
+    public boolean getState() {
         return state;
     }
 

@@ -143,9 +143,10 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
-                if(meetings.get(i).getState().equals("Standby")){
+                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == false){
                     meetings.get(i).receiveConfirmMessage(message);
                 }
+                return;
             }
         }
 
@@ -153,7 +154,16 @@ public class Client {
 
     private void handleServerCancel(ServerCancelMessage message) {
 
-
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
+                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == false) {
+                    System.out.println("Meeting " + message.getMeetingNumber() + " was cancelled for this reason : " + message.getReason());
+                    synchronized (meetings){
+                        meetings.remove(i);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -162,11 +172,12 @@ public class Client {
         //Check if request RQ# is part of my list and is in standby (Only Host should receive)
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
-                if(meetings.get(i).getState().equals("Standby")){
+                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == true){
                     //Change Meeting to complete and change info in meeting
                     meetings.get(i).receiveScheduledMessage(message);
 
                 }
+                return;
             }
         }
 
@@ -174,7 +185,15 @@ public class Client {
 
     private void handleNotScheduled(NotScheduledMessage message) {
 
-
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
+                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == true) {
+                    synchronized (meetings){
+                        meetings.remove(i);
+                    }
+                }
+            }
+        }
 
     }
 
