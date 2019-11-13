@@ -1,23 +1,35 @@
 package Tools;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.*;
 
 public class UdpSend {
 
-    public static void sendMessage(String message, int portNumber) throws IOException {
+    public static void sendMessage(String message, int portNumber) {
 
             // convert the String input into the byte array.
             byte buf[] = message.getBytes();
 
-            DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
+        DatagramPacket DpSend = null;
+        try {
+            DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
-            DatagramSocket dp = new DatagramSocket();
+        DatagramSocket dp = null;
+        try {
+            dp = new DatagramSocket();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 
+        try {
             dp.send(DpSend);
-            System.out.println("MESSAGE SENT");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("MESSAGE SENT");
     }
 
 }

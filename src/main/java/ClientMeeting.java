@@ -1,5 +1,9 @@
-package requests;
+import requests.ConfirmMessage;
+import requests.InviteMessage;
+import requests.RequestMessage;
+import requests.ScheduledMessage;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,6 +13,7 @@ public class ClientMeeting {
     private Calendar calendar;
     private String meetingType;
     private String state;
+    private boolean currentAnswer;
     private int roomNumber;
 
     //Requester Arguments
@@ -28,20 +33,21 @@ public class ClientMeeting {
     }
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
-        this.requestNumber = requestMessage.getRequestNumnber();
+        this.requestNumber = requestMessage.getRequestNumber();
         this.calendar = requestMessage.getCalendar();
         this.state = "Standby";
         this.meetingType = "Requester";
+        this.currentAnswer = true;
     }
 
-    public receiveConfirmMessage(ConfirmMessage confirmMessage){
+    public void receiveConfirmMessage(ConfirmMessage confirmMessage){
 
         this.state = "Complete";
         this.roomNumber = confirmMessage.getRoomNumber();
 
     }
 
-    public receiveScheduledMessage(ScheduledMessage scheduledMessage){
+    public void receiveScheduledMessage(ScheduledMessage scheduledMessage){
 
         this.state = "Complete";
         this.meetingNumber = scheduledMessage.getMeetingNumber();
@@ -49,7 +55,7 @@ public class ClientMeeting {
         this.acceptedMap = new HashMap<>();
 
         for(String participant : scheduledMessage.getListOfConfirmedParticipants()){
-            acceptedMap.put(participant, true);
+            acceptedMap.put(Integer.parseInt(participant), true);
         }
 
     }
@@ -78,4 +84,15 @@ public class ClientMeeting {
         return meetingNumber;
     }
 
+    public boolean isCurrentAnswer() {
+        return currentAnswer;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setCurrentAnswer(boolean currentAnswer) {
+        this.currentAnswer = currentAnswer;
+    }
 }

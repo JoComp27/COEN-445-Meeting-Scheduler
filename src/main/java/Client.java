@@ -1,25 +1,32 @@
+import Tools.CalendarUtil;
+import Tools.UdpSend;
 import requests.*;
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.io.*;
 import java.lang.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Client {
 
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
 
     private InetAddress serverAddress;
-    private InetAddress selfAddress;
-
     private DatagramSocket ds;
 
-    private int requestNumber;
+    private String username;
+    private ArrayList<ClientMeeting> meetings;
 
-    public Client(String serverAddress) throws UnknownHostException {
-        this.requestNumber = 0;
+    private HashMap<String, Boolean> availability;
+
+    public Client(String serverAddress, String username) throws UnknownHostException {
         this.serverAddress = InetAddress.getByName(serverAddress);
+        this.username = username;
 
+        meetings = new ArrayList<>();
     }
 
     public static void main(String args[]) throws IOException {
@@ -28,8 +35,27 @@ public class Client {
             System.out.println("Server IP is missing");
             return;
         }
-        Client client = new Client(args[0]);
+
+        Scanner sc = new Scanner(System.in);
+        String username = sc.nextLine();
+
+        Client client = new Client(args[0], username);
+
+        //Checking if previous
+        File saveFile = new File("clientSave.txt");
+
+        if(saveFile.exists()){
+            client.restoreFromSave(saveFile, username);
+        }
+
         client.run();
+
+    }
+
+    private void restoreFromSave(File saveFile, String username) {
+
+
+
     }
 
     private void sendMessageToServer(String message) throws IOException {
@@ -75,27 +101,53 @@ public class Client {
 
     }
 
-    private void handleDenied(DeniedMessage message) {
-    //Room Unavailable Message
+    private void handleDenied(DeniedMessage message) {  //Room Unavailable Message
 
-        //Check if request RQ# exists inside its list of request
-        //and is the owner
-
-        //If true, Delete the request that was just sent to the server
+        //Check if request RQ# exists inside its list of request and is the owner
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
+                //If true, Delete the request that was just sent to the server
+                meetings.remove(i);
+                return;
+            }
+        }
 
         //If false, Server sent incorrect request
+        System.out.println("Server sent denied for a non-existant request");
 
     }
 
     private void handleInvite(InviteMessage message) {
 
         //Add the new request into your list and make it a standby status meeting
+        ClientMeeting newMeeting = new ClientMeeting(message);
 
-        //Add option to accept or reject the newly added
+        if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){
+            newMeeting.setCurrentAnswer(true);
+            meetings.add(newMeeting);
+
+            //Send Accept
+            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+
+        } else {
+            newMeeting.setCurrentAnswer(false);
+            meetings.add(newMeeting);
+
+            //Send Reject
+            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+        }
 
     }
 
     private void handleConfirm(ConfirmMessage message) {
+
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
+                if(meetings.get(i).getState().equals("Standby")){
+                    meetings.get(i).receiveConfirmMessage(message);
+                }
+            }
+        }
 
     }
 
@@ -107,9 +159,16 @@ public class Client {
 
     private void handleScheduled(ScheduledMessage message) {
 
-        //Check if request RQ# and MT# is part of my list and is in standby (Only Host should receive)
+        //Check if request RQ# is part of my list and is in standby (Only Host should receive)
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
+                if(meetings.get(i).getState().equals("Standby")){
+                    //Change Meeting to complete and change info in meeting
+                    meetings.get(i).receiveScheduledMessage(message);
 
-        //Will update the request with the members with the list of members that have have accepted the invite
+                }
+            }
+        }
 
     }
 
@@ -122,6 +181,10 @@ public class Client {
     }
 
     private void handleRoomChange(RoomChangeMessage message) {
+
+    }
+
+    private void handleServerWidthdraw(ServerWidthdrawMessage message){
 
     }
 
@@ -223,6 +286,11 @@ public class Client {
                     RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
                     roomChangeMessage.deserialize(message);
                     handleRoomChange(roomChangeMessage);
+                    break;
+                case ServerWidthdraw:
+                    ServerWidthdrawMessage serverWidthdrawMessage = new ServerWidthdrawMessage();
+                    serverWidthdrawMessage.deserialize(message);
+                    handleServerWidthdraw(serverWidthdrawMessage);
                     break;
 
             }
