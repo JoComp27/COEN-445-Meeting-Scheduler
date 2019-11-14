@@ -49,7 +49,9 @@ public class RequestMessage extends Message {
 
         stringMessage += getRequestType().ordinal() + "_"; //Message ID
         stringMessage += requestNumber + "_";
+
         stringMessage += CalendarUtil.calendarToString(calendar) + "_";  // DATE & TIME
+
         stringMessage += minimum + "_";  // MINIMUM
 
         for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
