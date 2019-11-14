@@ -3,9 +3,7 @@ import Tools.UdpSend;
 import requests.*;
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 import java.lang.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -101,13 +99,93 @@ public class Client {
 
     }
 
+    private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
+
+        //Create a RequestMessage
+        RequestMessage requestMessage = new RequestMessage(countID.incrementAndGet(), calendar, minimum, participants, topic);
+
+        //Add the sent request to my list
+        synchronized (meetings){
+            meetings.add(new ClientMeeting(requestMessage));
+        }
+
+        synchronized (availability){
+            availability.put(CalendarUtil.calendarToString(calendar), true);
+        }
+
+        //Send the RequestMessage to the server
+        UdpSend.sendMessage(requestMessage.serialize(), 9997);
+
+    }
+
+    private void sendAccept(int meetingNumber){
+
+        for(int i = 0 ; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
+                synchronized (meetings){
+                    meetings.get(i).setCurrentAnswer(true);
+                }
+
+                AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
+                UdpSend.sendMessage(acceptMessage.serialize(), 9997);
+
+            }
+        }
+
+    }
+
+    private void sendReject(int meetingNumber){
+
+        for(int i = 0 ; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
+                synchronized (meetings){
+                    meetings.get(i).setCurrentAnswer(false);
+                }
+
+                RejectMessage rejectMessage = new RejectMessage(meetingNumber);
+                UdpSend.sendMessage(rejectMessage.serialize(), 9997);
+            }
+        }
+
+    }
+
+    private void sendWithdraw(int meetingNumber){
+
+        for(int i = 0 ; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == true
+                    && meetings.get(i).getUserType() == false){
+
+                synchronized (meetings){
+                    meetings.get(i).setCurrentAnswer(false);
+                }
+
+                WithdrawMessage withdrawMessage = new WithdrawMessage(meetingNumber);
+                UdpSend.sendMessage(withdrawMessage.serialize(), 9997);
+
+            }
+        }
+
+    }
+
+    private void sendAdd(){
+
+
+
+    }
+
+    private void sendRequesterCancel(){
+
+    }
+
     private void handleDenied(DeniedMessage message) {  //Room Unavailable Message
 
         //Check if request RQ# exists inside its list of request and is the owner
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
                 //If true, Delete the request that was just sent to the server
-                meetings.remove(i);
+                synchronized (meetings) {
+                    meetings.remove(i);
+                }
                 return;
             }
         }
@@ -124,14 +202,18 @@ public class Client {
 
         if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){
             newMeeting.setCurrentAnswer(true);
-            meetings.add(newMeeting);
+            synchronized (meetings) {
+                meetings.add(newMeeting);
+            }
 
             //Send Accept
             UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
 
         } else {
             newMeeting.setCurrentAnswer(false);
-            meetings.add(newMeeting);
+            synchronized (meetings) {
+                meetings.add(newMeeting);
+            }
 
             //Send Reject
             UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
@@ -144,7 +226,9 @@ public class Client {
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
                 if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == false){
-                    meetings.get(i).receiveConfirmMessage(message);
+                    synchronized (meetings) {
+                        meetings.get(i).receiveConfirmMessage(message);
+                    }
                 }
                 return;
             }
@@ -203,7 +287,7 @@ public class Client {
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
                 if(meetings.get(i).getState() == true && meetings.get(i).getUserType() == true){
                     synchronized (meetings){
-                        
+                        meetings.get(i).getAcceptedMap().put(Integer.parseInt(message.getSocketAddress()), true);
                     }
                 }
             }
@@ -212,11 +296,27 @@ public class Client {
     }
 
     private void handleRoomChange(RoomChangeMessage message) {
-
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
+                if(meetings.get(i).getState() == true){
+                    synchronized (meetings){
+                        meetings.get(i).setRoomNumber(message.getNewRoomNumber());
+                    }
+                }
+            }
+        }
     }
 
     private void handleServerWidthdraw(ServerWidthdrawMessage message){
-
+        for(int i = 0; i < meetings.size(); i++) {
+            if (meetings.get(i).getMeetingNumber() == message.getMeetingNumber()) {
+                if (meetings.get(i).getState() == true && meetings.get(i).getUserType() == true) {
+                    synchronized (meetings) {
+                        meetings.get(i).getAcceptedMap().remove(Integer.parseInt(message.getIpAddress()));
+                    }
+                }
+            }
+        }
     }
 
     public class ClientListen implements Runnable {

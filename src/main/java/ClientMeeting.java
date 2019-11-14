@@ -94,4 +94,8 @@ public class ClientMeeting {
     public void setCurrentAnswer(boolean currentAnswer) {
         this.currentAnswer = currentAnswer;
     }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
 }
