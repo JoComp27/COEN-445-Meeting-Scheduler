@@ -4,10 +4,18 @@ public class ScheduledMessage extends Message{
 
     Integer requestNumber;
     Integer meetingNumber;
-    int roomNumber;
+    Integer roomNumber;
     String[] listOfConfirmedParticipants;
 
-    public ScheduledMessage(Integer requestNumber, Integer meetingNumber, int roomNumber, String[] listOfConfirmedParticipants) {
+    public ScheduledMessage(){
+        super(RequestType.Scheduled);
+        this.requestNumber = null;
+        this.meetingNumber = null;
+        this.roomNumber = null;
+        this.listOfConfirmedParticipants = null;
+    }
+
+    public ScheduledMessage(Integer requestNumber, Integer meetingNumber, Integer roomNumber, String[] listOfConfirmedParticipants) {
         super(RequestType.Scheduled);
         this.requestNumber = requestNumber;
         this.meetingNumber = meetingNumber;

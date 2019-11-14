@@ -13,11 +13,10 @@ import java.util.*;
 
 public class Server implements Runnable{
 
-    HashMap<String, String> requestMap;
-    HashMap<String, Boolean[]> scheduleMap;
+    private HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
+    private HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
 
     public Server (){
-        this.requestMap = new HashMap<>();
         this.scheduleMap = new HashMap<>();
     }
 
@@ -67,7 +66,9 @@ public class Server implements Runnable{
                 int port = DpReceive.getPort();
                 /**Creating a new thread of each new request*/
                 ServerHandle serverHandle = new ServerHandle(message, port);
-                new Thread(serverHandle).start();
+                Thread threadServerHandle = new Thread(serverHandle);
+                threadServerHandle.start();
+                threadServerHandle.join();
 
                 //Get the message from handler
                 String messageToClient = serverHandle.getMessageToClient();
@@ -93,6 +94,8 @@ public class Server implements Runnable{
             e.printStackTrace();
         }catch(IOException e){
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
@@ -104,7 +107,7 @@ public class Server implements Runnable{
 
         public ServerHandle(String message, int port){
             this.message = message;
-
+            this.port = port;
         }
 
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
@@ -142,7 +145,13 @@ public class Server implements Runnable{
                     String time = calendar.getTime().toString();
                     List<String> list = new ArrayList<>();
                     list.add("5984");
+                    list.add("3434");
                     RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
+                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, meetingMap, 1, 3434);
+//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(0)), false);
+//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(1)), true);
+//                    meetingMap.put(list.get(0), aMeeting);
+//                    meetingMap.put(list.get(1), aMeeting);
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
@@ -153,7 +162,7 @@ public class Server implements Runnable{
                         messageToClient = "Room is available";
                         System.out.println("In server: " + messageToClient);
 
-                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, port);      //Accepted participants should always initialize as 1 for organizer
+                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, 1, port);      //Accepted participants should always initialize as 1 for organizer
 
 
 
@@ -255,6 +264,41 @@ public class Server implements Runnable{
                     //Do something
                     break;
                 case Add:
+
+                    /**receivedMessage[] -> 0 is Add, 1 Meeting Number
+                     * Take meeting number, go to meetingMap search for that key.
+                     * if exist, get the Meeting object, use method getAcceptedMap with "port".
+                     *      if port does not exist, exit and return message "not invited"
+                     *      else fetch the status of the requestor.
+                     *          if true, return "already accepted"
+                     *          else, change to "true". Return "Updated".
+                     * */
+
+                    /** Testing meeting *
+                 Calendar calendar1 = Calendar.getInstance();
+                 calendar1.set(2019,10,9,15,0, 0);
+                 String time1 = calendar1.getTime().toString();
+                 List<String> list1 = new ArrayList<>();     //Only for testing
+                 list1.add("4545")
+                 RequestMessage requestMessage1 = new RequestMessage(1, calendar1, 1, list1, "asdfa");
+                 Meeting meeting1 = new Meeting(requestMessage1, "random", 2, 1,);
+                 String portString = Integer.valueOf(port).toString();
+                 meetingMap.put(portString, );
+                 * End of testing**/
+
+                    String meetingNumber = receivedMessage[1];
+                    if (!meetingMap.containsKey(meetingNumber)){
+                        messageToClient = "You are not invited for this meeting";
+                    }else{
+                        Meeting theMeeting = meetingMap.get(meetingNumber);
+                        if (theMeeting.getAcceptedMap().get(port) == true){
+                            messageToClient = "You have already accepted the meeting";
+                        }else{
+                            theMeeting.getAcceptedMap().put(port, true);
+                            messageToClient = "You are added to the meeting " + meetingNumber;
+                        }
+                    }
+
                     //Do something
                     break;
                 case RequesterCancel:
