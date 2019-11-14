@@ -13,12 +13,10 @@ import java.util.*;
 
 public class Server implements Runnable{
 
-    HashMap<String, String> requestMap;         //String IP Address, String request message
-    HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
-    HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
+    private HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
+    private HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
 
     public Server (){
-        this.requestMap = new HashMap<>();
         this.scheduleMap = new HashMap<>();
     }
 
@@ -68,7 +66,9 @@ public class Server implements Runnable{
                 int port = DpReceive.getPort();
                 /**Creating a new thread of each new request*/
                 ServerHandle serverHandle = new ServerHandle(message, port);
-                new Thread(serverHandle).start();
+                Thread threadServerHandle = new Thread(serverHandle);
+                threadServerHandle.start();
+                threadServerHandle.join();
 
                 //Get the message from handler
                 String messageToClient = serverHandle.getMessageToClient();
@@ -93,6 +93,8 @@ public class Server implements Runnable{
         }catch (SocketException e){
             e.printStackTrace();
         }catch(IOException e){
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -145,11 +147,11 @@ public class Server implements Runnable{
                     list.add("5984");
                     list.add("3434");
                     RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
-                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, meetingMap, 3434);
-                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(0)), false);
-                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(1)), true);
-                    meetingMap.put(list.get(0), aMeeting);
-                    meetingMap.put(list.get(1), aMeeting;
+                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, meetingMap, 1, 3434);
+//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(0)), false);
+//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(1)), true);
+//                    meetingMap.put(list.get(0), aMeeting);
+//                    meetingMap.put(list.get(1), aMeeting);
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
@@ -160,7 +162,7 @@ public class Server implements Runnable{
                         messageToClient = "Room is available";
                         System.out.println("In server: " + messageToClient);
 
-                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, port);      //Accepted participants should always initialize as 1 for organizer
+                        Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, 1, port);      //Accepted participants should always initialize as 1 for organizer
 
 
 

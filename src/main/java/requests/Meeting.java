@@ -13,15 +13,17 @@ public class Meeting {
     private int acceptedParticipants;
     //Key=port, bool=accepted
     private HashMap<Integer, Boolean> acceptedMap;
+    private int roomNumber;
     private int organizer;
 
-    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int organizer) {
+    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
         this.state = state;
         this.maxParticipants = maxParticipants;
         this.acceptedParticipants = acceptedParticipants;
         this.acceptedMap = acceptedMap;
+        this.roomNumber = roomNumber;
         this.organizer = organizer;
     }
 
@@ -52,6 +54,10 @@ public class Meeting {
 
     public HashMap<Integer, Boolean> getAcceptedMap() {
         return acceptedMap;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
     public int getOrganizer() {
