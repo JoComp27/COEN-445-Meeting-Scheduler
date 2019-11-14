@@ -199,6 +199,16 @@ public class Client {
 
     private void handleAdded(AddedMessage message) {
 
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
+                if(meetings.get(i).getState() == true && meetings.get(i).getUserType() == true){
+                    synchronized (meetings){
+                        
+                    }
+                }
+            }
+        }
+
     }
 
     private void handleRoomChange(RoomChangeMessage message) {
