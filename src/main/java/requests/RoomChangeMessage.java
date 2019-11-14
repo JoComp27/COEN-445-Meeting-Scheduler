@@ -5,9 +5,9 @@ public class RoomChangeMessage extends Message {
     private Integer meetingNumber;
     private int newRoomNumber;
 
-    public RoomChangeMessage(){
-
-    }
+//    public RoomChangeMessage(){
+//
+//    }
 
     public RoomChangeMessage(Integer meetingNumber, int newRoomNumber) {
         super(RequestType.RoomChange);

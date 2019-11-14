@@ -159,7 +159,7 @@ public class Server implements Runnable{
                     if(!scheduleMap.containsKey(time)){
                         //Make first room taken
                         scheduleMap.put(time, new Boolean[]{true, false});
-                        messageToClient = "Room is available";
+                        messageToClient = "Room 1 is available";
                         System.out.println("In server: " + messageToClient);
 
                         Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, 1, port);      //Accepted participants should always initialize as 1 for organizer
@@ -185,14 +185,14 @@ public class Server implements Runnable{
                             Boolean roomArray[] = scheduleMap.get(time);
                             roomArray[0] = true;
                             scheduleMap.put(time, roomArray);
-                            messageToClient = "Room is available";
+                            messageToClient = "Room 1 is available";
                             System.out.println("In server: " + messageToClient);
                         }
                         else if(!scheduleMap.get(time)[1]){
                             Boolean roomArray[] = scheduleMap.get(time);
                             roomArray[1] = true;
                             scheduleMap.put(time, roomArray);
-                            messageToClient = "Room is available";
+                            messageToClient = "Room 2 is available";
                             System.out.println("In server: " + messageToClient);
                         }
                         else{
@@ -216,49 +216,58 @@ public class Server implements Runnable{
                         System.out.println(key + ": " + value);
                     }
 
-                    if(room.size() < 2){
-
-                    }
-
-                    //scheduleMap.put(receivedMessage[2] + "_" + receivedMessage[3],room);
-
 
                     break;
                 case Accept:
-                    Meeting meeting = null;
+                    Meeting acceptMeeting = null;
 
                     //Go through all existing meetings
-                    for(int i = 0; i < listMeeting.size(); i++) {
+                    for(String typeKey : meetingMap.keySet()) {
                         //Go through all the participants in the existing meetings
-                        for(int j = 0; j < listMeeting.get(i).getRequestMessage().getParticipants().size(); j++) {
+                        for (int j = 0; j < meetingMap.size(); j++) {
                             //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
-                            if (listMeeting.get(i).getRequestMessage().getParticipants().get(j) == Integer.toString(port)){
-                                meeting = listMeeting.get(i);
+                            if (meetingMap.get(typeKey).getRequestMessage().getParticipants().get(j) == Integer.toString(port)) {
+                                acceptMeeting = meetingMap.get(typeKey);
                             }
                             else{
                                 messageToClient = "You are not in a scheduled meeting";
+                                break;
                             }
                         }
                     }
-//                    //Go through the request and the valid participants
-//                    for(int i = 0; i < meeting.getRequestMessage().getParticipants().size(); i++) {
-//                        //If valid increment the accepted count
-//                        if (meeting.getRequestMessage().getParticipants().get(i) == Integer.toString(port)) {
-//                            meeting.incrementAcceptedParticipants();
-//                        }
-//                    }
+
                     //Check if client is in the meeting AND if they already accepted the meeting
-                    if(meeting.getAcceptedMap().containsKey(port) && meeting.getAcceptedMap().get(port) == false){
+                    if(acceptMeeting.getAcceptedMap().containsKey(port) && acceptMeeting.getAcceptedMap().get(port) == false){
                         //Increment accepted count
-                        meeting.incrementAcceptedParticipants();
+                        acceptMeeting.incrementAcceptedParticipants();
                         //Make accepted boolean true
-                        meeting.getAcceptedMap().replace(port, true);
+                        acceptMeeting.getAcceptedMap().replace(port, true);
                         messageToClient = "You have been added to the scheduled meeting";
                     }
 
                     break;
                 case Reject:
-                    //Do something
+                    Meeting rejectMeeting = null;
+
+                    //Go through all existing meetings
+                    for(String typeKey : meetingMap.keySet()) {
+                        //Go through all the participants in the existing meetings
+                        for (int j = 0; j < meetingMap.size(); j++) {
+                            //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
+                            if (meetingMap.get(typeKey).getRequestMessage().getParticipants().get(j) == Integer.toString(port)) {
+                                rejectMeeting = meetingMap.get(typeKey);
+                            }
+                            else{
+                                messageToClient = "You are not in a scheduled meeting";
+                                break;
+                            }
+                        }
+                    }
+
+                    //Check if client is in the meeting AND if they already accepted the meeting
+                    if(rejectMeeting.getAcceptedMap().containsKey(port) && rejectMeeting.getAcceptedMap().get(port) == false){
+                        messageToClient = "You have rejected the meeting";
+                    }
                     break;
                 case Withdraw:
                     //Do something
