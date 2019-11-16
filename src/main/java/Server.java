@@ -147,11 +147,12 @@ public class Server implements Runnable{
                     list.add("5984");
                     list.add("3434");
                     RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
-                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, meetingMap, 1, 3434);
-//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(0)), false);
-//                    aMeeting.getAcceptedMap().put(Integer.valueOf(list.get(1)), true);
-//                    meetingMap.put(list.get(0), aMeeting);
-//                    meetingMap.put(list.get(1), aMeeting);
+                    HashMap<Integer, Boolean> getAcceptedMap = new HashMap<>();
+                    getAcceptedMap.put(Integer.valueOf(list.get(0)), false);
+                    getAcceptedMap.put(Integer.valueOf(list.get(1)), true);
+                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, getAcceptedMap, 1, 3434);
+                    meetingMap.put(Integer.valueOf(aMeeting.getId()).toString(), aMeeting);
+                    meetingMap.put(Integer.valueOf(aMeeting.getId()).toString(), aMeeting);
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 

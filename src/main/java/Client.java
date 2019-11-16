@@ -304,9 +304,9 @@ public class Client {
                     handleAdded(addedMessage);
                     break;
                 case RoomChange:
-                    RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
+/*                    RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
                     roomChangeMessage.deserialize(message);
-                    handleRoomChange(roomChangeMessage);
+                    handleRoomChange(roomChangeMessage);*/
                     break;
                 case ServerWidthdraw:
                     ServerWidthdrawMessage serverWidthdrawMessage = new ServerWidthdrawMessage();
