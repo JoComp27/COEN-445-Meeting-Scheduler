@@ -14,6 +14,15 @@ public class RequestMessage extends Message {
     protected List<String> participants;
     protected String topic;
 
+    public RequestMessage() {
+        super(RequestType.Request);
+        this.requestNumber = null;
+        this.calendar = null;
+        this.minimum = 0;
+        this.participants = null;
+        this.topic = null;
+    }
+
     public RequestMessage(Integer requestNumber, Calendar calendar, int minimum, List<String> participants, String topic) {
         super(RequestType.Request);
         this.requestNumber = requestNumber;
@@ -77,7 +86,6 @@ public class RequestMessage extends Message {
         for(String user : users){
             participants.add(user);
         }
-
         this.requestNumber = Integer.parseInt(subMessages[1]);
         this.calendar = c;
         this.minimum = Integer.parseInt(subMessages[3]);
