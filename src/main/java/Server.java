@@ -18,6 +18,7 @@ public class Server implements Runnable{
 
     public Server (){
         this.scheduleMap = new HashMap<>();
+        this.meetingMap = new HashMap<>();
     }
 
     public static void main(String[] args){
@@ -152,7 +153,7 @@ public class Server implements Runnable{
                     getAcceptedMap.put(Integer.valueOf(list.get(1)), true);
                     Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, getAcceptedMap, 1, 3434);
                     meetingMap.put(Integer.valueOf(aMeeting.getId()).toString(), aMeeting);
-                    meetingMap.put(Integer.valueOf(aMeeting.getId()).toString(), aMeeting);
+
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
@@ -160,7 +161,7 @@ public class Server implements Runnable{
                     if(!scheduleMap.containsKey(time)){
                         //Make first room taken
                         scheduleMap.put(time, new Boolean[]{true, false});
-                        messageToClient = "Room is available";
+                        messageToClient = "Room is available. Your meeting number is " + aMeeting.getId();
                         System.out.println("In server: " + messageToClient);
 
                         Meeting meeting = new Meeting(requestMessage, "First", 10, 1, null, 1, port);      //Accepted participants should always initialize as 1 for organizer
@@ -270,6 +271,7 @@ public class Server implements Runnable{
                      * Take meeting number, go to meetingMap search for that key.
                      * if exist, get the Meeting object, use method getAcceptedMap with "port".
                      *      if port does not exist, exit and return message "not invited"
+                     *      else if check if the port number exists in getAcceptedMap.
                      *      else fetch the status of the requestor.
                      *          if true, return "already accepted"
                      *          else, change to "true". Return "Updated".
@@ -288,9 +290,15 @@ public class Server implements Runnable{
                  * End of testing**/
 
                     String meetingNumber = receivedMessage[1];
+                    System.out.println(meetingNumber);
+                    /**If your meeting number does not exist*/
                     if (!meetingMap.containsKey(meetingNumber)){
-                        messageToClient = "You are not invited for this meeting";
-                    }else{
+                        messageToClient = "The meeting number you provided does not exist";
+                    }
+                    else if(!meetingMap.get(meetingNumber).getAcceptedMap().containsKey(port)){
+                        messageToClient = "You are not invited in the meeting.";
+                    }
+                    else{
                         Meeting theMeeting = meetingMap.get(meetingNumber);
                         if (theMeeting.getAcceptedMap().get(port) == true){
                             messageToClient = "You have already accepted the meeting";
