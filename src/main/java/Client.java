@@ -1,4 +1,5 @@
 import Tools.CalendarUtil;
+import Tools.FileReaderWriter;
 import Tools.UdpSend;
 import requests.*;
 
@@ -20,8 +21,8 @@ public class Client {
 
     private HashMap<String, Boolean> availability;
 
-    public Client(String serverAddress, String username) throws UnknownHostException {
-        this.serverAddress = InetAddress.getByName(serverAddress);
+    public Client(String username) throws UnknownHostException {
+        this.serverAddress = InetAddress.getLocalHost();
         this.username = username;
 
         meetings = new ArrayList<>();
@@ -29,20 +30,18 @@ public class Client {
 
     public static void main(String args[]) throws IOException {
 
-        if (args.length == 0) {
-            System.out.println("Server IP is missing");
-            return;
-        }
-
         Scanner sc = new Scanner(System.in);
         String username = sc.nextLine();
 
-        Client client = new Client(args[0], username);
+        Client client = new Client(username);
 
         //Checking if previous
         File saveFile = new File("clientSave.txt");
 
         if(saveFile.exists()){
+
+            //Add CLI to check if user wants to restore user or not.
+
             client.restoreFromSave(saveFile, username);
         }
 
@@ -89,10 +88,11 @@ public class Client {
 //        //Create thread to listen to messages
 //        new Thread(new ClientListen(serverAddress)).start();
 //
-//        while(true){
-//            // INSERT UI FOR WHAT USER WANTS TO DO
+//        new Thread(new ClientSave(username)).start();
 //
-//            //SENDING A REQUEST MESSAGE
+//        while(true){
+//          // INSERT CLI FOR CLIENT
+//
 //        }
 //
 //        //
@@ -115,6 +115,10 @@ public class Client {
 
         //Send the RequestMessage to the server
         UdpSend.sendMessage(requestMessage.serialize(), 9997);
+
+    }
+
+    private String getClientState() {
 
     }
 
@@ -167,13 +171,37 @@ public class Client {
 
     }
 
-    private void sendAdd(){
+    private void sendAdd(int meetingNumber){
 
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetingNumber == meetings.get(i).getMeetingNumber()){
+                if(meetings.get(i).getUserType() == false) {
+                    meetings.get(i).setCurrentAnswer(true);
 
+                    AddMessage addMessage = new AddMessage(meetingNumber);
+                    UdpSend.sendMessage(addMessage.serialize(), 9997);
+
+                }
+                return;
+            }
+        }
 
     }
 
-    private void sendRequesterCancel(){
+    private void sendRequesterCancel(int meetingNumber){
+
+        for(int i = 0; i < meetings.size(); i++){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber){
+                if(meetings.get(i).getUserType() == true && meetings.get(i).getState() == true){
+
+                    RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
+                    UdpSend.sendMessage(requesterCancelMessage.serialize(), 9997);
+
+                }
+
+                return;
+            }
+        }
 
     }
 
@@ -424,6 +452,26 @@ public class Client {
                     handleServerWidthdraw(serverWidthdrawMessage);
                     break;
 
+            }
+
+        }
+
+    }
+
+    public class ClientSave implements Runnable{
+
+        String username;
+
+        public ClientSave(String username){
+            this.username = username;
+        }
+
+        @Override
+        public void run() {
+
+            while(true){
+                for(int i = 0; i < 10000; i++){}
+                FileReaderWriter.WriteFile("saveFile_" + username, getClientState(), false);
             }
 
         }
