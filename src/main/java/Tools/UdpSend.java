@@ -5,7 +5,7 @@ import java.net.*;
 
 public class UdpSend {
 
-    public static void sendMessage(String message, int portNumber) {
+    public static void sendMessage(String message, SocketAddress socketAddress) {
 
             // convert the String input into the byte array.
             byte buf[] = message.getBytes();
@@ -13,6 +13,7 @@ public class UdpSend {
         DatagramPacket DpSend = null;
         try {
             DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
+            DpSend.setSocketAddress(socketAddress);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
