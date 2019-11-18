@@ -1,8 +1,6 @@
+import Tools.CalendarUtil;
 import Tools.FileReaderWriter;
-import requests.Meeting;
-import requests.Message;
-import requests.RequestMessage;
-import requests.RequestType;
+import requests.*;
 
 import java.lang.reflect.Array;
 import java.net.*;
@@ -144,23 +142,27 @@ public class Server implements Runnable{
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(2019,10,9,15,0, 0);
                     String time = calendar.getTime().toString();
+                    System.out.println(time);
                     List<String> list = new ArrayList<>();
                     list.add("5984");
-                    list.add("3434");
+                    list.add(Integer.valueOf(port).toString());
                     RequestMessage requestMessage = new RequestMessage(1, calendar, 1, list, "asdfa");
                     HashMap<Integer, Boolean> getAcceptedMap = new HashMap<>();
                     getAcceptedMap.put(Integer.valueOf(list.get(0)), false);
                     getAcceptedMap.put(Integer.valueOf(list.get(1)), true);
-                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, getAcceptedMap, 1, 3434);
+                    Meeting aMeeting = new Meeting(requestMessage, "state", 1,1, getAcceptedMap, 1, port);
                     meetingMap.put(Integer.valueOf(aMeeting.getId()).toString(), aMeeting);
-
                     /** End of testing**/
                     //Message theMessage = new RequestMessage(message);
 
                     //If hashmap does not already have this time scheduled, add new key
                     if(!scheduleMap.containsKey(time)){
                         //Make first room taken
-                        scheduleMap.put(time, new Boolean[]{true, false});
+                        /**NEED TO STORE theTime BECAUSE THE FORMAT OF time AND theTime is different.
+                         * Format of calendar is different from the format saved inside requestMessage.getCalendar*/
+                        String theTime = CalendarUtil.calendarToString(requestMessage.getCalendar());
+                        System.out.println(theTime);
+                        scheduleMap.put(theTime, new Boolean[]{true, false});
                         messageToClient = "Room is available. Your meeting number is " + aMeeting.getId();
                         System.out.println("In server: " + messageToClient);
 
@@ -277,18 +279,6 @@ public class Server implements Runnable{
                      *          else, change to "true". Return "Updated".
                      * */
 
-                    /** Testing meeting *
-                 Calendar calendar1 = Calendar.getInstance();
-                 calendar1.set(2019,10,9,15,0, 0);
-                 String time1 = calendar1.getTime().toString();
-                 List<String> list1 = new ArrayList<>();     //Only for testing
-                 list1.add("4545")
-                 RequestMessage requestMessage1 = new RequestMessage(1, calendar1, 1, list1, "asdfa");
-                 Meeting meeting1 = new Meeting(requestMessage1, "random", 2, 1,);
-                 String portString = Integer.valueOf(port).toString();
-                 meetingMap.put(portString, );
-                 * End of testing**/
-
                     String meetingNumber = receivedMessage[1];
                     System.out.println(meetingNumber);
                     /**If your meeting number does not exist*/
@@ -311,7 +301,104 @@ public class Server implements Runnable{
                     //Do something
                     break;
                 case RequesterCancel:
-                    //Do something
+
+                    /**receivedMessage[] -> 0 is Cancel (or RequesterCancel in this case), 1 Meeting Number
+                     * if(meeting number exist)
+                     *      Get the meeting connected the meeting number.
+                     *      if(port of received message == meeting.getOrganizer())
+                     *          String date = meeting.getRequestMessage[2]
+                     *          String roomNumber = meeting.getRoomNumber
+                     *          scheduleMap(date, roomNumber) -> Change room number boolean into False.
+                     *          meetingMap -> delete meeting with specified meeting number (key included)
+                     *          return Cancel message to all clients.
+                     *
+                     *      else
+                     *          Not requestor, cannot cancel meeting
+                     * else
+                     *      Meeting does not exist*/
+
+
+                    String mNumber = receivedMessage[1];
+                    System.out.println("Meeting number " + mNumber);
+                    System.out.println("Meeting Map: " + meetingMap);
+                    if(meetingMap.containsKey(mNumber)){
+                        Meeting theMeeting = meetingMap.get(mNumber);
+                        System.out.println(theMeeting.getRoomNumber());
+                        if(port == theMeeting.getOrganizer()){
+                            String date = CalendarUtil.calendarToString(theMeeting.getRequestMessage().getCalendar());
+                            System.out.println(date);
+                            int roomNumber = theMeeting.getRoomNumber();
+                            Boolean[] rooms = scheduleMap.get(date);
+                            System.out.println("Boolean Rooms: " + rooms);
+
+                            /**NEED TO SEND MESSAGE TO ALL INVITED PARTICIPANTS. SENDING THE SAME
+                             * MESSAGE TO DIFFERENT PORT NUMBER.
+                             *
+                             * Create array, store all port number getAcceptedMap.
+                             * Loop through the array
+                             *      Create ServerCancelMessage object to send message
+                             *      Call the serialize function to send.
+                             * */
+
+                            List<Integer> participants = new ArrayList<>();
+
+                            if(roomNumber == 1){
+                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
+
+                                Set<Integer> portNumber = theMeeting.getAcceptedMap().keySet();
+                                for (Integer port : portNumber){
+                                    participants.add(port);
+                                }
+                                for (int i = 0; i < participants.size(); i++){
+                                    System.out.println(participants.get(i));
+                                }
+
+                                /**Loop through the save ports and send message to them*/
+
+                                for (int i = 0; i < participants.size(); i++){
+                                    ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+                                }
+
+                                rooms[roomNumber] = false;
+                                scheduleMap.replace(date, rooms);
+                                meetingMap.remove(mNumber);
+
+                            }
+                            else if(roomNumber == 2){
+                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
+
+                                Set<Integer> portNumber = theMeeting.getAcceptedMap().keySet();
+                                for (Integer port : portNumber){
+                                    participants.add(port);
+                                }
+                                for (int i = 0; i < participants.size(); i++){
+                                    System.out.println(participants.get(i));
+                                }
+
+                                /**Loop through the save ports and send message to them*/
+
+                                for (int i = 0; i < participants.size(); i++){
+                                    ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+                                }
+
+                                rooms[roomNumber] = false;
+                                scheduleMap.replace(date, rooms);
+                                meetingMap.remove(mNumber);
+
+                            }
+                            System.out.println("meetingMap: " + meetingMap);
+                            System.out.println("scheduleMap" + scheduleMap);
+
+
+                        }
+                        else{
+                            messageToClient = "Not requestor, cannot cancel meeting";
+                        }
+                    }
+                    else{
+                        messageToClient = "Meeting does not exist";
+                    }
+
                     break;
                 default:
                     System.out.println("Request type does not correspond. Exiting.");
