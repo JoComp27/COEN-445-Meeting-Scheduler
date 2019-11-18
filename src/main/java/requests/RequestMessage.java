@@ -64,7 +64,14 @@ public class RequestMessage extends Message {
         stringMessage += minimum + "_";  // MINIMUM
 
         for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
-            stringMessage += participants.get(i) + ",";
+            if(i==participants.size()-1){
+                stringMessage += participants.get(i);
+            }
+            else{
+                stringMessage += participants.get(i) + ",";
+            }
+
+
         }
 
 
