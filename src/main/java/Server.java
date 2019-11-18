@@ -96,17 +96,17 @@ public class Server implements Runnable{
                 threadServerHandle.join();
 
                 //Get the message from handler
-                String messageToClient = serverHandle.getMessageToClient();
-                byte[] bufferSend =  messageToClient.getBytes();
-                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
-
-                System.out.println("DpReceive Port " + DpReceive.getPort());
-                //DpSend.setPort(DpReceive.getPort());
-                //System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
-                DpSend.setSocketAddress(DpReceive.getSocketAddress());
-                //Send to client
-
-                serverSocket.send(DpSend);
+//                String messageToClient = serverHandle.getMessageToClient();
+//                byte[] bufferSend =  messageToClient.getBytes();
+//                DatagramPacket DpSend = new DatagramPacket(bufferSend, bufferSend.length);
+//
+//                System.out.println("DpReceive Port " + DpReceive.getPort());
+//                //DpSend.setPort(DpReceive.getPort());
+//                //System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
+//                DpSend.setSocketAddress(DpReceive.getSocketAddress());
+//                //Send to client
+//
+//                serverSocket.send(DpSend);
 
                 if(message.equals("Bye")){
                     System.out.println("Client says bye. Exiting");
