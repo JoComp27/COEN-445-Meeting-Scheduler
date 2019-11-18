@@ -1,5 +1,6 @@
 import Tools.CalendarUtil;
 import Tools.FileReaderWriter;
+import Tools.UdpSend;
 import requests.*;
 
 import java.lang.reflect.Array;
@@ -357,6 +358,7 @@ public class Server implements Runnable{
 
                                 for (int i = 0; i < participants.size(); i++){
                                     ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
                                 }
 
                                 rooms[roomNumber] = false;
@@ -379,6 +381,7 @@ public class Server implements Runnable{
 
                                 for (int i = 0; i < participants.size(); i++){
                                     ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
                                 }
 
                                 rooms[roomNumber] = false;
