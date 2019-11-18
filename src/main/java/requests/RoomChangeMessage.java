@@ -3,10 +3,12 @@ package requests;
 public class RoomChangeMessage extends Message {
 
     private Integer meetingNumber;
-    private int newRoomNumber;
+    private Integer newRoomNumber;
 
     public RoomChangeMessage(){
-
+        super(RequestType.RoomChange);
+        this.meetingNumber = null;
+        this.newRoomNumber = null;
     }
 
     public RoomChangeMessage(Integer meetingNumber, int newRoomNumber) {
