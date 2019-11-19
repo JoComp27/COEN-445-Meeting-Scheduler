@@ -13,15 +13,15 @@ public class Client {
 
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
 
-    private int clientPort;
-    private int serverPort;
+    private String clientPort;
+    private String serverPort;
 
     private DatagramSocket ds;
 
     private ArrayList<ClientMeeting> meetings;
     private HashMap<String, Boolean> availability;
 
-    public Client(int serverPort, int clientPort) throws UnknownHostException {
+    public Client(String serverPort, String clientPort) throws UnknownHostException {
         this.clientPort = clientPort;
         this.serverPort = serverPort;
 
@@ -35,12 +35,12 @@ public class Client {
             return;
         }
 
-        int serverPort;
-        int clientPort;
+        String serverPort;
+        String clientPort;
 
         try {
-            serverPort = Integer.parseInt(args[0].trim());
-            clientPort = Integer.parseInt(args[1].trim());
+            serverPort = args[0].trim();
+            clientPort = args[1].trim();
         } catch (NumberFormatException e) {
             e.printStackTrace();
 
@@ -155,33 +155,33 @@ public class Client {
         }
 
         //Send the RequestMessage to the server
-        UdpSend.sendMessage(requestMessage.serialize(), 9997);
+        //UdpSend.sendMessage(requestMessage.serialize(), 9997);
 
     }
 
-    private String getClientData() {
-
-        String result = "";
-
-        result += "" + "_"; //meetings ArrayList
-
-
-
-        availability.entrySet().forEach(entry-> {
-            result += entry.getKey() + "," + Boolean.toString(entry.getValue()) + ";";
-        });
-
-        result += ""; //Availability Hashmap
-
-        return result;
-
-    }
+//    private String getClientData() {
+//
+//        String result = "";
+//
+//        result += "" + "_"; //meetings ArrayList
+//
+//
+//
+//        availability.entrySet().forEach(entry-> {
+//            result += entry.getKey() + "," + Boolean.toString(entry.getValue()) + ";";
+//        });
+//
+//        result += ""; //Availability Hashmap
+//
+//        return result;
+//
+//    }
 
     private void sendAccept(int meetingNumber){
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -204,7 +204,7 @@ public class Client {
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -226,7 +226,7 @@ public class Client {
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -251,7 +251,7 @@ public class Client {
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -275,7 +275,7 @@ public class Client {
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -317,7 +317,7 @@ public class Client {
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -457,7 +457,7 @@ public class Client {
              * the range should be 49152 - 65535.*/
 
             /**The port address is chosen randomly*/
-            try (DatagramSocket serverSocket = new DatagramSocket(clientPort)) {
+            try (DatagramSocket serverSocket = new DatagramSocket(Integer.parseInt(clientPort))) {
                 byte[] buffer = new byte[100];
                 /**Messages here and sends to client*/
                 while (true) {
@@ -565,7 +565,7 @@ public class Client {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
+                //FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
             }
 
         }
