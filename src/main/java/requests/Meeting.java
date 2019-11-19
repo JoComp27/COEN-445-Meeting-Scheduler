@@ -64,9 +64,12 @@ public class Meeting {
         return organizer;
     }
 
-    public void setAceeptedMap(){
+    public void setAcceptedMap(){
         for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
             this.acceptedMap.put(Integer.parseInt(this.requestMessage.getParticipants().get(i)), false);
         }
+    }
+    public void setRoomNumber(int roomNumber){
+        this.roomNumber = roomNumber;
     }
 }
