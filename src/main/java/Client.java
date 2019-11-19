@@ -127,14 +127,14 @@ public class Client {
             meetings.add(newMeeting);
 
             //Send Accept
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
 
         } else {
             newMeeting.setCurrentAnswer(false);
             meetings.add(newMeeting);
 
             //Send Reject
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
         }
 
     }
