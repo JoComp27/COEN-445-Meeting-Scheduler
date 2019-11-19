@@ -13,43 +13,84 @@ public class Client {
 
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment for RequestNumber
 
-    private InetAddress serverAddress;
+    private int clientPort;
+    private int serverPort;
+
     private DatagramSocket ds;
 
-    private String username;
     private ArrayList<ClientMeeting> meetings;
-
     private HashMap<String, Boolean> availability;
 
-    public Client(String username) throws UnknownHostException {
-        this.serverAddress = InetAddress.getLocalHost();
-        this.username = username;
+    public Client(int serverPort, int clientPort) throws UnknownHostException {
+        this.clientPort = clientPort;
+        this.serverPort = serverPort;
 
         meetings = new ArrayList<>();
     }
 
     public static void main(String args[]) throws IOException {
 
-        Scanner sc = new Scanner(System.in);
-        String username = sc.nextLine();
+        if(args.length < 2){
+            System.err.println("MISSING ARGUMENTS WHILE STARTING CLIENT");
+            return;
+        }
 
-        Client client = new Client(username);
+        int serverPort;
+        int clientPort;
+
+        try {
+            serverPort = Integer.parseInt(args[0].trim());
+            clientPort = Integer.parseInt(args[1].trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+
+            System.err.println("INVALID ARGUMENTS WERE GIVEN");
+            return;
+
+        }
+
+
+        Client client = new Client(serverPort, clientPort);
 
         //Checking if previous
-        File saveFile = new File("clientSave.txt");
+        File saveFile = new File("saveFile_" + clientPort + ".txt");
 
         if(saveFile.exists()){
 
             //Add CLI to check if user wants to restore user or not.
 
-            client.restoreFromSave(saveFile, username);
+            System.out.println("It seems that a restore file is available and could be loaded onto the" +
+                    "client\n Do you wish to restore it?");
+
+            String answer = "";
+
+            Scanner scanner = new Scanner(System.in);
+
+            while(answer.equals("y") || answer.equals("n")){
+
+                answer = scanner.nextLine().trim();
+
+                switch (answer) {
+                    case "y":
+                        System.out.println("Save will be restored for client " + clientPort);
+                        client.restoreFromSave(saveFile);
+                        break;
+                    case "n":
+                        System.out.println("Save will not be restored for client");
+                        break;
+                    default:
+                        System.out.println("INVALID SAVE RESTORE ANSWER");
+                }
+            }
+
+
         }
 
         client.run();
 
     }
 
-    private void restoreFromSave(File saveFile, String username) {
+    private void restoreFromSave(File saveFile) {
 
 
 
@@ -60,7 +101,7 @@ public class Client {
         // convert the String input into the byte array.
         byte buf[] = message.getBytes();
         byte[] buffer = new byte[100];
-        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, serverAddress, 9997);
+        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
         ds.send(DpSend);
         System.out.println("MESSAGE SENT");
 
@@ -118,11 +159,32 @@ public class Client {
 
     }
 
-    private String getClientState() {
+    private String getClientData() {
+
+        String result = "";
+
+        result += "" + "_"; //meetings ArrayList
+
+
+
+        availability.entrySet().forEach(entry-> {
+            result += entry.getKey() + "," + Boolean.toString(entry.getValue()) + ";";
+        });
+
+        result += ""; //Availability Hashmap
+
+        return result;
 
     }
 
     private void sendAccept(int meetingNumber){
+
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
         for(int i = 0 ; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
@@ -131,7 +193,7 @@ public class Client {
                 }
 
                 AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
-                UdpSend.sendMessage(acceptMessage.serialize(), 9997);
+                UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
 
             }
         }
@@ -140,6 +202,13 @@ public class Client {
 
     private void sendReject(int meetingNumber){
 
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         for(int i = 0 ; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
                 synchronized (meetings){
@@ -147,13 +216,20 @@ public class Client {
                 }
 
                 RejectMessage rejectMessage = new RejectMessage(meetingNumber);
-                UdpSend.sendMessage(rejectMessage.serialize(), 9997);
+                UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
             }
         }
 
     }
 
     private void sendWithdraw(int meetingNumber){
+
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
         for(int i = 0 ; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == true
@@ -164,7 +240,7 @@ public class Client {
                 }
 
                 WithdrawMessage withdrawMessage = new WithdrawMessage(meetingNumber);
-                UdpSend.sendMessage(withdrawMessage.serialize(), 9997);
+                UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
 
             }
         }
@@ -173,13 +249,20 @@ public class Client {
 
     private void sendAdd(int meetingNumber){
 
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         for(int i = 0; i < meetings.size(); i++){
             if(meetingNumber == meetings.get(i).getMeetingNumber()){
                 if(meetings.get(i).getUserType() == false) {
                     meetings.get(i).setCurrentAnswer(true);
 
                     AddMessage addMessage = new AddMessage(meetingNumber);
-                    UdpSend.sendMessage(addMessage.serialize(), 9997);
+                    UdpSend.sendMessage(addMessage.serialize(), socketAddress);
 
                 }
                 return;
@@ -190,12 +273,19 @@ public class Client {
 
     private void sendRequesterCancel(int meetingNumber){
 
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == meetingNumber){
                 if(meetings.get(i).getUserType() == true && meetings.get(i).getState() == true){
 
                     RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
-                    UdpSend.sendMessage(requesterCancelMessage.serialize(), 9997);
+                    UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
 
                 }
 
@@ -225,6 +315,13 @@ public class Client {
 
     private void handleInvite(InviteMessage message) {
 
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
 
@@ -235,7 +332,7 @@ public class Client {
             }
 
             //Send Accept
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
 
         } else {
             newMeeting.setCurrentAnswer(false);
@@ -244,7 +341,7 @@ public class Client {
             }
 
             //Send Reject
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), 9997);
+            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
         }
 
     }
@@ -349,10 +446,7 @@ public class Client {
 
     public class ClientListen implements Runnable {
 
-        InetAddress serverAddress;
-
-        public ClientListen(InetAddress serverAddress) {
-            this.serverAddress = serverAddress;
+        public ClientListen() {
         }
 
         @Override
@@ -363,7 +457,7 @@ public class Client {
              * the range should be 49152 - 65535.*/
 
             /**The port address is chosen randomly*/
-            try (DatagramSocket serverSocket = new DatagramSocket(9997)) {
+            try (DatagramSocket serverSocket = new DatagramSocket(clientPort)) {
                 byte[] buffer = new byte[100];
                 /**Messages here and sends to client*/
                 while (true) {
@@ -442,9 +536,9 @@ public class Client {
                     handleAdded(addedMessage);
                     break;
                 case RoomChange:
-//                    RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
-//                    roomChangeMessage.deserialize(message);
-//                    handleRoomChange(roomChangeMessage);
+                    RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
+                    roomChangeMessage.deserialize(message);
+                    handleRoomChange(roomChangeMessage);
                     break;
                 case ServerWidthdraw:
                     ServerWidthdrawMessage serverWidthdrawMessage = new ServerWidthdrawMessage();
@@ -460,18 +554,16 @@ public class Client {
 
     public class ClientSave implements Runnable{
 
-        String username;
-
-        public ClientSave(String username){
-            this.username = username;
-        }
-
         @Override
         public void run() {
 
             while(true){
-                for(int i = 0; i < 10000; i++){}
-                FileReaderWriter.WriteFile("saveFile_" + username, getClientState(), false);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
             }
 
         }
