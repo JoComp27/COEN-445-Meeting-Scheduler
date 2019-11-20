@@ -66,10 +66,9 @@ public class Client {
 
             Scanner scanner = new Scanner(System.in);
 
-            while(answer.equals("y") || answer.equals("n")){
 
+            while(!answer.equals("y") || !answer.equals("n")){
                 answer = scanner.nextLine().trim();
-
                 switch (answer) {
                     case "y":
                         System.out.println("Save will be restored for client " + clientPort);
@@ -138,6 +137,57 @@ public class Client {
 //
 //        //
 
+    }
+
+    private void checkState(){
+        //If meeting list is not empty
+        if(!meetings.isEmpty()){
+            //Get how many meetings this client is part of
+            int meetingNumbers = meetings.size();
+            System.out.println("You are a part of " + meetingNumbers + ", which meeting do you want to choose?");
+            System.out.println("Type 'None' to not select any of the current meetings");
+            Scanner scanner = new Scanner(System.in);
+            String answer = scanner.nextLine();
+            if(!answer.equals("None")) {
+                try {
+                    if (Integer.parseInt(answer) <= meetingNumbers) {
+                        //Use the meeting the user chose
+                        ClientMeeting clientMeeting = meetings.get(Integer.parseInt(answer));
+
+                        if (clientMeeting.getUserType() == true && clientMeeting.getState() == true) {
+                            //Organizer and meeting is confirmed
+                            //Organizer can cancel the meeting
+                            System.out.println("This meeting is confirmed");
+                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
+                            System.out.println("Type 'Cancel_MeetingNumber' to cancel the meeting");
+
+                        }
+                        else if (clientMeeting.getUserType() == false && clientMeeting.getState() == true && clientMeeting.isCurrentAnswer() == true) {
+                            //Invitee, meeting is confirmed and current answer is accepted
+                            //At confirm message, meeting is confirmed, can only withdraw
+                            System.out.println("This meeting is confirmed");
+                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
+                            System.out.println("Type 'Withdraw_MeetingNumber' to withdraw from the meeting");
+                        }
+                        else if (clientMeeting.getUserType() == false && clientMeeting.getState() == true && clientMeeting.isCurrentAnswer() == false){
+                            //Invitee, meeting is confirmed and current answer is not accepted
+                            //At add stage
+                            System.out.println("This meeting is confirmed");
+                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
+                            System.out.println("Type 'Add_MeetingNumber' to add yourself to the meeting");
+
+                        }
+
+
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                System.out.println("Type in your new request");
+            }
+        }
     }
 
     private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
