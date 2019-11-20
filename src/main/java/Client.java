@@ -142,6 +142,13 @@ public class Client {
 
     private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
 
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         //Create a RequestMessage
         RequestMessage requestMessage = new RequestMessage(countID.incrementAndGet(), calendar, minimum, participants, topic);
 
@@ -155,7 +162,7 @@ public class Client {
         }
 
         //Send the RequestMessage to the server
-        UdpSend.sendMessage(requestMessage.serialize(), 9997);
+        UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
 
     }
 
@@ -165,13 +172,9 @@ public class Client {
 
         result += "" + "_"; //meetings ArrayList
 
-
-
-        availability.entrySet().forEach(entry-> {
-            result += entry.getKey() + "," + Boolean.toString(entry.getValue()) + ";";
-        });
-
-        result += ""; //Availability Hashmap
+        for (String s : availability.keySet()) { //Availability Hashmap
+            result += s + ",";
+        }
 
         return result;
 
