@@ -193,11 +193,7 @@ public class Server implements Runnable{
 
 
                         /**Writes the message in the log file.*/
-                        try {
-                            file.WriteFile(filePath, message, true);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        file.WriteFile(filePath, message, true);
                     }
                     else if(scheduleMap.containsKey(time)){
                         //If first room not taken
