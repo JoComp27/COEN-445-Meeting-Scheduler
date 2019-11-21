@@ -89,33 +89,6 @@ public class Client {
 
     }
 
-    private void restoreFromSave(String saveFile) {
-
-        ArrayList<String> messageList = FileReaderWriter.ReadFile(saveFile);
-
-        String message = "";
-
-        for(String msgPortion : messageList){
-            message += msgPortion;
-        }
-
-        String[] subMessage = message.split("_");
-
-        String[] meetings = subMessage[0].split(";");
-        String[] availability = subMessage[1].split(";");
-
-        for(String meeting : meetings){
-            ClientMeeting newMeeting = new ClientMeeting();
-            newMeeting.deserialize(meeting);
-            this.meetings.add(newMeeting);
-        }
-
-        for(String available : availability){
-            this.availability.put(available, true);
-        }
-
-    }
-
     private void sendMessageToServer(String message) throws IOException {
 
         // convert the String input into the byte array.
@@ -213,9 +186,9 @@ public class Client {
 
     private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
 
-        SocketAddress socketAddress = null;
+        InetSocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),serverPort);
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -234,32 +207,6 @@ public class Client {
 
         //Send the RequestMessage to the server
         UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
-
-    }
-
-    private String getClientData() {
-
-        String result = "";
-
-        result += "" + "_"; //meetings ArrayList
-
-        for(int i = 0; i < meetings.size(); i++){
-            if(i == 0) {
-                result += meetings.get(i).serialize();
-                continue;
-            }
-
-            result += ";" + meetings.get(i).serialize();
-
-        }
-
-        result += "_";
-
-        for (String s : availability.keySet()) { //Availability Hashmap
-            result += s + ";";
-        }
-
-        return result;
 
     }
 
@@ -640,6 +587,32 @@ public class Client {
 
     }
 
+    private String getClientData() {
+
+        String result = "";
+
+        result += "" + "_"; //meetings ArrayList
+
+        for(int i = 0; i < meetings.size(); i++){
+            if(i == 0) {
+                result += meetings.get(i).serialize();
+                continue;
+            }
+
+            result += ";" + meetings.get(i).serialize();
+
+        }
+
+        result += "_";
+
+        for (String s : availability.keySet()) { //Availability Hashmap
+            result += s + ";";
+        }
+
+        return result;
+
+    }
+
     public class ClientSave implements Runnable{
 
         @Override
@@ -654,6 +627,33 @@ public class Client {
                 FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
             }
 
+        }
+
+    }
+
+    private void restoreFromSave(String saveFile) {
+
+        ArrayList<String> messageList = FileReaderWriter.ReadFile(saveFile);
+
+        String message = "";
+
+        for(String msgPortion : messageList){
+            message += msgPortion;
+        }
+
+        String[] subMessage = message.split("_");
+
+        String[] meetings = subMessage[0].split(";");
+        String[] availability = subMessage[1].split(";");
+
+        for(String meeting : meetings){
+            ClientMeeting newMeeting = new ClientMeeting();
+            newMeeting.deserialize(meeting);
+            this.meetings.add(newMeeting);
+        }
+
+        for(String available : availability){
+            this.availability.put(available, true);
         }
 
     }

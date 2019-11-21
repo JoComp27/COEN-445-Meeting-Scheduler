@@ -72,4 +72,17 @@ public class Meeting {
     public void setRoomNumber(int roomNumber){
         this.roomNumber = roomNumber;
     }
+
+    public String serialize(){
+        String result = "";
+
+
+
+        return result;
+    }
+
+    public void deserialize(String message){
+
+    }
+
 }

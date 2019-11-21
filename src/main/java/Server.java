@@ -539,6 +539,26 @@ public class Server implements Runnable{
             return null;
         }
 
+        private void saveServer(){
+
+            FileReaderWriter.WriteFile("server", getServerState(), false);
+
+        }
+
+        private String getServerState(){
+            String result = "";
+
+
+
+            return result;
+        }
+
+        private void loadServer(){
+
+
+
+        }
+
     }
 
 }
