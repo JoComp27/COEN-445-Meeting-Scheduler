@@ -24,6 +24,7 @@ public class Client {
     public Client(String serverPort, String clientPort) throws UnknownHostException {
         this.clientPort = clientPort;
         this.serverPort = serverPort;
+        this.availability = new HashMap<>();
 
         meetings = new ArrayList<>();
     }
@@ -104,10 +105,8 @@ public class Client {
         ds.send(DpSend);
         System.out.println("MESSAGE SENT");
 
-        DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
-        ds.receive(DpReceive);        //Receive Data in Buffer
-        String messageFromServer = new String(DpReceive.getData());
-        System.out.println("Server says: " + messageFromServer);
+        ClientListen clientListen = new ClientListen();
+        clientListen.run();
 
     }
 
@@ -243,7 +242,8 @@ public class Client {
                 }
 
                 AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
-                UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
+                UdpSend.sendServer(acceptMessage.serialize());
+                //UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
 
             }
         }
@@ -266,7 +266,8 @@ public class Client {
                 }
 
                 RejectMessage rejectMessage = new RejectMessage(meetingNumber);
-                UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
+                UdpSend.sendServer(rejectMessage.serialize());
+                //UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
             }
         }
 
@@ -290,7 +291,8 @@ public class Client {
                 }
 
                 WithdrawMessage withdrawMessage = new WithdrawMessage(meetingNumber);
-                UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
+                UdpSend.sendServer(withdrawMessage.serialize());
+                //UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
 
             }
         }
@@ -312,7 +314,8 @@ public class Client {
                     meetings.get(i).setCurrentAnswer(true);
 
                     AddMessage addMessage = new AddMessage(meetingNumber);
-                    UdpSend.sendMessage(addMessage.serialize(), socketAddress);
+                    UdpSend.sendServer(addMessage.serialize());
+                    //UdpSend.sendMessage(addMessage.serialize(), socketAddress);
 
                 }
                 return;
@@ -335,7 +338,8 @@ public class Client {
                 if(meetings.get(i).getUserType() == true && meetings.get(i).getState() == true){
 
                     RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
-                    UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
+                    UdpSend.sendServer(requesterCancelMessage.serialize());
+                    //UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
 
                 }
 
@@ -364,17 +368,20 @@ public class Client {
     }
 
     private void handleInvite(InviteMessage message) {
+        System.out.println("Got the invite");
 
         SocketAddress socketAddress = null;
         try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
+            System.out.println("Local Host: " + InetAddress.getLocalHost().getHostAddress());
+            System.out.println("Port number: " + serverPort);
+            //socketAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(),Integer.parseInt(serverPort));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
-
+        System.out.println("Calendar in client: " + CalendarUtil.calendarToString(newMeeting.getCalendar()));
         if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){
             newMeeting.setCurrentAnswer(true);
             synchronized (meetings) {
@@ -382,7 +389,8 @@ public class Client {
             }
 
             //Send Accept
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
+            UdpSend.sendServer(new AcceptMessage(newMeeting.getMeetingNumber()).serialize());
+            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
 
         } else {
             newMeeting.setCurrentAnswer(false);
@@ -391,7 +399,8 @@ public class Client {
             }
 
             //Send Reject
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
+            UdpSend.sendServer(new RejectMessage(newMeeting.getMeetingNumber()).serialize());
+            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
         }
 
     }
