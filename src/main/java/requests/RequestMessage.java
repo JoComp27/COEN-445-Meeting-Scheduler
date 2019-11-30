@@ -56,19 +56,19 @@ public class RequestMessage extends Message {
     public String serialize() {
         String stringMessage = "";
 
-        stringMessage += getRequestType().ordinal() + "_"; //Message ID
-        stringMessage += requestNumber + "_";
+        stringMessage += getRequestType().ordinal() + "$"; //Message ID
+        stringMessage += requestNumber + "$";
 
-        stringMessage += CalendarUtil.calendarToString(calendar) + "_";  // DATE & TIME
+        stringMessage += CalendarUtil.calendarToString(calendar) + "$";  // DATE & TIME
 
-        stringMessage += minimum + "_";  // MINIMUM
+        stringMessage += minimum + "$";  // MINIMUM
 
         for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
             if(i==participants.size()-1){
                 stringMessage += participants.get(i);
             }
             else{
-                stringMessage += participants.get(i) + ",";
+                stringMessage += participants.get(i) + "%";
             }
 
 
@@ -88,7 +88,7 @@ public class RequestMessage extends Message {
         Calendar c = CalendarUtil.stringToCalendar(subMessages[2]);
 
         List<String> participants = new ArrayList<>();
-        String[] users = subMessages[4].split(",");
+        String[] users = subMessages[4].split("%");
 
         for(String user : users){
             participants.add(user);

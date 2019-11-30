@@ -22,7 +22,42 @@ public class Server implements Runnable{
 
     public static void main(String[] args){
         System.out.println("SERVER LAUNCHED");
-    	Server server = new Server();
+
+        Server server = new Server();
+
+        //Checking if previous
+        File saveFile = new File("server.txt");
+
+        if(saveFile.exists()){
+
+            //Add CLI to check if user wants to restore user or not.
+
+            System.out.println("It seems that a restore file is available and could be loaded onto the" +
+                    "server\n Do you wish to restore it?");
+
+            String answer = "";
+
+            Scanner scanner = new Scanner(System.in);
+
+            while(!answer.equals("y") || !answer.equals("n")){
+
+                answer = scanner.nextLine().trim();
+                switch (answer) {
+                    case "y":
+                        System.out.println("Save will be restored for server");
+                        server.loadServer();
+                        break;
+                    case "n":
+                        System.out.println("Save will not be restored for client");
+                        break;
+                    default:
+                        System.out.println("INVALID SAVE RESTORE ANSWER");
+                }
+            }
+
+
+        }
+
         server.run();
     }
 
@@ -148,6 +183,12 @@ public class Server implements Runnable{
 
             //Gets the request type to treat the message.
             System.out.println("receivedMessage: " + receivedMessage[0]);
+            System.out.println("receivedMessage: " + receivedMessage[1]);
+            System.out.println("receivedMessage: " + receivedMessage[2]);
+            System.out.println("receivedMessage: " + receivedMessage[3]);
+            System.out.println("receivedMessage: " + receivedMessage[4]);
+            System.out.println("receivedMessage: " + receivedMessage[5]);
+
             //System.out.println("receivedMessage Value of: " + RequestType.valueOf(receivedMessage[0]));
 //            if(receivedMessage[0] == "9" || receivedMessage[0].equals("9")){
 //                receivedMessage[0] = "Request";
@@ -166,6 +207,7 @@ public class Server implements Runnable{
             switch(receivedRequestType){
                 case Request:
                     RequestMessage requestMessage = new RequestMessage();
+
                     requestMessage.deserialize(message);
 
 
@@ -193,11 +235,7 @@ public class Server implements Runnable{
 
 
                         /**Writes the message in the log file.*/
-                        try {
-                            file.WriteFile(filePath, message, true);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        file.WriteFile(filePath, message, true);
                     }
                     else if(scheduleMap.containsKey(time)){
                         //If first room not taken
@@ -586,8 +624,63 @@ public class Server implements Runnable{
             }
         }
 
-        public String getCommandMessage(){
-            return null;
+    }
+
+    public String getCommandMessage(){
+        return null;
+    }
+
+    private void saveServer(){
+
+        FileReaderWriter.WriteFile("server", getServerState(), false);
+
+    }
+
+    private String getServerState(){
+        String result = "";
+
+        for(Map.Entry<String, Boolean[]> entry :  scheduleMap.entrySet()){
+            result += entry.getKey() + "!" + entry.getValue()[0] + "!" + entry.getValue()[1] + ";";
+        }
+
+        result += "_";
+
+        for(Map.Entry<String, Meeting> entry :  meetingMap.entrySet()){
+            result += entry.getValue().serialize() + ";";
+        }
+
+        return result;
+    }
+
+    private void loadServer(){
+
+        ArrayList<String> fileString = FileReaderWriter.ReadFile("server");
+
+        String message = "";
+
+        for(int i = 0; i < fileString.size(); i++){
+            message += fileString.get(i);
+        }
+
+        String[] subMessage = message.split("_");
+
+        String[] scheduleMapMessages = subMessage[0].split(";");
+        String[] meetingMapString = subMessage[1].split(";");
+
+        for(int i = 0; i < scheduleMapMessages.length ; i++){
+            String[] sMMSplit = scheduleMapMessages[i].split("!");
+
+            Boolean[] availability = {Boolean.parseBoolean(sMMSplit[1]), Boolean.parseBoolean(sMMSplit[2])};
+
+            scheduleMap.put(sMMSplit[0], availability);
+        }
+
+        for(int i = 0 ; i < meetingMapString.length ; i++){
+
+            Meeting meeting = new Meeting(meetingMapString[i]);
+
+            meetingMap.put(Integer.toString(meeting.getId()), meeting);
+
         }
 
     }

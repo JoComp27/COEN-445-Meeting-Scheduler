@@ -1,6 +1,9 @@
 package requests;
 
+import Tools.CalendarUtil;
+
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Meeting {
@@ -15,6 +18,10 @@ public class Meeting {
     private HashMap<Integer, Boolean> acceptedMap;
     private int roomNumber;
     private int organizer;
+
+    public Meeting(String message){ //Constructor used to deserialize elements
+        deserialize(message);
+    }
 
     public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
         this.id = countID.incrementAndGet();
@@ -72,4 +79,52 @@ public class Meeting {
     public void setRoomNumber(int roomNumber){
         this.roomNumber = roomNumber;
     }
+
+    public String serialize(){
+        String result = "";
+
+        result += this.id + ",";
+        result += this.requestMessage.serialize() + ",";
+        result += this.state + ",";
+        result += this.maxParticipants + ",";
+        result += this.acceptedParticipants + ",";
+        result += this.roomNumber + ",";
+        result += this.organizer + ",";
+
+        for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
+            result += entry.getKey() + "!" + entry.getValue() + "@";
+        }
+
+        return result;
+    }
+
+    public void deserialize(String message){
+
+        String[] subMessages = message.split(",");
+
+        RequestMessage requestMessage = new RequestMessage();
+        requestMessage.deserialize(subMessages[1]);
+
+        this.id = Integer.parseInt(subMessages[0]);
+        this.requestMessage = requestMessage;
+        this.state = subMessages[2];
+        this.maxParticipants = Integer.parseInt(subMessages[3]);
+        this.acceptedParticipants = Integer.parseInt(subMessages[4]);
+        this.roomNumber = Integer.parseInt(subMessages[5]);
+        this.organizer = Integer.parseInt(subMessages[6]);
+
+        String[] acceptedMap = subMessages[7].split("@");
+
+        for(String accMsg : acceptedMap){
+
+            if(accMsg.isEmpty()){
+                continue;
+            }
+
+            String[] entry = accMsg.split("!");
+            this.acceptedMap.put(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1]));
+        }
+
+    }
+
 }
