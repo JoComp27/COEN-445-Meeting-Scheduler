@@ -83,7 +83,7 @@ public class RequestMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] subMessages = message.split("_");
+        String[] subMessages = message.split("$");
 
         Calendar c = CalendarUtil.stringToCalendar(subMessages[2]);
 
