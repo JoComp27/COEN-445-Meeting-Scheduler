@@ -30,10 +30,10 @@ public class UdpSend {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("MESSAGE SENT");
+        System.out.println("SERVER SENT");
     }
 
-    public static void sendServer(String message) {
+    public static void sendServer(String message, DatagramSocket ds) {
 
         // convert the String input into the byte array.
         byte buf[] = message.getBytes();
@@ -46,19 +46,15 @@ public class UdpSend {
             e.printStackTrace();
         }
 
-        DatagramSocket dp = null;
-        try {
-            dp = new DatagramSocket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
 
         try {
-            dp.send(DpSend);
+            String asd = new String(DpSend.getData());
+            System.out.println("DPSEND: " + asd);
+            ds.send(DpSend);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("MESSAGE SENT");
+        System.out.println("CLIENT SENT");
     }
 
 }

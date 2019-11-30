@@ -26,7 +26,8 @@ public class AcceptMessage extends Message{
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.trim().split("_");
+
 
         this.meetingNumber = Integer.parseInt(msg[1]);
     }

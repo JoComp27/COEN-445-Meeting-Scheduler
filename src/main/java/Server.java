@@ -40,7 +40,7 @@ public class Server implements Runnable{
     	
         /**The port address is chosen randomly*/
         try(DatagramSocket serverSocket = new DatagramSocket(9997)) {
-            byte[] buffer = new byte[100];
+
             /**Messages here and sends to client*/
 
             ServerCommand serverCommand = new ServerCommand();
@@ -48,7 +48,7 @@ public class Server implements Runnable{
             threadServerCommand.start();
 
             while(true){
-
+                byte[] buffer = new byte[100];
             	System.out.println("-------------- SERVER STARTED TO LISTEN --------------");
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
@@ -72,8 +72,8 @@ public class Server implements Runnable{
                  * COMPLETE THIS PORTION OF THE CODE
                  *
                  * Add in Thread and feed in the message*/
-                InetAddress IP = DpReceive.getAddress();
                 int port = DpReceive.getPort();
+                System.out.println("Port: " + port);
                 /**Creating a new thread of each new request*/
 
                 //Create server command thread
@@ -82,7 +82,6 @@ public class Server implements Runnable{
 
                 //If we type "RoomChange_MT#_Room#" ex. "RoomChange_3_2"
                 //Set the message to that
-                System.out.println("Right here");
 //                String[] s = serverCommand.getCommandMessage().split("_");
 //                if(s[0].equals("RoomChange")){
 //                    System.out.println("In room change if statement");
@@ -93,8 +92,9 @@ public class Server implements Runnable{
                 //serverHandle = new ServerHandle(serverMessage,port,DpReceive.getSocketAddress());
 
                 //threadServerHandle.start();
+                //System.out.println("DpReceive Socket Address: " + DpReceive.getSocketAddress());
+                ServerHandle serverHandle = new ServerHandle(message, port, DpReceive.getSocketAddress());
 
-                ServerHandle serverHandle = new ServerHandle(message, port, DpReceive.getSocketAddress(), IP);
                 Thread threadServerHandle = new Thread(serverHandle);
                 //= new ServerHandle(message, port);
                 //threadServerHandle = new Thread(serverHandle);
@@ -131,21 +131,21 @@ public class Server implements Runnable{
     public class ServerHandle implements Runnable{
         String message;
         int port;
-        InetAddress IP;
         SocketAddress socketAddress;
         String messageToClient = "Initial value";
 
-        public ServerHandle(String message, int port, SocketAddress socketAddress, InetAddress IP){
+        public ServerHandle(String message, int port, SocketAddress socketAddress){
             this.message = message;
             this.port = port;
             this.socketAddress = socketAddress;
-            this.IP = IP;
+
         }
 
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
         @Override
         public void run() {
             String[] receivedMessage = message.split("_");
+            System.out.println("The received message: " + message);
 
 
             //Gets the request type to treat the message.
@@ -154,11 +154,15 @@ public class Server implements Runnable{
 //            if(receivedMessage[0] == "9" || receivedMessage[0].equals("9")){
 //                receivedMessage[0] = "Request";
 //            }
-            //int messageType = Integer.parseInt(receivedMessage[0]);
-            //System.out.println("Message type: " + messageType);
-            //RequestType receivedRequestType = RequestType.values()[messageType];
+            int messageType = Integer.parseInt(receivedMessage[0]);
+            System.out.println("Message type: " + messageType);
+            RequestType receivedRequestType = RequestType.values()[messageType];
+//            if(receivedMessage[0] == "10" || receivedMessage[0].equals("10")){
+//                System.out.println("Got Accept");
+//                receivedMessage[0] = "Accept";
+//            }
+            //RequestType receivedRequestType = RequestType.valueOf(receivedMessage[0]);
 
-            RequestType receivedRequestType = RequestType.valueOf(receivedMessage[0]);
 
             FileReaderWriter file = new FileReaderWriter();
             String currentDir = System.getProperty("user.dir");
@@ -204,12 +208,13 @@ public class Server implements Runnable{
                         inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
                         inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
 
+                        UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
 
-                        for(String s: meeting.getRequestMessage().getParticipants()){
-                            System.out.println("Sent to " + Integer.parseInt(s));
-                            socketAddress = new InetSocketAddress(IP, Integer.parseInt(s));
-                            UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
-                        }
+//                        for(String s: meeting.getRequestMessage().getParticipants()){
+//                            System.out.println("Sent to " + socketAddress);
+//                            //socketAddress = new InetSocketAddress(IP, Integer.parseInt(s));
+//
+//                        }
 
 
                         /**Writes the message in the log file.*/
@@ -278,6 +283,7 @@ public class Server implements Runnable{
                     break;
                 case Accept:
                     AcceptMessage acceptMessage = new AcceptMessage();
+                    System.out.println("Accept deserialize: " + message);
                     acceptMessage.deserialize(message);
                     String meetingNumberAccept = Integer.toString(acceptMessage.getMeetingNumber());
 
