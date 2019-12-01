@@ -179,7 +179,7 @@ public class Server implements Runnable{
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
         @Override
         public void run() {
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             System.out.println("The received message: " + message);
 
 

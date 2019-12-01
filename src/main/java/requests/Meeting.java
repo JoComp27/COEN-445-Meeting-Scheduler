@@ -79,8 +79,6 @@ public class Meeting {
 
         result += this.id + ",";
         result += this.requestMessage.serialize() + ",";
-        result += this.state + ",";
-        result += this.maxParticipants + ",";
         result += this.acceptedParticipants + ",";
         result += this.roomNumber + ",";
         result += this.organizer + ",";

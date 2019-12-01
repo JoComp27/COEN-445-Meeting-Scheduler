@@ -123,8 +123,10 @@ public class Client {
         while (true) {
             String inp = sc.nextLine();
 
-            String[] inputMessage = inp.trim().split("_");
+            String[] inputMessage = inp.trim().split("\\$");
             //int messageType = Integer.parseInt(inputMessage[0]);
+            System.out.println("InputMessage: " + inputMessage[0]);
+            //System.out.println("receivedMessage Value of: " + RequestType.valueOf(inputMessage[0]));
             RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
 
             switch (receivedRequestType){
