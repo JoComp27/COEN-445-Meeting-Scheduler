@@ -381,6 +381,7 @@ public class Client {
     }
 
     private void handleInvite(InviteMessage message) {
+        System.out.println("Got Invite");
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
         if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){

@@ -244,15 +244,16 @@ public class Server implements Runnable{
                         inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
                         inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
 
-                        for(String s: meeting.getRequestMessage().getParticipants()){
-                            System.out.println("Sent to " + socketAddress);
-                            try {
-                                socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
-                            } catch (UnknownHostException e) {
-                                e.printStackTrace();
-                            }
-                            UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
-                        }
+                        UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
+//                        for(String s: meeting.getRequestMessage().getParticipants()){
+//                            System.out.println("Sent to " + socketAddress);
+//                            try {
+//                                socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
+//                            } catch (UnknownHostException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
 
 
                         /**Writes the message in the log file.*/
