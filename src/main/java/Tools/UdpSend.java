@@ -30,7 +30,31 @@ public class UdpSend {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("MESSAGE SENT");
+        System.out.println("SERVER SENT");
+    }
+
+    public static void sendServer(String message, DatagramSocket ds) {
+
+        // convert the String input into the byte array.
+        byte buf[] = message.getBytes();
+
+        DatagramPacket DpSend = null;
+        try {
+            DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            String asd = new String(DpSend.getData());
+            System.out.println("DPSEND: " + asd);
+            ds.send(DpSend);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("CLIENT SENT");
     }
 
 }

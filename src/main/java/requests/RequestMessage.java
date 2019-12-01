@@ -85,7 +85,13 @@ public class RequestMessage extends Message {
 
         String[] subMessages = message.split("$");
 
-        Calendar c = CalendarUtil.stringToCalendar(subMessages[2]);
+        String[] cal = new String[2];
+
+        for(int i = 0; i < 4; i++){
+            cal = subMessages[2].split(",");
+        }
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
 
         List<String> participants = new ArrayList<>();
         String[] users = subMessages[4].split("%");

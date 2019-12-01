@@ -25,6 +25,14 @@ public class DeniedMessage extends Message {
         return unavailable;
     }
 
+    public void setRequestNumber(Integer requestNumber) {
+        this.requestNumber = requestNumber;
+    }
+
+    public void setUnavailable(String unavailable) {
+        this.unavailable = unavailable;
+    }
+
     @Override
     public String serialize() {
         return requestType.ordinal() + "_" + requestNumber + "_" + unavailable;

@@ -16,7 +16,7 @@ public class Client {
     private String clientPort;
     private String serverPort;
 
-    private DatagramSocket ds;
+    private static DatagramSocket ds;
 
     private ArrayList<ClientMeeting> meetings;
     private HashMap<String, Boolean> availability;
@@ -24,6 +24,7 @@ public class Client {
     public Client(String serverPort, String clientPort) throws UnknownHostException {
         this.clientPort = clientPort;
         this.serverPort = serverPort;
+        this.availability = new HashMap<>();
 
         this.meetings = new ArrayList<>();
     }
@@ -38,9 +39,12 @@ public class Client {
         String serverPort;
         String clientPort;
 
+
         try {
             serverPort = args[0].trim();
             clientPort = args[1].trim();
+
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
 
@@ -92,27 +96,50 @@ public class Client {
     private void sendMessageToServer(String message) throws IOException {
 
         // convert the String input into the byte array.
-        byte buf[] = message.getBytes();
-        byte[] buffer = new byte[100];
-        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
-        ds.send(DpSend);
-        System.out.println("MESSAGE SENT");
+        String first = "Request_1_2019,10,6,8_2_59000_asd";
+        RequestMessage firstRequest = new RequestMessage();
+        firstRequest.deserialize(first);
+        UdpSend.sendServer(firstRequest.serialize(), ds);
+//        byte buf[] = message.getBytes();
+//        byte[] buffer = new byte[100];
+//        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
+//        ds.send(DpSend);
+//        System.out.println("MESSAGE SENT");
 
-        DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
-        ds.receive(DpReceive);        //Receive Data in Buffer
-        String messageFromServer = new String(DpReceive.getData());
-        System.out.println("Server says: " + messageFromServer);
+
 
     }
 
     public void run() throws IOException {
         ds = new DatagramSocket();
+
+        ClientListen clientListen = new ClientListen();
+        Thread thread = new Thread(clientListen);
+        thread.start();
+
+        System.out.println("Local port is: " + ds.getLocalPort());
         Scanner sc = new Scanner(System.in);
         // loop while user not enters "bye"
         while (true) {
             String inp = sc.nextLine();
 
-            sendMessageToServer(inp);
+            String[] inputMessage = inp.trim().split("_");
+            //int messageType = Integer.parseInt(inputMessage[0]);
+            RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
+
+            switch (receivedRequestType){
+                case Request:
+                    RequestMessage requestMessage = new RequestMessage();
+                    requestMessage.deserialize(inp);
+                    UdpSend.sendServer(requestMessage.serialize(), ds);
+
+                    break;
+                default:
+                    System.out.println("Request type does not correspond. Exiting.");
+                    break;
+            }
+
+            //sendMessageToServer(inp);
             // break the loop if user enters "bye" 
             if (inp.equals("bye"))
                 break;
@@ -226,7 +253,8 @@ public class Client {
                 }
 
                 AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
-                UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
+                UdpSend.sendServer(acceptMessage.serialize(), ds);
+                //UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
 
             }
         }
@@ -249,7 +277,8 @@ public class Client {
                 }
 
                 RejectMessage rejectMessage = new RejectMessage(meetingNumber);
-                UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
+                UdpSend.sendServer(rejectMessage.serialize(), ds);
+                //UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
             }
         }
 
@@ -273,7 +302,8 @@ public class Client {
                 }
 
                 WithdrawMessage withdrawMessage = new WithdrawMessage(meetingNumber);
-                UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
+                UdpSend.sendServer(withdrawMessage.serialize(), ds);
+                //UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
 
             }
         }
@@ -295,7 +325,8 @@ public class Client {
                     meetings.get(i).setCurrentAnswer(true);
 
                     AddMessage addMessage = new AddMessage(meetingNumber);
-                    UdpSend.sendMessage(addMessage.serialize(), socketAddress);
+                    UdpSend.sendServer(addMessage.serialize(), ds);
+                    //UdpSend.sendMessage(addMessage.serialize(), socketAddress);
 
                 }
                 return;
@@ -318,7 +349,8 @@ public class Client {
                 if(meetings.get(i).getUserType() == true && meetings.get(i).getState() == true){
 
                     RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
-                    UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
+                    UdpSend.sendServer(requesterCancelMessage.serialize(), ds);
+                    //UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
 
                 }
 
@@ -347,17 +379,8 @@ public class Client {
     }
 
     private void handleInvite(InviteMessage message) {
-
-        SocketAddress socketAddress = null;
-        try {
-            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(serverPort));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
-
         if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){
             newMeeting.setCurrentAnswer(true);
             synchronized (meetings) {
@@ -365,7 +388,8 @@ public class Client {
             }
 
             //Send Accept
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
+            UdpSend.sendServer(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds);
+            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
 
         } else {
             newMeeting.setCurrentAnswer(false);
@@ -374,7 +398,8 @@ public class Client {
             }
 
             //Send Reject
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
+            UdpSend.sendServer(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds);
+            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
         }
 
     }
@@ -490,12 +515,15 @@ public class Client {
              * the range should be 49152 - 65535.*/
 
             /**The port address is chosen randomly*/
-            try (DatagramSocket serverSocket = new DatagramSocket(Integer.parseInt(clientPort))) {
                 byte[] buffer = new byte[100];
                 /**Messages here and sends to client*/
                 while (true) {
                     DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
-                    serverSocket.receive(DpReceive);        //Receive Data in Buffer
+                    try {
+                        ds.receive(DpReceive);        //Receive Data in Buffer
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     String message = new String(DpReceive.getData());
                     System.out.println("Server says: " + message);
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
@@ -507,11 +535,6 @@ public class Client {
 
                 }
 
-            } catch (SocketException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         }
     }
