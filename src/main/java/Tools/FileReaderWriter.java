@@ -7,30 +7,63 @@ public class FileReaderWriter {
 
     private static final String FILE_EXTENSION = ".txt";
 
-    public static void WriteFile(String fileName, String message, boolean append) throws IOException {
+    public static void WriteFile(String fileName, String message, boolean append){
         File newFile = new File(fileName + FILE_EXTENSION);
 
-        FileWriter fileWriter = new FileWriter(newFile, append);
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(newFile, append);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        fileWriter.write(message);
+        try {
+            fileWriter.write(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        fileWriter.close();
+        try {
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public static ArrayList<String> ReadFile(String fileName) throws IOException {
+    public static ArrayList<String> ReadFile(String fileName) {
 
         File file = new File(fileName + ".txt");
 
         ArrayList result = new ArrayList<String>();
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName + FILE_EXTENSION));
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(fileName + FILE_EXTENSION));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        String line = bufferedReader.readLine();
+        String line = null;
+        try {
+            line = bufferedReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         while(line != null) {
             result.add(line);
-            line = bufferedReader.readLine();
+            try {
+                line = bufferedReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return result;

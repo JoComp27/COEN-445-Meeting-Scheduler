@@ -42,13 +42,29 @@ public class InviteMessage extends Message {
         return requester;
     }
 
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
+    }
+
     @Override
     public String serialize() {
 
         String msg = "";
         msg += requestType.ordinal() + "_";
         msg += meetingNumber + "_";
-        msg += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";
+        msg += calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.DAY_OF_MONTH) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";
         msg += topic + "_";
         msg += requester;
 

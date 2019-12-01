@@ -8,19 +8,17 @@ public class Meeting {
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment
     private int id;
     private RequestMessage requestMessage;
-    private String state;
-    private int maxParticipants;
+
     private int acceptedParticipants;
     //Key=port, bool=accepted
     private HashMap<Integer, Boolean> acceptedMap;
     private int roomNumber;
     private int organizer;
 
-    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
+    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
-        this.state = state;
-        this.maxParticipants = maxParticipants;
+
         this.acceptedParticipants = acceptedParticipants;
         this.acceptedMap = acceptedMap;
         this.roomNumber = roomNumber;
@@ -36,13 +34,6 @@ public class Meeting {
         return requestMessage;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public int getMaxParticipants() {
-        return maxParticipants;
-    }
 
     public int getAcceptedParticipants() {
         return acceptedParticipants;
