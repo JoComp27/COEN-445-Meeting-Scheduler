@@ -127,12 +127,25 @@ public class Client {
         Scanner sc = new Scanner(System.in);
         // loop while user not enters "bye"
         while (true) {
-
-
-
             String inp = sc.nextLine();
 
-            sendMessageToServer(inp);
+            String[] inputMessage = inp.trim().split("_");
+            //int messageType = Integer.parseInt(inputMessage[0]);
+            RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
+
+            switch (receivedRequestType){
+                case Request:
+                    RequestMessage requestMessage = new RequestMessage();
+                    requestMessage.deserialize(inp);
+                    UdpSend.sendServer(requestMessage.serialize(), ds);
+
+                    break;
+                default:
+                    System.out.println("Request type does not correspond. Exiting.");
+                    break;
+            }
+
+            //sendMessageToServer(inp);
             // break the loop if user enters "bye" 
             if (inp.equals("bye"))
                 break;

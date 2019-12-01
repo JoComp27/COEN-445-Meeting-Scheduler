@@ -184,7 +184,7 @@ public class Server implements Runnable{
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
-                        InviteMessage inviteMessage = new InviteMessage();
+
 
                         //Make first room taken
                         synchronized(scheduleMap) {
@@ -203,18 +203,21 @@ public class Server implements Runnable{
                             meetingMap.put(Integer.toString(meeting.getId()), meeting);
                         }
 
+                        InviteMessage inviteMessage = new InviteMessage();
                         inviteMessage.setMeetingNumber(meeting.getId());
                         inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
                         inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
                         inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
 
-                        UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
-
-//                        for(String s: meeting.getRequestMessage().getParticipants()){
-//                            System.out.println("Sent to " + socketAddress);
-//                            //socketAddress = new InetSocketAddress(IP, Integer.parseInt(s));
-//
-//                        }
+                        for(String s: meeting.getRequestMessage().getParticipants()){
+                            System.out.println("Sent to " + socketAddress);
+                            try {
+                                socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
+                        }
 
 
                         /**Writes the message in the log file.*/
@@ -235,7 +238,22 @@ public class Server implements Runnable{
                             }
                             messageToClient = "Room 1 is available";
                             System.out.println("In server: " + messageToClient);
-                            UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
+
+                            InviteMessage inviteMessage = new InviteMessage();
+                            inviteMessage.setMeetingNumber(meeting.getId());
+                            inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
+                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
+                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
+
+                            for(String s: meeting.getRequestMessage().getParticipants()){
+                                System.out.println("Sent to " + socketAddress);
+                                try {
+                                    socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
+                                } catch (UnknownHostException e) {
+                                    e.printStackTrace();
+                                }
+                                UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
+                            }
                             //Create meeting
                             //Add meeting to meetingMap
                         }
@@ -252,20 +270,44 @@ public class Server implements Runnable{
                             }
                             messageToClient = "Room 2 is available";
                             System.out.println("In server: " + messageToClient);
-                            UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
-                            //Create meeting
-                            //Add meeting to meetingMap
+
+                            InviteMessage inviteMessage = new InviteMessage();
+                            inviteMessage.setMeetingNumber(meeting.getId());
+                            inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
+                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
+                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
+
+                            for(String s: meeting.getRequestMessage().getParticipants()){
+                                System.out.println("Sent to " + socketAddress);
+                                try {
+                                    socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
+                                } catch (UnknownHostException e) {
+                                    e.printStackTrace();
+                                }
+                                UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
+                            }
+
                         }
                         else{
+                            DeniedMessage deniedMessage = new DeniedMessage();
+                            deniedMessage.setRequestNumber(meeting.getRequestMessage().getRequestNumber());
+                            deniedMessage.setUnavailable("Unavailable");
+                            UdpSend.sendMessage(deniedMessage.serialize(), socketAddress);
+
                             messageToClient = "Room is not available at this time. Choose another time";
-                            UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
+                            //UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
                             System.out.println("In server: " + messageToClient);
                             break;
                         }
                     }
                     else{
+                        DeniedMessage deniedMessage = new DeniedMessage();
+                        deniedMessage.setRequestNumber(meeting.getRequestMessage().getRequestNumber());
+                        deniedMessage.setUnavailable("Unavailable");
+                        UdpSend.sendMessage(deniedMessage.serialize(), socketAddress);
+
                         messageToClient = "Room is not available at this time. Choose another time";
-                        UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
+                        //UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
                         System.out.println("In server: " + messageToClient);
                         break;
                     }
@@ -283,7 +325,6 @@ public class Server implements Runnable{
                     break;
                 case Accept:
                     AcceptMessage acceptMessage = new AcceptMessage();
-                    System.out.println("Accept deserialize: " + message);
                     acceptMessage.deserialize(message);
                     String meetingNumberAccept = Integer.toString(acceptMessage.getMeetingNumber());
 
