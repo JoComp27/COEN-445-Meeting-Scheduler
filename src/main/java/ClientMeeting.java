@@ -1,3 +1,4 @@
+import Tools.CalendarUtil;
 import requests.ConfirmMessage;
 import requests.InviteMessage;
 import requests.RequestMessage;
@@ -5,6 +6,7 @@ import requests.ScheduledMessage;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClientMeeting {
 
@@ -22,6 +24,9 @@ public class ClientMeeting {
 
     //Invitee Arguments
     private int meetingNumber;
+
+    public ClientMeeting(){ //Used to restore saves
+    }
 
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
@@ -97,5 +102,50 @@ public class ClientMeeting {
 
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public String serialize(){
+        String result = "";
+
+        result += CalendarUtil.calendarToString(calendar) + ",";
+        result += userType + ",";
+        result += state + ",";
+        result += currentAnswer + ",";
+        result += roomNumber + ",";
+        result += requestNumber + ",";
+        result += meetingNumber + ",";
+
+
+        for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
+            result += entry.getKey() + "!" + entry.getValue() + "@";
+        }
+
+        return result;
+    }
+
+    public void deserialize(String message){
+
+        String[] subMessages = message.split(",");
+
+        this.calendar = CalendarUtil.stringToCalendar(subMessages[0]);
+        this.userType = Boolean.parseBoolean(subMessages[1]);
+        this.state = Boolean.parseBoolean(subMessages[2]);
+        this.currentAnswer = Boolean.parseBoolean(subMessages[3]);
+        this.roomNumber = Integer.parseInt(subMessages[4]);
+        this.requestNumber = Integer.parseInt(subMessages[5]);
+        this.meetingNumber = Integer.parseInt(subMessages[6]);
+
+        String[] acceptedMap = subMessages[7].split("@");
+
+        for(String accMsg : acceptedMap){
+
+            if(accMsg.isEmpty()){
+                continue;
+            }
+
+            String[] entry = accMsg.split("!");
+            this.acceptedMap.put(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1]));
+        }
+
     }
 }
