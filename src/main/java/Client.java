@@ -113,9 +113,13 @@ public class Client {
     public void run() throws IOException {
         ds = new DatagramSocket();
 
-        ClientListen clientListen = new ClientListen();
-        Thread thread = new Thread(clientListen);
-        thread.start();
+        ClientListen clientListen = new ClientListen(); //Adding thread for client to listen to server messages
+        Thread listenThread = new Thread(clientListen);
+        listenThread.start();
+
+        ClientSave clientSave = new ClientSave(); //Adding thread for client to save it's progress
+        Thread saveThread = new Thread(clientSave);
+        saveThread.start();
 
         System.out.println("Local port is: " + ds.getLocalPort());
         Scanner sc = new Scanner(System.in);
@@ -146,19 +150,6 @@ public class Client {
             if (inp.equals("bye"))
                 break;
         }
-
-
-//        //Create thread to listen to messages
-//        new Thread(new ClientListen(serverAddress)).start();
-//
-//        new Thread(new ClientSave(username)).start();
-//
-//        while(true){
-//          // INSERT CLI FOR CLIENT
-//
-//        }
-//
-//        //
 
     }
 

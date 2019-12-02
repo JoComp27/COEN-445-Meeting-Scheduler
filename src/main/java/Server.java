@@ -66,6 +66,10 @@ public class Server implements Runnable{
         /**Create new server and binds to a free port. From source of the internet
          * the range should be 49152 - 65535.*/
 
+        ServerSave serverSave = new ServerSave();
+        Thread saveThread = new Thread(serverSave);
+        saveThread.start();
+
     	try {
 			System.out.println("Server Address: " + InetAddress.getLocalHost());
 		} catch (UnknownHostException e1) {
@@ -650,14 +654,8 @@ public class Server implements Runnable{
 
     }
 
-    public String getCommandMessage(){
+    public String getCommandMessage() {
         return null;
-    }
-
-    private void saveServer(){
-
-        FileReaderWriter.WriteFile("server", getServerState(), false);
-
     }
 
     private String getServerState(){
@@ -707,6 +705,24 @@ public class Server implements Runnable{
 
         }
 
+    }
+
+    public class ServerSave implements Runnable {
+        @Override
+        public void run(){
+
+            while(true) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+                FileReaderWriter.WriteFile("server", getServerState(), false);
+
+            }
+
+        }
     }
 
 }
