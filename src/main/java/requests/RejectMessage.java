@@ -20,13 +20,13 @@ public class RejectMessage extends Message{
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber;
+        return requestType.ordinal() + "$" + meetingNumber;
     }
 
     @Override
     public void deserialize(String message) {
 
-        String[] splitString = message.split("_");
+        String[] splitString = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(splitString[1]);
     }
