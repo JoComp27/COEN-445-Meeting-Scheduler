@@ -220,6 +220,7 @@ public class Server implements Runnable{
                     //Make meeting object
                     //Accepted participants should always initialize as 1 for organizer
                     Meeting meeting = new Meeting(requestMessage, null, requestMessage.getParticipants().size(), 1, new HashMap<Integer, Boolean>(), 0, port);
+                    System.out.println("Meeting Number: " + meeting.getId());
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
@@ -404,12 +405,12 @@ public class Server implements Runnable{
 
                             /**Sending invite message to those not who have not accepted
                              * CHECK IF IT SENDS TO ALL OTHER CLIENTS*/
+                            RequestMessage requestMessageFromMeeting = withdrawMeeting.getRequestMessage();
+                            InviteMessage inviteMessage = new InviteMessage(Integer.valueOf(withdrawMeetingNumber),
+                                    requestMessageFromMeeting.getCalendar(),
+                                    requestMessageFromMeeting.getTopic(),
+                                    Integer.toString(withdrawMeeting.getOrganizer()));
                             for (int i = 0; i < NotAcceptedParticipants.size(); i++){
-                                RequestMessage requestMessageFromMeeting = withdrawMeeting.getRequestMessage();
-                                InviteMessage inviteMessage = new InviteMessage(Integer.valueOf(withdrawMeetingNumber),
-                                        requestMessageFromMeeting.getCalendar(),
-                                        requestMessageFromMeeting.getTopic(),
-                                        Integer.toString(withdrawMeeting.getOrganizer()));
                                 try {
                                     SocketAddress participantSocketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.valueOf(NotAcceptedParticipants.get(i)));
                                     UdpSend.sendMessage(inviteMessage.serialize(), participantSocketAddress);
