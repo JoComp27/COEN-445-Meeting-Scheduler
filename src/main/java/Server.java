@@ -39,9 +39,10 @@ public class Server implements Runnable{
 
             Scanner scanner = new Scanner(System.in);
 
-            while(!answer.equals("y") || !answer.equals("n")){
+            while(!answer.equals("y") && !answer.equals("n")){
 
                 answer = scanner.nextLine().trim();
+
                 switch (answer) {
                     case "y":
                         System.out.println("Save will be restored for server");
@@ -686,25 +687,30 @@ public class Server implements Runnable{
 
         String[] subMessage = message.split("_");
 
-        String[] scheduleMapMessages = subMessage[0].split(";");
-        String[] meetingMapString = subMessage[1].split(";");
+        if(subMessage.length > 0 && !subMessage[0].isEmpty()){
+            String[] scheduleMapMessages = subMessage[0].split(";");
 
-        for(int i = 0; i < scheduleMapMessages.length ; i++){
-            String[] sMMSplit = scheduleMapMessages[i].split("!");
+            for(int i = 0; i < scheduleMapMessages.length ; i++){
+                String[] sMMSplit = scheduleMapMessages[i].split("!");
 
-            Boolean[] availability = {Boolean.parseBoolean(sMMSplit[1]), Boolean.parseBoolean(sMMSplit[2])};
+                Boolean[] availability = {Boolean.parseBoolean(sMMSplit[1]), Boolean.parseBoolean(sMMSplit[2])};
 
-            scheduleMap.put(sMMSplit[0], availability);
-        }
-
-        for(int i = 0 ; i < meetingMapString.length ; i++){
-
-            Meeting meeting = new Meeting(meetingMapString[i]);
-
-            meetingMap.put(Integer.toString(meeting.getId()), meeting);
+                scheduleMap.put(sMMSplit[0], availability);
+            }
 
         }
 
+        if(subMessage.length > 0 && !subMessage[1].isEmpty()){
+            String[] meetingMapString = subMessage[1].split(";");
+
+            for(int i = 0 ; i < meetingMapString.length ; i++) {
+
+                Meeting meeting = new Meeting(meetingMapString[i]);
+
+                meetingMap.put(Integer.toString(meeting.getId()), meeting);
+
+            }
+        }
     }
 
     public class ServerSave implements Runnable {

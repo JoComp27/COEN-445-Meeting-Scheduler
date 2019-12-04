@@ -56,8 +56,10 @@ public class Client {
 
         Client client = new Client(serverPort, clientPort);
 
+        String fileName = "saveFile_" + clientPort;
+
         //Checking if previous
-        File saveFile = new File("saveFile_" + clientPort + ".txt");
+        File saveFile = new File(fileName + ".txt");
 
         if(saveFile.exists()){
 
@@ -70,13 +72,14 @@ public class Client {
 
             Scanner scanner = new Scanner(System.in);
 
-            while(!answer.equals("y") || !answer.equals("n")){
+            while(!answer.equals("y") && !answer.equals("n")){
 
                 answer = scanner.nextLine().trim();
+
                 switch (answer) {
                     case "y":
                         System.out.println("Save will be restored for client " + clientPort);
-                        client.restoreFromSave(saveFile.getName());
+                        client.restoreFromSave(fileName);
                         break;
                     case "n":
                         System.out.println("Save will not be restored for client");
@@ -84,6 +87,7 @@ public class Client {
                     default:
                         System.out.println("INVALID SAVE RESTORE ANSWER");
                 }
+
             }
 
 
@@ -111,7 +115,15 @@ public class Client {
     }
 
     public void run() throws IOException {
-        ds = new DatagramSocket();
+
+        SocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(clientPort));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        ds = new DatagramSocket(socketAddress);
 
         ClientListen clientListen = new ClientListen(); //Adding thread for client to listen to server messages
         Thread listenThread = new Thread(clientListen);
@@ -127,28 +139,31 @@ public class Client {
         while (true) {
             String inp = sc.nextLine();
 
-            String[] inputMessage = inp.trim().split("\\$");
-            //int messageType = Integer.parseInt(inputMessage[0]);
-            System.out.println("InputMessage: " + inputMessage[0]);
-            //System.out.println("receivedMessage Value of: " + RequestType.valueOf(inputMessage[0]));
-            RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
+            if (!inp.isEmpty()) {
 
-            switch (receivedRequestType){
-                case Request:
-                    RequestMessage requestMessage = new RequestMessage();
-                    requestMessage.deserialize(inp);
-                    UdpSend.sendServer(requestMessage.serialize(), ds);
+                String[] inputMessage = inp.trim().split("\\$");
+                //int messageType = Integer.parseInt(inputMessage[0]);
+                System.out.println("InputMessage: " + inputMessage[0]);
+                //System.out.println("receivedMessage Value of: " + RequestType.valueOf(inputMessage[0]));
+                RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
 
-                    break;
-                default:
-                    System.out.println("Request type does not correspond. Exiting.");
+                switch (receivedRequestType) {
+                    case Request:
+                        RequestMessage requestMessage = new RequestMessage();
+                        requestMessage.deserialize(inp);
+                        UdpSend.sendServer(requestMessage.serialize(), ds);
+
+                        break;
+                    default:
+                        System.out.println("Request type does not correspond. Exiting.");
+                        break;
+                }
+
+                //sendMessageToServer(inp);
+                // break the loop if user enters "bye"
+                if (inp.equals("bye"))
                     break;
             }
-
-            //sendMessageToServer(inp);
-            // break the loop if user enters "bye" 
-            if (inp.equals("bye"))
-                break;
         }
 
     }
@@ -658,20 +673,27 @@ public class Client {
             message += msgPortion;
         }
 
+        System.out.println("Message: " + message);
+
         String[] subMessage = message.split("_");
 
-        String[] meetings = subMessage[0].split(";");
-        String[] availability = subMessage[1].split(";");
+        if(subMessage.length > 0 && !subMessage[0].isEmpty()){
+            String[] meetings = subMessage[0].split(";");
 
-        for(String meeting : meetings){
-            ClientMeeting newMeeting = new ClientMeeting();
-            newMeeting.deserialize(meeting);
-            this.meetings.add(newMeeting);
+            for(String meeting : meetings){
+                ClientMeeting newMeeting = new ClientMeeting();
+                newMeeting.deserialize(meeting);
+                this.meetings.add(newMeeting);
+            }
         }
 
-        for(String available : availability){
-            this.availability.put(available, true);
-        }
+       if(subMessage.length > 0 && !subMessage[1].isEmpty()) {
+           String[] availability = subMessage[1].split(";");
+
+           for (String available : availability) {
+               this.availability.put(available, true);
+           }
+       }
 
     }
 
