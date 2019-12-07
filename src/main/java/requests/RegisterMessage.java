@@ -13,6 +13,12 @@ public class RegisterMessage extends Message {
         super(RequestType.Register);
     }
 
+    public RegisterMessage(String clientName, InetSocketAddress clientSocketAddress) {
+        super(RequestType.Register);
+        this.clientSocketAddress = clientSocketAddress;
+        this.clientName = clientName;
+    }
+
     public InetSocketAddress getClientSocketAddress() {
         return clientSocketAddress;
     }
@@ -41,6 +47,6 @@ public class RegisterMessage extends Message {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        
+
     }
 }
