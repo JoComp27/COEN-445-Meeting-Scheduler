@@ -42,14 +42,30 @@ public class InviteMessage extends Message {
         return requester;
     }
 
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
+    }
+
     @Override
     public String serialize() {
 
         String msg = "";
-        msg += requestType.ordinal() + "_";
-        msg += meetingNumber + "_";
-        msg += calendar.get(Calendar.DAY_OF_YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";
-        msg += topic + "_";
+        msg += requestType.ordinal() + "$";
+        msg += meetingNumber + "$";
+        msg += calendar.get(Calendar.YEAR) + ":" + calendar.get(Calendar.MONTH) + ":" + calendar.get(Calendar.DAY_OF_MONTH) + ":" + calendar.get(Calendar.HOUR_OF_DAY) + "$";
+        msg += topic + "$";
         msg += requester;
 
         return msg;
@@ -58,12 +74,12 @@ public class InviteMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] arrMsg = message.split("_");
+        String[] arrMsg = message.split("\\$");
 
         String[] cal = new String[1];
 
         for(int i = 0; i < 4; i++){
-            cal = arrMsg[2].split(",");
+            cal = arrMsg[2].split(":");
         }
 
         Calendar c = Calendar.getInstance();

@@ -2,7 +2,7 @@ package requests;
 
 public class AddedMessage extends Message {
 
-    private Integer meetingNumber;
+    private String meetingNumber;
     private String socketAddress;
 
     public AddedMessage(){
@@ -11,13 +11,13 @@ public class AddedMessage extends Message {
         this.socketAddress = null;
     }
 
-    public AddedMessage(Integer meetingNumber, String ipAddress) {
+    public AddedMessage(String meetingNumber, String ipAddress) {
         super(RequestType.Added);
         this.meetingNumber = meetingNumber;
         this.socketAddress = ipAddress;
     }
 
-    public Integer getMeetingNumber() {
+    public String getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -27,15 +27,15 @@ public class AddedMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + socketAddress;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + socketAddress;
     }
 
     @Override
     public void deserialize(String message) {
 
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
-        this.meetingNumber = Integer.parseInt(msg[1]);
+        this.meetingNumber = (msg[1]);
         this.socketAddress = msg[2];
 
     }

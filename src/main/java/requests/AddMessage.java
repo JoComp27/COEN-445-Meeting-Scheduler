@@ -2,32 +2,32 @@ package requests;
 
 public class AddMessage extends Message {
 
-    private Integer meetingNumber;
+    private String meetingNumber;
 
     public AddMessage(){
         super(RequestType.Add);
         this.meetingNumber = null;
     }
 
-    public AddMessage(Integer meetingNumber) {
+    public AddMessage(String meetingNumber) {
         super(RequestType.Add);
         this.meetingNumber = meetingNumber;
     }
 
-    public Integer getMeetingNumber() {
+    public String getMeetingNumber() {
         return meetingNumber;
     }
 
     @Override
     public String serialize() {
 
-        return requestType.ordinal() + "_" + meetingNumber;
+        return requestType.ordinal() + "$" + meetingNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
-
-        this.meetingNumber = Integer.parseInt(msg[1]);
+        String[] msg = message.split("\\$");
+        this.meetingNumber = msg[1];
+        //this.meetingNumber = Integer.parseInt(msg[1]);
     }
 }

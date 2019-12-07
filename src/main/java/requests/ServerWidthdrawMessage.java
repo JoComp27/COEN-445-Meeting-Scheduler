@@ -27,12 +27,12 @@ public class ServerWidthdrawMessage extends Message{
 
     @Override
     public String serialize() {
-        return RequestType.ServerWidthdraw.ordinal() + "_" + meetingNumber + "_" + ipAddress;
+        return RequestType.ServerWidthdraw.ordinal() + "$" + meetingNumber + "$" + ipAddress;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] splitMessage = message.split("_");
+        String[] splitMessage = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(splitMessage[1]);
         this.ipAddress = splitMessage[2];

@@ -2,7 +2,7 @@ package requests;
 
 public class ServerCancelMessage extends Message {
 
-    Integer meetingNumber;
+    String meetingNumber;
     String reason;
 
     public ServerCancelMessage() {
@@ -11,14 +11,14 @@ public class ServerCancelMessage extends Message {
         this.reason = null;
     }
 
-    public ServerCancelMessage(Integer meetingNumber, String reason) {
+    public ServerCancelMessage(String meetingNumber, String reason) {
         super(RequestType.ServerCancel);
         this.meetingNumber = meetingNumber;
         this.reason = reason;
 
     }
 
-    public Integer getMeetingNumber() {
+    public String getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -28,14 +28,14 @@ public class ServerCancelMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + reason;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + reason;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] stringArrayMessage = message.split("_");
+        String[] stringArrayMessage = message.split("\\$");
 
-        this.meetingNumber = Integer.parseInt(stringArrayMessage[1]);
+        this.meetingNumber = stringArrayMessage[1];
         this.reason = stringArrayMessage[2];
 
     }

@@ -2,8 +2,8 @@ package requests;
 
 public class ConfirmMessage extends Message {
 
-    private Integer meetingNumber;
-    private Integer roomNumber;
+    private String meetingNumber;
+    private String roomNumber;
 
     public ConfirmMessage(){
         super(RequestType.Confirm);
@@ -11,30 +11,30 @@ public class ConfirmMessage extends Message {
         this.roomNumber = null;
     }
 
-    public ConfirmMessage(Integer meetingNumber, int roomNumber) {
+    public ConfirmMessage(String meetingNumber, String roomNumber) {
         super(RequestType.Confirm);
         this.meetingNumber = meetingNumber;
         this.roomNumber = roomNumber;
     }
 
-    public Integer getMeetingNumber(){
+    public String getMeetingNumber(){
         return  meetingNumber;
     }
 
-    public Integer getRoomNumber(){
+    public String getRoomNumber(){
         return roomNumber;
     }
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + roomNumber;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + roomNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
-        this.meetingNumber = Integer.parseInt(msg[1]);
-        this.roomNumber = Integer.parseInt(msg[2]);
+        this.meetingNumber = (msg[1]);
+        this.roomNumber = (msg[2]);
     }
 }

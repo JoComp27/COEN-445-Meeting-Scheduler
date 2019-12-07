@@ -11,23 +11,24 @@ public class Meeting {
     private static final AtomicInteger countID = new AtomicInteger(0);  //Thread safe auto increment
     private int id;
     private RequestMessage requestMessage;
-    private String state;
-    private int maxParticipants;
+
     private int acceptedParticipants;
     //Key=port, bool=accepted
     private HashMap<Integer, Boolean> acceptedMap;
     private int roomNumber;
     private int organizer;
 
+
     public Meeting(String message){ //Constructor used to deserialize elements
         deserialize(message);
     }
 
-    public Meeting(RequestMessage requestMessage, String state, int maxParticipants, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
+
+    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
+
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
-        this.state = state;
-        this.maxParticipants = maxParticipants;
+
         this.acceptedParticipants = acceptedParticipants;
         this.acceptedMap = acceptedMap;
         this.roomNumber = roomNumber;
@@ -43,13 +44,6 @@ public class Meeting {
         return requestMessage;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public int getMaxParticipants() {
-        return maxParticipants;
-    }
 
     public int getAcceptedParticipants() {
         return acceptedParticipants;
@@ -85,8 +79,6 @@ public class Meeting {
 
         result += this.id + ",";
         result += this.requestMessage.serialize() + ",";
-        result += this.state + ",";
-        result += this.maxParticipants + ",";
         result += this.acceptedParticipants + ",";
         result += this.roomNumber + ",";
         result += this.organizer + ",";
@@ -107,13 +99,12 @@ public class Meeting {
 
         this.id = Integer.parseInt(subMessages[0]);
         this.requestMessage = requestMessage;
-        this.state = subMessages[2];
-        this.maxParticipants = Integer.parseInt(subMessages[3]);
-        this.acceptedParticipants = Integer.parseInt(subMessages[4]);
-        this.roomNumber = Integer.parseInt(subMessages[5]);
-        this.organizer = Integer.parseInt(subMessages[6]);
 
-        String[] acceptedMap = subMessages[7].split("@");
+        this.acceptedParticipants = Integer.parseInt(subMessages[2]);
+        this.roomNumber = Integer.parseInt(subMessages[4]);
+        this.organizer = Integer.parseInt(subMessages[5]);
+
+        String[] acceptedMap = subMessages[6].split("@");
 
         for(String accMsg : acceptedMap){
 

@@ -47,7 +47,7 @@ public class ClientMeeting {
     public void receiveConfirmMessage(ConfirmMessage confirmMessage){
 
         this.state = true;
-        this.roomNumber = confirmMessage.getRoomNumber();
+        this.roomNumber = Integer.valueOf(confirmMessage.getRoomNumber());
 
     }
 
@@ -114,7 +114,6 @@ public class ClientMeeting {
         result += roomNumber + ",";
         result += requestNumber + ",";
         result += meetingNumber + ",";
-
 
         for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";

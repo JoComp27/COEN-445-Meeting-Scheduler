@@ -2,29 +2,29 @@ package requests;
 
 public class WithdrawMessage extends Message {
 
-    Integer meetingNumber;
+    String meetingNumber;
 
     public WithdrawMessage() {
         super(RequestType.Withdraw);
         this.meetingNumber = null;
     }
 
-    public WithdrawMessage(Integer meetingNumber) {
+    public WithdrawMessage(String meetingNumber) {
         super(RequestType.Withdraw);
         this.meetingNumber = meetingNumber;
     }
 
-    public Integer getMeetingNumber() {
+    public String getMeetingNumber() {
         return meetingNumber;
     }
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber;
+        return requestType.ordinal() + "$" + meetingNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        this.meetingNumber = Integer.parseInt(message.split("_")[1]);
+        this.meetingNumber = (message.split("\\$")[1]);
     }
 }
