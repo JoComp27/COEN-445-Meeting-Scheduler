@@ -21,12 +21,12 @@ public class AddMessage extends Message {
     @Override
     public String serialize() {
 
-        return requestType.ordinal() + "_" + meetingNumber;
+        return requestType.ordinal() + "$" + meetingNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(msg[1]);
     }

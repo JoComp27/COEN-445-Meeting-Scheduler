@@ -43,9 +43,9 @@ public class ScheduledMessage extends Message{
     public String serialize() {
         String answer = "";
 
-        answer += requestType.ordinal() + "_";
-        answer += requestNumber + "_";
-        answer += roomNumber + "_";
+        answer += requestType.ordinal() + "$";
+        answer += requestNumber + "$";
+        answer += roomNumber + "$";
 
         for(int i = 0; i < listOfConfirmedParticipants.length ; i++) {
             if (i == listOfConfirmedParticipants.length - 1) {
@@ -61,7 +61,7 @@ public class ScheduledMessage extends Message{
     @Override
     public void deserialize(String message) {
 
-        String[] splitMessage = message.split("_");
+        String[] splitMessage = message.split("\\$");
 
         String[] participants = splitMessage[4].split(",");
 

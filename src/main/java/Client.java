@@ -313,7 +313,7 @@ public class Client {
         RegisterMessage registerMessage = null;
 
         try {
-            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getPort()));
+            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getLocalPort()));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -512,7 +512,7 @@ public class Client {
         @Override
         public void run() {
 
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 
@@ -585,8 +585,14 @@ public class Client {
 
         result += "_";
 
-        for (String s : availability.keySet()) { //Availability Hashmap
-            result += s + ";";
+        Object[] keys = availability.keySet().toArray();
+
+        for (int i = 0; i < keys.length ; i++){
+            if(i == 0){
+                result += (String)keys[i];
+                continue;
+            }
+            result += ";" + (String)keys[i];;
         }
 
         return result;

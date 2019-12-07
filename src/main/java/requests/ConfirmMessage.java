@@ -27,12 +27,12 @@ public class ConfirmMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + roomNumber;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + roomNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(msg[1]);
         this.roomNumber = Integer.parseInt(msg[2]);

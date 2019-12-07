@@ -30,7 +30,7 @@ public class RegisterMessage extends Message {
     @Override
     public String serialize() {
 
-        String result = requestType.ordinal() + "_" + clientName + "_" + clientSocketAddress.getPort();
+        String result = requestType.ordinal() + "$" + clientName + "$" + clientSocketAddress.getPort();
 
         return result;
     }
@@ -38,7 +38,7 @@ public class RegisterMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] resultMsg = message.split("_");
+        String[] resultMsg = message.split("\\$");
 
         this.clientName = resultMsg[1];
 

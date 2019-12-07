@@ -30,12 +30,12 @@ public class RoomChangeMessage extends Message {
     @Override
     public String serialize() {
 
-        return requestType.ordinal() + "_" + meetingNumber + "_" + newRoomNumber;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + newRoomNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
         this.meetingNumber = Integer.parseInt(msg[1]);
         this.newRoomNumber = Integer.parseInt(msg[2]);
 

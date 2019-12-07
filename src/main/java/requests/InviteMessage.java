@@ -1,5 +1,7 @@
 package requests;
 
+import Tools.CalendarUtil;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -62,10 +64,10 @@ public class InviteMessage extends Message {
     public String serialize() {
 
         String msg = "";
-        msg += requestType.ordinal() + "_";
-        msg += meetingNumber + "_";
-        msg += calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.DAY_OF_MONTH) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";
-        msg += topic + "_";
+        msg += requestType.ordinal() + "$";
+        msg += meetingNumber + "$";
+        msg += CalendarUtil.calendarToString(calendar) + "$";
+        msg += topic + "$";
         msg += requester;
 
         return msg;
@@ -74,16 +76,8 @@ public class InviteMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] arrMsg = message.split("_");
-
-        String[] cal = new String[1];
-
-        for(int i = 0; i < 4; i++){
-            cal = arrMsg[2].split(",");
-        }
-
-        Calendar c = Calendar.getInstance();
-        c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
+        String[] arrMsg = message.split("\\$");
+        Calendar c = CalendarUtil.stringToCalendar( arrMsg[2]);
 
         this.meetingNumber = Integer.parseInt(arrMsg[1]);
         this.calendar = c;

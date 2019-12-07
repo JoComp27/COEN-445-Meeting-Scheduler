@@ -35,13 +35,13 @@ public class DeniedMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + requestNumber + "_" + unavailable;
+        return requestType.ordinal() + "$" + requestNumber + "$" + unavailable;
     }
 
     @Override
     public void deserialize(String message) {
 
-        String[] array = message.split("_");
+        String[] array = message.split("\\$");
 
         this.requestNumber = Integer.parseInt(array[1]);
         this.unavailable = array[2];
