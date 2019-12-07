@@ -119,7 +119,7 @@ public class Client {
         Thread saveThread = new Thread(clientSave);
         saveThread.start();
 
-
+        sendRegistrationMessage();
 
         System.out.println("Local port is: " + ds.getLocalPort());
         Scanner sc = new Scanner(System.in);
@@ -235,7 +235,6 @@ public class Client {
 
                 AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
                 UdpSend.sendMessage(acceptMessage.serialize(), ds, serverAddress);
-                //UdpSend.sendMessage(acceptMessage.serialize(), socketAddress);
 
             }
         }
@@ -252,7 +251,6 @@ public class Client {
 
                 RejectMessage rejectMessage = new RejectMessage(meetingNumber);
                 UdpSend.sendMessage(rejectMessage.serialize(), ds, serverAddress);
-                //UdpSend.sendMessage(rejectMessage.serialize(), socketAddress);
             }
         }
 
@@ -270,7 +268,6 @@ public class Client {
 
                 WithdrawMessage withdrawMessage = new WithdrawMessage(meetingNumber);
                 UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
-                //UdpSend.sendMessage(withdrawMessage.serialize(), socketAddress);
 
             }
         }
@@ -286,7 +283,6 @@ public class Client {
 
                     AddMessage addMessage = new AddMessage(meetingNumber);
                     UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
-                    //UdpSend.sendMessage(addMessage.serialize(), socketAddress);
 
                 }
                 return;
@@ -303,13 +299,26 @@ public class Client {
 
                     RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
                     UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
-                    //UdpSend.sendMessage(requesterCancelMessage.serialize(), socketAddress);
 
                 }
 
                 return;
             }
         }
+
+    }
+
+    private void sendRegistrationMessage(){
+
+        RegisterMessage registerMessage = null;
+
+        try {
+            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getPort()));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        UdpSend.sendMessage(registerMessage.serialize(), ds, serverAddress);
 
     }
 
@@ -343,7 +352,6 @@ public class Client {
 
             //Send Accept
             UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
-            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
 
         } else {
             newMeeting.setCurrentAnswer(false);
@@ -353,7 +361,6 @@ public class Client {
 
             //Send Reject
             UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
-            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
         }
 
     }
@@ -562,25 +569,9 @@ public class Client {
 
     }
 
-    private void sendRegistrationMessage(){
+    private String serialize() {
 
-        RegisterMessage registerMessage = null;
-
-        try {
-            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getPort()));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-//        UdpSend.
-
-    }
-
-    private String getClientData() {
-
-        String result = "";
-
-        result += "" + "_"; //meetings ArrayList
+        String result = ""; //meetings ArrayList
 
         for(int i = 0; i < meetings.size(); i++){
             if(i == 0) {
@@ -609,11 +600,11 @@ public class Client {
 
             while(true){
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                FileReaderWriter.WriteFile("saveFile_" + ds.getPort(), getClientData(), false);
+                FileReaderWriter.WriteFile("saveFile_" + clientName, serialize(), false);
             }
 
         }
