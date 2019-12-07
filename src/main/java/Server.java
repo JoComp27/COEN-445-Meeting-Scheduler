@@ -374,9 +374,7 @@ public class Server implements Runnable{
                     }
 
                     //Go through all the participants in the existing meetings
-                    System.out.println("Meeting map size is: " + meetingMap.size());
                     for (int j = 0; j < meetingMap.size(); j++) {
-                        System.out.println("j value is: " + j);
                         //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
                         for(int i = 0; i < meetingMap.get(meetingNumberAccept).getRequestMessage().getParticipants().size(); i++) {
                             if (meetingMap.containsKey(meetingNumberAccept) && meetingMap.get(meetingNumberAccept).getRequestMessage().getParticipants().get(i).equals(Integer.toString(port))) {
@@ -417,9 +415,11 @@ public class Server implements Runnable{
                         //Go through all the participants in the existing meetings
                         for (int j = 0; j < meetingMap.size(); j++) {
                             //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
-                            if (meetingMap.containsKey(meetingNumberReject) && meetingMap.get(meetingNumberReject).getRequestMessage().getParticipants().get(j).equals(Integer.toString(port))) {
-                                rejectMeeting = meetingMap.get(meetingNumberReject);
-                                foundMatchReject = true;
+                            for(int i = 0; i < meetingMap.get(meetingNumberReject).getRequestMessage().getParticipants().size(); i++) {
+                                if (meetingMap.containsKey(meetingNumberReject) && meetingMap.get(meetingNumberReject).getRequestMessage().getParticipants().get(i).equals(Integer.toString(port))) {
+                                    rejectMeeting = meetingMap.get(meetingNumberReject);
+                                    foundMatchReject = true;
+                                }
                             }
                         }
 
