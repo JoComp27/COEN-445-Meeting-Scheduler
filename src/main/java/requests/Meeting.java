@@ -17,6 +17,7 @@ public class Meeting {
     private HashMap<String, Boolean> acceptedMap;
     private int roomNumber;
     private String organizer;
+    private  int answeredNumber;
 
 
     public Meeting(String message){ //Constructor used to deserialize elements
@@ -24,7 +25,7 @@ public class Meeting {
     }
 
 
-    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, String organizer) {
+    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, String organizer, int answeredNumber) {
 
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
@@ -33,6 +34,7 @@ public class Meeting {
         this.acceptedMap = acceptedMap;
         this.roomNumber = roomNumber;
         this.organizer = organizer;
+        this.answeredNumber = answeredNumber;
     }
 
     public int getId() {
@@ -65,6 +67,10 @@ public class Meeting {
         return organizer;
     }
 
+    public int getAnsweredNumber(){
+        return answeredNumber;
+    }
+
     public void setAcceptedMap(){
         for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
             this.acceptedMap.put(this.requestMessage.getParticipants().get(i), false);
@@ -72,6 +78,10 @@ public class Meeting {
     }
     public void setRoomNumber(int roomNumber){
         this.roomNumber = roomNumber;
+    }
+
+    public void incrementAnsweredNumber(){
+        answeredNumber++;
     }
 
     public String serialize(){

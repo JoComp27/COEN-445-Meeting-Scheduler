@@ -482,12 +482,13 @@ public class Client {
                 /**Messages here and sends to client*/
                 while (true) {
                     DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
+
                     try {
                         ds.receive(DpReceive);        //Receive Data in Buffer
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    String message = new String(DpReceive.getData());
+                    String message = new String(DpReceive.getData(), 0, DpReceive.getLength());
                     System.out.println("Server says: " + message);
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE
