@@ -89,7 +89,7 @@ public class Server implements Runnable{
 		}
     	
         /**The port address is chosen randomly*/
-        try(DatagramSocket serverSocket = new DatagramSocket(9997)) {
+        try {
 
             /**Messages here and sends to client*/
 

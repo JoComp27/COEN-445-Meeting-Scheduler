@@ -505,7 +505,7 @@ public class Client {
         @Override
         public void run() {
 
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 
@@ -582,8 +582,8 @@ public class Client {
 
         result += "" + "_"; //meetings ArrayList
 
-        for(int i = 0; i < meetings.size(); i++){
-            if(i == 0) {
+        for (int i = 0; i < meetings.size(); i++) {
+            if (i == 0) {
                 result += meetings.get(i).serialize();
                 continue;
             }
@@ -613,7 +613,7 @@ public class Client {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                FileReaderWriter.WriteFile("saveFile_" + ds.getPort(), getClientData(), false);
+                FileReaderWriter.WriteFile("saveFile_" + clientName, getClientData(), false);
             }
 
         }
