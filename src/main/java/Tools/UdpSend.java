@@ -5,17 +5,16 @@ import java.net.*;
 
 public class UdpSend {
 
-    public static void sendMessage(String message, DatagramSocket senderSocket, SocketAddress socketAddress) {
+    public static void sendMessage(String message, DatagramSocket sourceDatagramSocket, SocketAddress destinationSocketAddress) {
 
-            // convert the String input into the byte array.
-            byte buf[] = message.getBytes();
+        // convert the String input into the byte array.
+        byte buf[] = message.getBytes();
 
-        DatagramPacket DpSend = null;
-        DpSend = new DatagramPacket(buf, buf.length);
-        DpSend.setSocketAddress(socketAddress);
+        DatagramPacket DpSend = new DatagramPacket(buf, buf.length);
+        DpSend.setSocketAddress(destinationSocketAddress);
 
         try {
-            senderSocket.send(DpSend);
+            sourceDatagramSocket.send(DpSend);
         } catch (IOException e) {
             e.printStackTrace();
         }
