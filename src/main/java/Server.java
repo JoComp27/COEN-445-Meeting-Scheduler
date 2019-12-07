@@ -234,10 +234,22 @@ public class Server implements Runnable{
                     requestMessage.deserialize(message);
 
                     String time = CalendarUtil.calendarToString(requestMessage.getCalendar());
-                    //System.out.println("TIME: " + time);
-                    //Make meeting object
+
+                    String name = "";
+                    //Find the name using the port number, assign to participantName
+                    for (Map.Entry<String, InetSocketAddress> entry : clientAddressMap.entrySet()) {
+                        try {
+                            InetSocketAddress temp = new InetSocketAddress(InetAddress.getLocalHost(), port);
+                            if (entry.getValue().equals(temp)) {
+                                name = entry.getKey();
+                            }
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     //Accepted participants should always initialize as 1 for organizer
-                    Meeting meeting = new Meeting(requestMessage, 1, new HashMap<Integer, Boolean>(), 0, port);
+                    Meeting meeting = new Meeting(requestMessage, 1, new HashMap<Integer, Boolean>(), 0, name);
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
@@ -264,11 +276,16 @@ public class Server implements Runnable{
                         inviteMessage.setMeetingNumber(meeting.getId());
                         inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
                         inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
-                        inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
+                        inviteMessage.setRequester(meeting.getOrganizer().trim());
 
 
                         for(String s: meeting.getRequestMessage().getParticipants()){
                             socketAddress = clientAddressMap.get(s);
+
+                            //If you add participant in list that does not have a running client
+                            if(socketAddress == null){
+                                continue;
+                            }
                             UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
                             FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
@@ -301,10 +318,16 @@ public class Server implements Runnable{
                             inviteMessage.setMeetingNumber(meeting.getId());
                             inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
                             inviteMessage.setTopic(meeting.getRequestMessage().getTopic().trim());
-                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
+                            inviteMessage.setRequester(meeting.getOrganizer().trim());
+
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
                                 socketAddress = clientAddressMap.get(s);
+
+                                //If you add participant in list that does not have a running client
+                                if(socketAddress == null){
+                                    continue;
+                                }
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
                                 FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
@@ -334,10 +357,15 @@ public class Server implements Runnable{
                             inviteMessage.setMeetingNumber(meeting.getId());
                             inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
                             inviteMessage.setTopic(meeting.getRequestMessage().getTopic().trim());
-                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
+                            inviteMessage.setRequester(meeting.getOrganizer().trim());
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
                                 socketAddress = clientAddressMap.get(s);
+
+                                //If you add participant in list that does not have a running client
+                                if(socketAddress == null){
+                                    continue;
+                                }
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
                                 FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
@@ -439,7 +467,6 @@ public class Server implements Runnable{
                             acceptMeeting.incrementAcceptedParticipants();
                             //Make accepted boolean true
                             acceptMeeting.getAcceptedMap().replace(participantName, true);
-                            System.out.println("This participant says2: " + acceptMeeting.getAcceptedMap().get(participantName));
                         }
                         System.out.println("You have been added to the scheduled meeting");
                         messageToClient = "You have been added to the scheduled meeting";
@@ -556,90 +583,90 @@ public class Server implements Runnable{
                      *      Meeting does not exist*/
 
 
-                    String mNumber = receivedMessage[1];
-                    System.out.println("Meeting number " + mNumber);
-                    System.out.println("Meeting Map: " + meetingMap);
-                    if(meetingMap.containsKey(mNumber)){
-                        Meeting theMeeting = meetingMap.get(mNumber);
-                        System.out.println(theMeeting.getRoomNumber());
-                        if(port == theMeeting.getOrganizer()){
-                            String date = CalendarUtil.calendarToString(theMeeting.getRequestMessage().getCalendar());
-                            System.out.println(date);
-                            int roomNumber = theMeeting.getRoomNumber();
-                            Boolean[] rooms = scheduleMap.get(date);
-                            System.out.println("Boolean Rooms: " + rooms);
-
-                            /**NEED TO SEND MESSAGE TO ALL INVITED PARTICIPANTS. SENDING THE SAME
-                             * MESSAGE TO DIFFERENT PORT NUMBER.
-                             *
-                             * Create array, store all port number getAcceptedMap.
-                             * Loop through the array
-                             *      Create ServerCancelMessage object to send message
-                             *      Call the serialize function to send.
-                             * */
-
-                            List<String> participants = new ArrayList<>();
-
-                            if(roomNumber == 1){
-                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
-
-                                Set<String> portNumber = theMeeting.getAcceptedMap().keySet();
-                                for (String port : portNumber){
-                                    participants.add(port);
-                                }
-                                for (int i = 0; i < participants.size(); i++){
-                                    System.out.println(participants.get(i));
-                                }
-
-                                /**Loop through the save ports and send message to them*/
-
-                                for (int i = 0; i < participants.size(); i++){
-                                    //ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
-                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
-                                }
-
-                                rooms[roomNumber] = false;
-                                scheduleMap.replace(date, rooms);
-                                meetingMap.remove(mNumber);
-
-                            }
-                            else if(roomNumber == 2){
-                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
-
-                                Set<String> portNumber = theMeeting.getAcceptedMap().keySet();
-                                for (String port : portNumber){
-                                    participants.add(port);
-                                }
-                                for (int i = 0; i < participants.size(); i++){
-                                    System.out.println(participants.get(i));
-                                }
-
-                                /**Loop through the save ports and send message to them*/
-
-                                for (int i = 0; i < participants.size(); i++){
-                                    //ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
-                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
-                                }
-
-                                rooms[roomNumber] = false;
-                                scheduleMap.replace(date, rooms);
-                                meetingMap.remove(mNumber);
-
-                            }
-                            System.out.println("meetingMap: " + meetingMap);
-                            System.out.println("scheduleMap" + scheduleMap);
-
-
-                        }
-                        else{
-                            messageToClient = "Not requestor, cannot cancel meeting";
-                        }
-                    }
-                    else{
-                        messageToClient = "Meeting does not exist";
-                    }
-
-                    break;
+//                    String mNumber = receivedMessage[1];
+//                    System.out.println("Meeting number " + mNumber);
+//                    System.out.println("Meeting Map: " + meetingMap);
+//                    if(meetingMap.containsKey(mNumber)){
+//                        Meeting theMeeting = meetingMap.get(mNumber);
+//                        System.out.println(theMeeting.getRoomNumber());
+//                        if(port == theMeeting.getOrganizer()){
+//                            String date = CalendarUtil.calendarToString(theMeeting.getRequestMessage().getCalendar());
+//                            System.out.println(date);
+//                            int roomNumber = theMeeting.getRoomNumber();
+//                            Boolean[] rooms = scheduleMap.get(date);
+//                            System.out.println("Boolean Rooms: " + rooms);
+//
+//                            /**NEED TO SEND MESSAGE TO ALL INVITED PARTICIPANTS. SENDING THE SAME
+//                             * MESSAGE TO DIFFERENT PORT NUMBER.
+//                             *
+//                             * Create array, store all port number getAcceptedMap.
+//                             * Loop through the array
+//                             *      Create ServerCancelMessage object to send message
+//                             *      Call the serialize function to send.
+//                             * */
+//
+//                            List<String> participants = new ArrayList<>();
+//
+//                            if(roomNumber == 1){
+//                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
+//
+//                                Set<String> portNumber = theMeeting.getAcceptedMap().keySet();
+//                                for (String port : portNumber){
+//                                    participants.add(port);
+//                                }
+//                                for (int i = 0; i < participants.size(); i++){
+//                                    System.out.println(participants.get(i));
+//                                }
+//
+//                                /**Loop through the save ports and send message to them*/
+//
+//                                for (int i = 0; i < participants.size(); i++){
+//                                    //ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+//                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
+//                                }
+//
+//                                rooms[roomNumber] = false;
+//                                scheduleMap.replace(date, rooms);
+//                                meetingMap.remove(mNumber);
+//
+//                            }
+//                            else if(roomNumber == 2){
+//                                /**CHECK THE INDEX WELL. MIGHT HAVE TO SUBTRACT 1*/
+//
+//                                Set<String> portNumber = theMeeting.getAcceptedMap().keySet();
+//                                for (String port : portNumber){
+//                                    participants.add(port);
+//                                }
+//                                for (int i = 0; i < participants.size(); i++){
+//                                    System.out.println(participants.get(i));
+//                                }
+//
+//                                /**Loop through the save ports and send message to them*/
+//
+//                                for (int i = 0; i < participants.size(); i++){
+//                                    //ServerCancelMessage serverCancelMessage = new ServerCancelMessage(participants.get(i), "ServerCancel_Requestor_Cancelled_Meeting");
+//                                    /**USE UDPSEND TOOL TO SEND THE MESSAGE TO SERVERS.*/
+//                                }
+//
+//                                rooms[roomNumber] = false;
+//                                scheduleMap.replace(date, rooms);
+//                                meetingMap.remove(mNumber);
+//
+//                            }
+//                            System.out.println("meetingMap: " + meetingMap);
+//                            System.out.println("scheduleMap" + scheduleMap);
+//
+//
+//                        }
+//                        else{
+//                            messageToClient = "Not requestor, cannot cancel meeting";
+//                        }
+//                    }
+//                    else{
+//                        messageToClient = "Meeting does not exist";
+//                    }
+//
+//                    break;
                 default:
                     System.out.println("Request type does not correspond. Exiting.");
                     break;

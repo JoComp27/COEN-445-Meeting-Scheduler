@@ -16,7 +16,7 @@ public class Meeting {
     //Key=port, bool=accepted
     private HashMap<String, Boolean> acceptedMap;
     private int roomNumber;
-    private int organizer;
+    private String organizer;
 
 
     public Meeting(String message){ //Constructor used to deserialize elements
@@ -24,7 +24,7 @@ public class Meeting {
     }
 
 
-    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
+    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, String organizer) {
 
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
@@ -61,7 +61,7 @@ public class Meeting {
         return roomNumber;
     }
 
-    public int getOrganizer() {
+    public String getOrganizer() {
         return organizer;
     }
 
@@ -102,7 +102,7 @@ public class Meeting {
 
         this.acceptedParticipants = Integer.parseInt(subMessages[2]);
         this.roomNumber = Integer.parseInt(subMessages[4]);
-        this.organizer = Integer.parseInt(subMessages[5]);
+        this.organizer = subMessages[5];
 
         String[] acceptedMap = subMessages[6].split("@");
 
