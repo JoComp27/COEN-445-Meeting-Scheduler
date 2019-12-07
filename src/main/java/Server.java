@@ -216,6 +216,9 @@ public class Server implements Runnable{
             FileReaderWriter file = new FileReaderWriter();
             String currentDir = System.getProperty("user.dir");
             String filePath = currentDir + "log.txt";
+            Calendar calendar = Calendar.getInstance();
+            String currentTime = "Server[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                    + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
 
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
@@ -223,6 +226,7 @@ public class Server implements Runnable{
                     RegisterMessage registerMessage = new RegisterMessage();
                     registerMessage.deserialize(message);
                     clientAddressMap.put(registerMessage.getClientName(), registerMessage.getClientSocketAddress());
+                    FileReaderWriter.WriteFile("log", currentTime + "Registered " + registerMessage.getClientName() + "\n", true);
 
                     break;
                 case Request:
@@ -264,11 +268,10 @@ public class Server implements Runnable{
 
 
                         for(String s: meeting.getRequestMessage().getParticipants()){
-                            System.out.println("Sent to " + socketAddress);
-
                             socketAddress = clientAddressMap.get(s);
-
                             UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
+
+                            FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
                         }
 
 
@@ -301,11 +304,11 @@ public class Server implements Runnable{
                             inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
-                                System.out.println("Sent to " + socketAddress);
-
                                 socketAddress = clientAddressMap.get(s);
-
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
+
+                                FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+
                             }
                             //Create meeting
                             //Add meeting to meetingMap
@@ -334,11 +337,11 @@ public class Server implements Runnable{
                             inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
-                                System.out.println("Sent to " + socketAddress);
-
                                 socketAddress = clientAddressMap.get(s);
-
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
+
+                                FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+
                             }
 
                         }
@@ -346,10 +349,11 @@ public class Server implements Runnable{
                             DeniedMessage deniedMessage = new DeniedMessage();
                             deniedMessage.setRequestNumber(meeting.getRequestMessage().getRequestNumber());
                             deniedMessage.setUnavailable("Unavailable");
+
                             UdpSend.sendMessage(deniedMessage.serialize(), serverSocket, socketAddress);
+                            FileReaderWriter.WriteFile("log", currentTime + deniedMessage.getUnavailable() + " " + deniedMessage.getRequestNumber() + "\n", true);
 
                             messageToClient = "Room is not available at this time. Choose another time";
-                            //UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
                             System.out.println("In server: " + messageToClient);
                             break;
                         }
@@ -358,10 +362,12 @@ public class Server implements Runnable{
                         DeniedMessage deniedMessage = new DeniedMessage();
                         deniedMessage.setRequestNumber(meeting.getRequestMessage().getRequestNumber());
                         deniedMessage.setUnavailable("Unavailable");
+
                         UdpSend.sendMessage(deniedMessage.serialize(), serverSocket, socketAddress);
+                        FileReaderWriter.WriteFile("log", currentTime + deniedMessage.getUnavailable() + " " + deniedMessage.getRequestNumber() + "\n", true);
+
 
                         messageToClient = "Room is not available at this time. Choose another time";
-                        //UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
                         System.out.println("In server: " + messageToClient);
                         break;
                     }
@@ -438,6 +444,8 @@ public class Server implements Runnable{
                         System.out.println("You have been added to the scheduled meeting");
                         messageToClient = "You have been added to the scheduled meeting";
                         UdpSend.sendMessage(acceptMessage.serialize(), serverSocket, socketAddress);
+                        FileReaderWriter.WriteFile("log", currentTime + "Accepted " + participantName + "\n", true);
+
                     }
 
                     break;
@@ -486,6 +494,8 @@ public class Server implements Runnable{
                     if(rejectMeeting.getAcceptedMap().containsKey(participantName2) && !rejectMeeting.getAcceptedMap().get(participantName2)){
                         messageToClient = "You have rejected the meeting";
                         UdpSend.sendMessage(rejectMessage.serialize(), serverSocket, socketAddress);
+                        FileReaderWriter.WriteFile("log", currentTime + "Rejected " + participantName2 + "\n", true);
+
                     }
                     else{
                         //If client has already accepted, they cannot Reject
