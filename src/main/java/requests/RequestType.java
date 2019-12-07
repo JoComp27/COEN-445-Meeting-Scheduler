@@ -7,6 +7,6 @@ public enum RequestType {
     Scheduled, NotScheduled, Added, RoomChange, ServerWidthdraw,
 
     //Client Requests
-    Request,  Accept, Reject, Withdraw,  Add, RequesterCancel
+    Request,  Accept, Reject, Withdraw,  Add, RequesterCancel, Register
 
 }

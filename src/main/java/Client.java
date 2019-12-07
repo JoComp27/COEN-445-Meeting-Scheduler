@@ -41,8 +41,8 @@ public class Client {
 
 
         try {
-            serverPort = args[0].trim();
-            clientPort = args[1].trim();
+            serverPort = args[0];
+            clientPort = args[1];
 
 
         } catch (NumberFormatException e) {
@@ -183,7 +183,7 @@ public class Client {
                         //Use the meeting the user chose
                         ClientMeeting clientMeeting = meetings.get(Integer.parseInt(answer));
 
-                        if (clientMeeting.getUserType() == true && clientMeeting.getState() == true) {
+                        if (clientMeeting.getUserType() && clientMeeting.getState()) {
                             //Organizer and meeting is confirmed
                             //Organizer can cancel the meeting
                             System.out.println("This meeting is confirmed");
@@ -191,14 +191,14 @@ public class Client {
                             System.out.println("Type 'Cancel_MeetingNumber' to cancel the meeting");
 
                         }
-                        else if (clientMeeting.getUserType() == false && clientMeeting.getState() == true && clientMeeting.isCurrentAnswer() == true) {
+                        else if (!clientMeeting.getUserType() && clientMeeting.getState() && clientMeeting.isCurrentAnswer()) {
                             //Invitee, meeting is confirmed and current answer is accepted
                             //At confirm message, meeting is confirmed, can only withdraw
                             System.out.println("This meeting is confirmed");
                             System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
                             System.out.println("Type 'Withdraw_MeetingNumber' to withdraw from the meeting");
                         }
-                        else if (clientMeeting.getUserType() == false && clientMeeting.getState() == true && clientMeeting.isCurrentAnswer() == false){
+                        else if (!clientMeeting.getUserType() && clientMeeting.getState() && !clientMeeting.isCurrentAnswer()){
                             //Invitee, meeting is confirmed and current answer is not accepted
                             //At add stage
                             System.out.println("This meeting is confirmed");
@@ -255,7 +255,7 @@ public class Client {
         }
 
         for(int i = 0 ; i < meetings.size(); i++){
-            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && !meetings.get(i).getState()){
                 synchronized (meetings){
                     meetings.get(i).setCurrentAnswer(true);
                 }
@@ -279,7 +279,7 @@ public class Client {
         }
 
         for(int i = 0 ; i < meetings.size(); i++){
-            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == false){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && !meetings.get(i).getState()){
                 synchronized (meetings){
                     meetings.get(i).setCurrentAnswer(false);
                 }
@@ -302,8 +302,8 @@ public class Client {
         }
 
         for(int i = 0 ; i < meetings.size(); i++){
-            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState() == true
-                    && meetings.get(i).getUserType() == false){
+            if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState()
+                    && !meetings.get(i).getUserType()){
 
                 synchronized (meetings){
                     meetings.get(i).setCurrentAnswer(false);
@@ -329,7 +329,7 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetingNumber == meetings.get(i).getMeetingNumber()){
-                if(meetings.get(i).getUserType() == false) {
+                if(!meetings.get(i).getUserType()) {
                     meetings.get(i).setCurrentAnswer(true);
 
                     AddMessage addMessage = new AddMessage(meetingNumber);
@@ -354,7 +354,7 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == meetingNumber){
-                if(meetings.get(i).getUserType() == true && meetings.get(i).getState() == true){
+                if(meetings.get(i).getUserType() && meetings.get(i).getState()){
 
                     RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(meetingNumber);
                     UdpSend.sendServer(requesterCancelMessage.serialize(), ds);
@@ -432,7 +432,7 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
-                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == false) {
+                if(!meetings.get(i).getState() && !meetings.get(i).getUserType()) {
                     System.out.println("Meeting " + message.getMeetingNumber() + " was cancelled for this reason : " + message.getReason());
                     synchronized (meetings){
                         meetings.remove(i);
@@ -448,7 +448,7 @@ public class Client {
         //Check if request RQ# is part of my list and is in standby (Only Host should receive)
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
-                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == true){
+                if(!meetings.get(i).getState() && meetings.get(i).getUserType()){
                     //Change Meeting to complete and change info in meeting
                     meetings.get(i).receiveScheduledMessage(message);
 
@@ -463,7 +463,7 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getRequestNumber() == message.getRequestNumber()){
-                if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == true) {
+                if(!meetings.get(i).getState() && meetings.get(i).getUserType()) {
                     synchronized (meetings){
                         meetings.remove(i);
                     }
@@ -477,7 +477,7 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
-                if(meetings.get(i).getState() == true && meetings.get(i).getUserType() == true){
+                if(meetings.get(i).getState() && meetings.get(i).getUserType()){
                     synchronized (meetings){
                         meetings.get(i).getAcceptedMap().put(Integer.parseInt(message.getSocketAddress()), true);
                     }
@@ -490,7 +490,7 @@ public class Client {
     private void handleRoomChange(RoomChangeMessage message) {
         for(int i = 0; i < meetings.size(); i++){
             if(meetings.get(i).getMeetingNumber() == message.getMeetingNumber()){
-                if(meetings.get(i).getState() == true){
+                if(meetings.get(i).getState()){
                     synchronized (meetings){
                         meetings.get(i).setRoomNumber(message.getNewRoomNumber());
                     }
@@ -502,7 +502,7 @@ public class Client {
     private void handleServerWidthdraw(ServerWidthdrawMessage message){
         for(int i = 0; i < meetings.size(); i++) {
             if (meetings.get(i).getMeetingNumber() == message.getMeetingNumber()) {
-                if (meetings.get(i).getState() == true && meetings.get(i).getUserType() == true) {
+                if (meetings.get(i).getState() && meetings.get(i).getUserType()) {
                     synchronized (meetings) {
                         meetings.get(i).getAcceptedMap().remove(Integer.parseInt(message.getIpAddress()));
                     }
