@@ -351,6 +351,7 @@ public class Client {
             }
 
             //Send Accept
+            System.out.println("Accepted meeting");
             UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
         } else {
@@ -360,6 +361,7 @@ public class Client {
             }
 
             //Send Reject
+            System.out.println("Rejected meeting");
             UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
         }
 
@@ -512,7 +514,7 @@ public class Client {
         @Override
         public void run() {
 
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 

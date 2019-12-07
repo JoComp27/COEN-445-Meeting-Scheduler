@@ -14,7 +14,7 @@ public class Meeting {
 
     private int acceptedParticipants;
     //Key=port, bool=accepted
-    private HashMap<Integer, Boolean> acceptedMap;
+    private HashMap<String, Boolean> acceptedMap;
     private int roomNumber;
     private int organizer;
 
@@ -53,7 +53,7 @@ public class Meeting {
         acceptedParticipants++;
     }
 
-    public HashMap<Integer, Boolean> getAcceptedMap() {
+    public HashMap<String, Boolean> getAcceptedMap() {
         return acceptedMap;
     }
 
@@ -67,7 +67,7 @@ public class Meeting {
 
     public void setAcceptedMap(){
         for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
-            this.acceptedMap.put(Integer.parseInt(this.requestMessage.getParticipants().get(i)), false);
+            this.acceptedMap.put(this.requestMessage.getParticipants().get(i), false);
         }
     }
     public void setRoomNumber(int roomNumber){
@@ -83,7 +83,7 @@ public class Meeting {
         result += this.roomNumber + ",";
         result += this.organizer + ",";
 
-        for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
+        for(Map.Entry<String, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";
         }
 
@@ -113,7 +113,7 @@ public class Meeting {
             }
 
             String[] entry = accMsg.split("!");
-            this.acceptedMap.put(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1]));
+            this.acceptedMap.put(entry[0], Boolean.parseBoolean(entry[1]));
         }
 
     }
