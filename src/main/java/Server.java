@@ -13,12 +13,14 @@ public class Server implements Runnable{
 
     private HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
     private HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
+    private HashMap<String, InetSocketAddress> clientAddressMap;         //String ClientName, InetSocketAddress client socket address
 
     private DatagramSocket serverSocket;
 
     public Server (){
         this.scheduleMap = new HashMap<>();
         this.meetingMap = new HashMap<>();
+        this.clientAddressMap = new HashMap<>();
 
         try {
             this.serverSocket = new DatagramSocket(new InetSocketAddress(InetAddress.getLocalHost(), 9997));
@@ -106,9 +108,6 @@ public class Server implements Runnable{
                 //System.out.println(DpReceive.getData());
                 //System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
-
-
-
 
 
                 System.out.println("DpReceive getAddress" + DpReceive.getAddress());

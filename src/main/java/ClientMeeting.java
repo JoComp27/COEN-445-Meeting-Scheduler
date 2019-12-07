@@ -115,7 +115,6 @@ public class ClientMeeting {
         result += requestNumber + ",";
         result += meetingNumber + ",";
 
-
         for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";
         }
