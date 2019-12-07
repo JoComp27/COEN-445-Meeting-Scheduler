@@ -22,7 +22,42 @@ public class Server implements Runnable{
 
     public static void main(String[] args){
         System.out.println("SERVER LAUNCHED");
-    	Server server = new Server();
+
+        Server server = new Server();
+
+        //Checking if previous
+        File saveFile = new File("server.txt");
+
+        if(saveFile.exists()){
+
+            //Add CLI to check if user wants to restore user or not.
+
+            System.out.println("It seems that a restore file is available and could be loaded onto the" +
+                    "server\n Do you wish to restore it?");
+
+            String answer = "";
+
+            Scanner scanner = new Scanner(System.in);
+
+            while(!answer.equals("y") || !answer.equals("n")){
+
+                answer = scanner.nextLine().trim();
+                switch (answer) {
+                    case "y":
+                        System.out.println("Save will be restored for server");
+                        server.loadServer();
+                        break;
+                    case "n":
+                        System.out.println("Save will not be restored for client");
+                        break;
+                    default:
+                        System.out.println("INVALID SAVE RESTORE ANSWER");
+                }
+            }
+
+
+        }
+
         server.run();
     }
 
@@ -144,7 +179,7 @@ public class Server implements Runnable{
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
         @Override
         public void run() {
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             System.out.println("The received message: " + message);
 
 
@@ -209,15 +244,16 @@ public class Server implements Runnable{
                         inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
                         inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
 
-                        for(String s: meeting.getRequestMessage().getParticipants()){
-                            System.out.println("Sent to " + socketAddress);
-                            try {
-                                socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
-                            } catch (UnknownHostException e) {
-                                e.printStackTrace();
-                            }
-                            UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
-                        }
+                        UdpSend.sendMessage(inviteMessage.serialize(), socketAddress);
+//                        for(String s: meeting.getRequestMessage().getParticipants()){
+//                            System.out.println("Sent to " + socketAddress);
+//                            try {
+//                                socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(s));
+//                            } catch (UnknownHostException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
 
 
                         /**Writes the message in the log file.*/
@@ -612,8 +648,63 @@ public class Server implements Runnable{
             }
         }
 
-        public String getCommandMessage(){
-            return null;
+    }
+
+    public String getCommandMessage(){
+        return null;
+    }
+
+    private void saveServer(){
+
+        FileReaderWriter.WriteFile("server", getServerState(), false);
+
+    }
+
+    private String getServerState(){
+        String result = "";
+
+        for(Map.Entry<String, Boolean[]> entry :  scheduleMap.entrySet()){
+            result += entry.getKey() + "!" + entry.getValue()[0] + "!" + entry.getValue()[1] + ";";
+        }
+
+        result += "_";
+
+        for(Map.Entry<String, Meeting> entry :  meetingMap.entrySet()){
+            result += entry.getValue().serialize() + ";";
+        }
+
+        return result;
+    }
+
+    private void loadServer(){
+
+        ArrayList<String> fileString = FileReaderWriter.ReadFile("server");
+
+        String message = "";
+
+        for(int i = 0; i < fileString.size(); i++){
+            message += fileString.get(i);
+        }
+
+        String[] subMessage = message.split("_");
+
+        String[] scheduleMapMessages = subMessage[0].split(";");
+        String[] meetingMapString = subMessage[1].split(";");
+
+        for(int i = 0; i < scheduleMapMessages.length ; i++){
+            String[] sMMSplit = scheduleMapMessages[i].split("!");
+
+            Boolean[] availability = {Boolean.parseBoolean(sMMSplit[1]), Boolean.parseBoolean(sMMSplit[2])};
+
+            scheduleMap.put(sMMSplit[0], availability);
+        }
+
+        for(int i = 0 ; i < meetingMapString.length ; i++){
+
+            Meeting meeting = new Meeting(meetingMapString[i]);
+
+            meetingMap.put(Integer.toString(meeting.getId()), meeting);
+
         }
 
     }
