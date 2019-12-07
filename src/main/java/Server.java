@@ -144,7 +144,7 @@ public class Server implements Runnable{
         /**Takes the message received from the datagramPacket and separate the message using the "_"*/
         @Override
         public void run() {
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             System.out.println("The received message: " + message);
 
 
@@ -242,8 +242,8 @@ public class Server implements Runnable{
                             InviteMessage inviteMessage = new InviteMessage();
                             inviteMessage.setMeetingNumber(meeting.getId());
                             inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
-                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
-                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
+                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic().trim());
+                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
                                 System.out.println("Sent to " + socketAddress);
@@ -274,8 +274,8 @@ public class Server implements Runnable{
                             InviteMessage inviteMessage = new InviteMessage();
                             inviteMessage.setMeetingNumber(meeting.getId());
                             inviteMessage.setCalendar(meeting.getRequestMessage().getCalendar());
-                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic());
-                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()));
+                            inviteMessage.setTopic(meeting.getRequestMessage().getTopic().trim());
+                            inviteMessage.setRequester(Integer.toString(meeting.getOrganizer()).trim());
 
                             for(String s: meeting.getRequestMessage().getParticipants()){
                                 System.out.println("Sent to " + socketAddress);
@@ -317,7 +317,7 @@ public class Server implements Runnable{
                     for(String typeKey : scheduleMap.keySet()){
                         String key = typeKey.toString();
                         String value = Arrays.toString(scheduleMap.get(typeKey));
-                        System.out.println("Hashmap");
+                        System.out.println("Hashmap for scheduled");
                         System.out.println(key + ": " + value);
                     }
 
@@ -333,16 +333,20 @@ public class Server implements Runnable{
                     for(String typeKey : meetingMap.keySet()){
                         String key = typeKey.toString();
                         String value = meetingMap.get(typeKey).getRequestMessage().getParticipants().toString();
-                        System.out.println("Hashmap");
+                        System.out.println("Hashmap for meetings");
                         System.out.println(key + ": " + value);
                     }
 
                     //Go through all the participants in the existing meetings
+                    System.out.println("Meeting map size is: " + meetingMap.size());
                     for (int j = 0; j < meetingMap.size(); j++) {
+                        System.out.println("j value is: " + j);
                         //If the client is a valid participant, the meeting that will be manipulated will be set to the participant's meeting
-                        if (meetingMap.containsKey(meetingNumberAccept) && meetingMap.get(meetingNumberAccept).getRequestMessage().getParticipants().get(j).equals(Integer.toString(port))) {
-                            acceptMeeting = meetingMap.get(meetingNumberAccept);
-                            foundMatchAccept = true;
+                        for(int i = 0; i < meetingMap.get(meetingNumberAccept).getRequestMessage().getParticipants().size(); i++) {
+                            if (meetingMap.containsKey(meetingNumberAccept) && meetingMap.get(meetingNumberAccept).getRequestMessage().getParticipants().get(i).equals(Integer.toString(port))) {
+                                acceptMeeting = meetingMap.get(meetingNumberAccept);
+                                foundMatchAccept = true;
+                            }
                         }
                     }
 

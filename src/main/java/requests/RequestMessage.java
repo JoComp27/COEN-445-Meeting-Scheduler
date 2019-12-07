@@ -56,26 +56,26 @@ public class RequestMessage extends Message {
     public String serialize() {
         String stringMessage = "";
 
-        stringMessage += getRequestType().ordinal() + "_"; //Message ID
-        stringMessage += requestNumber + "_";
+        stringMessage += getRequestType().ordinal() + "$"; //Message ID
+        stringMessage += requestNumber + "$";
 
-        stringMessage += CalendarUtil.calendarToString(calendar) + "_";  // DATE & TIME
+        stringMessage += CalendarUtil.calendarToString(calendar) + "$";  // DATE & TIME
 
-        stringMessage += minimum + "_";  // MINIMUM
+        stringMessage += minimum + "$";  // MINIMUM
 
         for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
             if(i==participants.size()-1){
                 stringMessage += participants.get(i);
             }
             else{
-                stringMessage += participants.get(i) + ",";
+                stringMessage += participants.get(i) + "%";
             }
 
 
         }
 
 
-        stringMessage += "_" +  topic; // TOPIC
+        stringMessage += "$" +  topic; // TOPIC
 
         return stringMessage;
     }
@@ -83,18 +83,18 @@ public class RequestMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] subMessages = message.split("_");
+        String[] subMessages = message.split("\\$");
 
         String[] cal = new String[2];
 
         for(int i = 0; i < 4; i++){
-            cal = subMessages[2].split(",");
+            cal = subMessages[2].split(":");
         }
         Calendar c = Calendar.getInstance();
         c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
 
         List<String> participants = new ArrayList<>();
-        String[] users = subMessages[4].split(",");
+        String[] users = subMessages[4].split("%");
 
         for(String user : users){
             participants.add(user);

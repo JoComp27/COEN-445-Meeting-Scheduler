@@ -102,7 +102,7 @@ public class Client {
     private void sendMessageToServer(String message) throws IOException {
 
         // convert the String input into the byte array.
-        String first = "Request_1_2019,10,6,8_2_59000_asd";
+        String first = "Request$1$2019:10:6:8$2$59000$asd";
         RequestMessage firstRequest = new RequestMessage();
         firstRequest.deserialize(first);
         UdpSend.sendServer(firstRequest.serialize(), ds);
@@ -129,7 +129,7 @@ public class Client {
         while (true) {
             String inp = sc.nextLine();
 
-            String[] inputMessage = inp.trim().split("_");
+            String[] inputMessage = inp.trim().split("\\$");
             //int messageType = Integer.parseInt(inputMessage[0]);
             RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
 
@@ -406,6 +406,7 @@ public class Client {
 
             //Send Accept
             UdpSend.sendServer(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds);
+            System.out.println("Accepted meeting");
             //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
 
         } else {
@@ -416,6 +417,7 @@ public class Client {
 
             //Send Reject
             UdpSend.sendServer(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds);
+            System.out.println("Rejected meeting");
             //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), socketAddress);
         }
 
@@ -541,8 +543,8 @@ public class Client {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    String message = new String(DpReceive.getData());
-                    System.out.println("Server says: " + message);
+                    String message = new String(DpReceive.getData()).trim();
+                    System.out.println("Server says: " + message.trim());
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE
                      *
@@ -568,7 +570,7 @@ public class Client {
         @Override
         public void run() {
 
-            String[] receivedMessage = message.split("_");
+            String[] receivedMessage = message.split("\\$");
             int messageType = Integer.parseInt(receivedMessage[0]);
             RequestType receivedRequestType = RequestType.values()[messageType];
 
