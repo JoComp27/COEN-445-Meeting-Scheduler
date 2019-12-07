@@ -26,7 +26,7 @@ public class Client {
         this.serverPort = serverPort;
         this.availability = new HashMap<>();
 
-        meetings = new ArrayList<>();
+        this.meetings = new ArrayList<>();
     }
 
     public static void main(String args[]) throws IOException {
@@ -70,13 +70,13 @@ public class Client {
 
             Scanner scanner = new Scanner(System.in);
 
-
             while(!answer.equals("y") || !answer.equals("n")){
+
                 answer = scanner.nextLine().trim();
                 switch (answer) {
                     case "y":
                         System.out.println("Save will be restored for client " + clientPort);
-                        client.restoreFromSave(saveFile);
+                        client.restoreFromSave(saveFile.getName());
                         break;
                     case "n":
                         System.out.println("Save will not be restored for client");
@@ -90,12 +90,6 @@ public class Client {
         }
 
         client.run();
-
-    }
-
-    private void restoreFromSave(File saveFile) {
-
-
 
     }
 
@@ -131,6 +125,8 @@ public class Client {
 
             String[] inputMessage = inp.trim().split("\\$");
             //int messageType = Integer.parseInt(inputMessage[0]);
+            System.out.println("InputMessage: " + inputMessage[0]);
+            //System.out.println("receivedMessage Value of: " + RequestType.valueOf(inputMessage[0]));
             RequestType receivedRequestType = RequestType.valueOf(inputMessage[0]);
 
             switch (receivedRequestType){
@@ -219,6 +215,13 @@ public class Client {
 
     private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
 
+        InetSocketAddress socketAddress = null;
+        try {
+            socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), Integer.parseInt(serverPort));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         //Create a RequestMessage
         RequestMessage requestMessage = new RequestMessage(countID.incrementAndGet(), calendar, minimum, participants, topic);
 
@@ -232,27 +235,9 @@ public class Client {
         }
 
         //Send the RequestMessage to the server
-        //UdpSend.sendMessage(requestMessage.serialize(), 9997);
+        UdpSend.sendMessage(requestMessage.serialize(), socketAddress);
 
     }
-
-//    private String getClientData() {
-//
-//        String result = "";
-//
-//        result += "" + "_"; //meetings ArrayList
-//
-//
-//
-//        availability.entrySet().forEach(entry-> {
-//            result += entry.getKey() + "," + Boolean.toString(entry.getValue()) + ";";
-//        });
-//
-//        result += ""; //Availability Hashmap
-//
-//        return result;
-//
-//    }
 
     private void sendAccept(int meetingNumber){
 
@@ -396,6 +381,7 @@ public class Client {
     }
 
     private void handleInvite(InviteMessage message) {
+        System.out.println("Got Invite");
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
         if(!availability.containsKey(CalendarUtil.calendarToString(newMeeting.getCalendar()))){
@@ -629,6 +615,32 @@ public class Client {
 
     }
 
+    private String getClientData() {
+
+        String result = "";
+
+        result += "" + "_"; //meetings ArrayList
+
+        for(int i = 0; i < meetings.size(); i++){
+            if(i == 0) {
+                result += meetings.get(i).serialize();
+                continue;
+            }
+
+            result += ";" + meetings.get(i).serialize();
+
+        }
+
+        result += "_";
+
+        for (String s : availability.keySet()) { //Availability Hashmap
+            result += s + ";";
+        }
+
+        return result;
+
+    }
+
     public class ClientSave implements Runnable{
 
         @Override
@@ -640,9 +652,36 @@ public class Client {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
+                FileReaderWriter.WriteFile("saveFile_" + clientPort, getClientData(), false);
             }
 
+        }
+
+    }
+
+    private void restoreFromSave(String saveFile) {
+
+        ArrayList<String> messageList = FileReaderWriter.ReadFile(saveFile);
+
+        String message = "";
+
+        for(String msgPortion : messageList){
+            message += msgPortion;
+        }
+
+        String[] subMessage = message.split("_");
+
+        String[] meetings = subMessage[0].split(";");
+        String[] availability = subMessage[1].split(";");
+
+        for(String meeting : meetings){
+            ClientMeeting newMeeting = new ClientMeeting();
+            newMeeting.deserialize(meeting);
+            this.meetings.add(newMeeting);
+        }
+
+        for(String available : availability){
+            this.availability.put(available, true);
         }
 
     }

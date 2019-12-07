@@ -85,7 +85,8 @@ public class RequestMessage extends Message {
 
         String[] subMessages = message.split("\\$");
 
-        String[] cal = new String[2];
+
+        String[] cal = new String[4];
 
         for(int i = 0; i < 4; i++){
             cal = subMessages[2].split(":");
