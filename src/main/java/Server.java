@@ -219,11 +219,15 @@ public class Server implements Runnable{
 
             /**Cases to how to treat each of the requestTypes.*/
             switch(receivedRequestType){
+                case Register:
+                    RegisterMessage registerMessage = new RegisterMessage();
+                    registerMessage.deserialize(message);
+                    clientAddressMap.put(registerMessage.getClientName(), registerMessage.getClientSocketAddress());
+
+                    break;
                 case Request:
                     RequestMessage requestMessage = new RequestMessage();
                     requestMessage.deserialize(message);
-
-
 
                     String time = CalendarUtil.calendarToString(requestMessage.getCalendar());
                     //System.out.println("TIME: " + time);

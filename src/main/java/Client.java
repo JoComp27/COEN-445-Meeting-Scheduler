@@ -313,7 +313,7 @@ public class Client {
         RegisterMessage registerMessage = null;
 
         try {
-            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getPort()));
+            registerMessage = new RegisterMessage(clientName, new InetSocketAddress(InetAddress.getLocalHost(), ds.getLocalPort()));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
