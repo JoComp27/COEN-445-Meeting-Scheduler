@@ -352,7 +352,9 @@ public class Client {
 
             //Send Accept
             System.out.println("Accepted meeting");
+
             UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+
 
         } else {
             newMeeting.setCurrentAnswer(false);
