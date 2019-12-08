@@ -307,7 +307,9 @@ public class Server implements Runnable{
                             }
                             UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
-                            FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                            //FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                            FileReaderWriter.WriteFile("log", currentTime + "Invite " + inviteMessage.serialize() + "\n", true);
+
                         }
 
 
@@ -349,7 +351,9 @@ public class Server implements Runnable{
                                 }
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
-                                FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                                //FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                                FileReaderWriter.WriteFile("log", currentTime + "Invite " + inviteMessage.serialize() + "\n", true);
+
 
                             }
                             //Create meeting
@@ -387,7 +391,9 @@ public class Server implements Runnable{
                                 }
                                 UdpSend.sendMessage(inviteMessage.serialize(), serverSocket, socketAddress);
 
-                                FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                                //FileReaderWriter.WriteFile("log", currentTime + "Invited " + s + "\n", true);
+                                FileReaderWriter.WriteFile("log", currentTime + "Invite " + inviteMessage.serialize() + "\n", true);
+
 
                             }
 
@@ -520,7 +526,9 @@ public class Server implements Runnable{
                                 System.out.println("Confirm " + confirmMessage.serialize());
                                 UdpSend.sendMessage(confirmMessage.serialize(), serverSocket, socketAddress);
 
-                                FileReaderWriter.WriteFile("log", currentTime + "Confirm message sent to " + s + "\n", true);
+                                //FileReaderWriter.WriteFile("log", currentTime + "Confirm message sent to " + s + "\n", true);
+                                FileReaderWriter.WriteFile("log", currentTime + "Confirm " + confirmMessage.serialize() + "\n", true);
+
                             }
 
                             //Send to organizer of Scheduled meeting
@@ -548,7 +556,9 @@ public class Server implements Runnable{
                                 if (acceptMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(scheduledMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled " + scheduledMessage.serialize() + "\n", true);
+
 
                                 }
                             }
@@ -575,7 +585,10 @@ public class Server implements Runnable{
                                         continue;
                                     }
                                     UdpSend.sendMessage(serverCancelMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Cancel message sent to " + person + "\n", true);
+
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Cancel message sent to " + person + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Cancel " + serverCancelMessage.serialize() + "\n", true);
+
                                 }
                             }
 
@@ -608,7 +621,9 @@ public class Server implements Runnable{
                                 if (acceptMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(notScheduledMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled " + notScheduledMessage.serialize() + "\n", true);
+
 
                                 }
                             }
@@ -694,7 +709,9 @@ public class Server implements Runnable{
                                 System.out.println("Confirm " + confirmMessage.serialize());
                                 UdpSend.sendMessage(confirmMessage.serialize(), serverSocket, socketAddress);
 
-                                FileReaderWriter.WriteFile("log", currentTime + "Confirm message sent to " + s + "\n", true);
+                                //FileReaderWriter.WriteFile("log", currentTime + "Confirm message sent to " + s + "\n", true);
+                                FileReaderWriter.WriteFile("log", currentTime + "Confirm " + confirmMessage.serialize() + "\n", true);
+
                             }
                             //Send to organizer of Scheduled meeting
                             ScheduledMessage scheduledMessage = new ScheduledMessage();
@@ -721,7 +738,9 @@ public class Server implements Runnable{
                                 if (rejectMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(scheduledMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled " + scheduledMessage.serialize() + "\n", true);
+
 
                                 }
                             }
@@ -748,7 +767,9 @@ public class Server implements Runnable{
                                         continue;
                                     }
                                     UdpSend.sendMessage(serverCancelMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Cancel message sent to " + person + "\n", true);
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Cancel message sent to " + person + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Cancel " + serverCancelMessage.serialize() + "\n", true);
+
                                 }
                             }
 
@@ -776,7 +797,9 @@ public class Server implements Runnable{
                                 if (rejectMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(notScheduledMessage.serialize(), serverSocket, socketAddress);
-                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+                                    //FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled " + notScheduledMessage.serialize() + "\n", true);
+
 
                                 }
                             }
