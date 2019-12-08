@@ -27,13 +27,13 @@ public class AddedMessage extends Message {
 
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + socketAddress;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + socketAddress;
     }
 
     @Override
     public void deserialize(String message) {
 
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(msg[1]);
         this.socketAddress = msg[2];
