@@ -238,18 +238,18 @@ public class Server implements Runnable{
                     requestMessage.deserialize(message);
 
                     //Handle repeated request numbers
-                    boolean repeatedRequestNumer = false;
-                    for(int i = 0; i<requestNumberList.size();i++) {
-                        if (requestNumberList.get(i) == requestMessage.getRequestNumber()) {
-                            System.out.println("Repeated request number");
-                            repeatedRequestNumer = true;
-                            break;
-                        }
-                    }
-                    if(repeatedRequestNumer){
-                        break;
-                    }
-                    requestNumberList.add(requestMessage.getRequestNumber());
+//                    boolean repeatedRequestNumer = false;
+//                    for(int i = 0; i<requestNumberList.size();i++) {
+//                        if (requestNumberList.get(i) == requestMessage.getRequestNumber()) {
+//                            System.out.println("Repeated request number");
+//                            repeatedRequestNumer = true;
+//                            break;
+//                        }
+//                    }
+//                    if(repeatedRequestNumer){
+//                        break;
+//                    }
+//                    requestNumberList.add(requestMessage.getRequestNumber());
 
 
                     String time = CalendarUtil.calendarToString(requestMessage.getCalendar());
