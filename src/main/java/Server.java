@@ -267,8 +267,7 @@ public class Server implements Runnable{
                         }
                     }
 
-                    //Accepted participants should always initialize as 1 for organizer
-                    Meeting meeting = new Meeting(requestMessage, 0, new HashMap<Integer, Boolean>(), 0, name, 0);
+                    Meeting meeting = new Meeting(requestMessage, 0, new HashMap<String, Boolean>(), 0, name, 0);
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
@@ -980,7 +979,7 @@ public class Server implements Runnable{
                 //RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
 
 
-                String[] commandMessage = message.split("_");
+                String[] commandMessage = message.split("\\$");
 
 
                 if (commandMessage[0].equals("RoomChange")) {
@@ -989,6 +988,7 @@ public class Server implements Runnable{
                     RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
                     roomChangeMessage.deserialize(message);
                     String meetingNumberRC = Integer.toString(roomChangeMessage.getMeetingNumber());
+                    Meeting roomChangeMeeting = null;
                     int newRoomNumber = roomChangeMessage.getNewRoomNumber() - 1;
 
                     if (newRoomNumber != 0 && newRoomNumber != 1) {
@@ -1006,6 +1006,24 @@ public class Server implements Runnable{
                             //Make the meeting's room number to the new one
                             meetingMap.get(meetingNumberRC).setRoomNumber(newRoomNumber);
                             scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber] = true;
+
+                            roomChangeMeeting = meetingMap.get(meetingNumberRC);
+
+                            for (String s : roomChangeMeeting.getRequestMessage().getParticipants()) {
+                                SocketAddress socketAddress = clientAddressMap.get(s);
+
+                                //If you add participant in list that does not have a running client
+                                if (socketAddress == null) {
+                                    continue;
+                                }
+                                UdpSend.sendMessage(roomChangeMessage.serialize(), serverSocket, socketAddress);
+                                Calendar calendar = Calendar.getInstance();
+                                String currentTime = "Server[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                        + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                                FileReaderWriter.WriteFile("log", currentTime + "Room changed " + roomChangeMessage.serialize() + "\n", true);
+
+                            }
+
                             System.out.println("We are changing rooms!");
                         } else if (scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
                             System.out.println("They are already in that room");
