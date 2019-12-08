@@ -14,6 +14,7 @@ public class Server implements Runnable{
     private HashMap<String, Boolean[]> scheduleMap;     //String Date and Time, Boolean Array of size 2: True = Booked, False = Not Booked.
     private HashMap<String, Meeting> meetingMap;        //String MeetingNumber, Meeting Class
     private HashMap<String, InetSocketAddress> clientAddressMap;         //String ClientName, InetSocketAddress client socket address
+    private List<Integer> requestNumberList;
 
     private DatagramSocket serverSocket;
 
@@ -21,6 +22,7 @@ public class Server implements Runnable{
         this.scheduleMap = new HashMap<>();
         this.meetingMap = new HashMap<>();
         this.clientAddressMap = new HashMap<>();
+        this.requestNumberList =  new ArrayList<>();
 
         try {
             this.serverSocket = new DatagramSocket(new InetSocketAddress(InetAddress.getLocalHost(), 9997));
@@ -234,6 +236,21 @@ public class Server implements Runnable{
                 case Request:
                     RequestMessage requestMessage = new RequestMessage();
                     requestMessage.deserialize(message);
+
+                    //Handle repeated request numbers
+                    boolean repeatedRequestNumer = false;
+                    for(int i = 0; i<requestNumberList.size();i++) {
+                        if (requestNumberList.get(i) == requestMessage.getRequestNumber()) {
+                            System.out.println("Repeated request number");
+                            repeatedRequestNumer = true;
+                            break;
+                        }
+                    }
+                    if(repeatedRequestNumer){
+                        break;
+                    }
+                    requestNumberList.add(requestMessage.getRequestNumber());
+
 
                     String time = CalendarUtil.calendarToString(requestMessage.getCalendar());
 
