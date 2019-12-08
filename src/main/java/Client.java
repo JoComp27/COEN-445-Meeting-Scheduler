@@ -139,7 +139,8 @@ public class Client {
                     case Request:
                         RequestMessage requestMessage = new RequestMessage();
                         requestMessage.deserialize(inp);
-                        UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
+                        sendRequest(requestMessage.getCalendar(), requestMessage.getMinimum(), requestMessage.getParticipants(), requestMessage.getTopic());
+                        //UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
                         break;
                     default:
                         System.out.println("Request type does not correspond. Exiting.");
@@ -216,9 +217,7 @@ public class Client {
             meetings.add(new ClientMeeting(requestMessage));
         }
 
-        synchronized (availability){
-            availability.put(CalendarUtil.calendarToString(calendar), true);
-        }
+
 
         //Send the RequestMessage to the server
         UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
@@ -349,11 +348,15 @@ public class Client {
             synchronized (meetings) {
                 meetings.add(newMeeting);
             }
+            synchronized (availability){
+                availability.put(CalendarUtil.calendarToString(newMeeting.getCalendar()), true);
+            }
 
             //Send Accept
             System.out.println("Accepted meeting");
 
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+            sendAccept(newMeeting.getMeetingNumber());
+            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
 
         } else {
@@ -364,7 +367,8 @@ public class Client {
 
             //Send Reject
             System.out.println("Rejected meeting");
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+            sendReject(newMeeting.getMeetingNumber());
+            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
         }
 
     }
