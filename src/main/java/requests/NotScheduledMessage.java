@@ -84,7 +84,7 @@ public class NotScheduledMessage extends Message {
         }
 
 
-        stringMessage += "$" +  topic; // TOPIC
+        stringMessage += "$" +  topic.trim(); // TOPIC
 
         return stringMessage;
     }
@@ -92,7 +92,7 @@ public class NotScheduledMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] subMessages = message.split("\\$");
+        String[] subMessages = message.trim().split("\\$");
 
         String[] cal = new String[1];
 

@@ -139,8 +139,10 @@ public class Client {
                     case Request:
                         RequestMessage requestMessage = new RequestMessage();
                         requestMessage.deserialize(inp);
-                        //sendRequest(requestMessage.getCalendar(), requestMessage.getMinimum(), requestMessage.getParticipants(), requestMessage.getTopic());
-                        UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
+
+                        sendRequest(requestMessage.getCalendar(), requestMessage.getMinimum(), requestMessage.getParticipants(), requestMessage.getTopic());
+                        //UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
+
                         break;
                     case Add:
                         AddMessage addMessage = new AddMessage();
@@ -236,12 +238,15 @@ public class Client {
             meetings.add(new ClientMeeting(requestMessage));
         }
 
-        synchronized (availability){
-            availability.put(CalendarUtil.calendarToString(calendar), true);
-        }
+
 
         //Send the RequestMessage to the server
         UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
+
+        Calendar cal = Calendar.getInstance();
+        String currentTime = "Client[" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR) + " "
+                + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) + "]: ";
+        FileReaderWriter.WriteFile("log", currentTime + "Request " + requestMessage.serialize() + "\n", true);
 
     }
 
@@ -255,6 +260,11 @@ public class Client {
 
                 AcceptMessage acceptMessage = new AcceptMessage(meetingNumber);
                 UdpSend.sendMessage(acceptMessage.serialize(), ds, serverAddress);
+
+                Calendar cal = Calendar.getInstance();
+                String currentTime = "Client[" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR) + " "
+                        + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) + "]: ";
+                FileReaderWriter.WriteFile("log", currentTime + "Accept " + acceptMessage.serialize() + "\n", true);
 
             }
         }
@@ -271,6 +281,11 @@ public class Client {
 
                 RejectMessage rejectMessage = new RejectMessage(meetingNumber);
                 UdpSend.sendMessage(rejectMessage.serialize(), ds, serverAddress);
+
+                Calendar cal = Calendar.getInstance();
+                String currentTime = "Client[" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR) + " "
+                        + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) + "]: ";
+                FileReaderWriter.WriteFile("log", currentTime + "Reject " + rejectMessage.serialize() + "\n", true);
             }
         }
 
@@ -352,6 +367,11 @@ public class Client {
 
         UdpSend.sendMessage(registerMessage.serialize(), ds, serverAddress);
 
+        Calendar calendar = Calendar.getInstance();
+        String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+        FileReaderWriter.WriteFile("log", currentTime + "Register " + registerMessage.serialize() + "\n", true);
+
     }
 
     private void handleDenied(DeniedMessage message) {  //Room Unavailable Message
@@ -381,12 +401,16 @@ public class Client {
             synchronized (meetings) {
                 meetings.add(newMeeting);
             }
+            synchronized (availability){
+                availability.put(CalendarUtil.calendarToString(newMeeting.getCalendar()), true);
+            }
 
             //Send Accept
 
             System.out.println("Accepted meeting");
 
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+            sendAccept(newMeeting.getMeetingNumber());
+            //UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
 
         } else {
@@ -399,7 +423,8 @@ public class Client {
 
             System.out.println("Rejected meeting");
 
-            UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+            sendReject(newMeeting.getMeetingNumber());
+            //UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
         }
 
@@ -412,11 +437,18 @@ public class Client {
                 if(meetings.get(i).getState() == false && meetings.get(i).getUserType() == false){
                     synchronized (meetings) {
                         meetings.get(i).receiveConfirmMessage(message);
+                        Calendar calendar = Calendar.getInstance();
+                        String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                        FileReaderWriter.WriteFile("log", currentTime + "Confirm " + message.serialize() + "\n", true);
                     }
                 }
                 return;
             }
         }
+
+
+
 
     }
 
@@ -428,6 +460,10 @@ public class Client {
                     System.out.println("Meeting " + message.getMeetingNumber() + " was cancelled for this reason : " + message.getReason());
                     synchronized (meetings){
                         meetings.remove(i);
+                        Calendar calendar = Calendar.getInstance();
+                        String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                        FileReaderWriter.WriteFile("log", currentTime + "Cancel " + message.serialize() + "\n", true);
                     }
                 }
             }
@@ -444,6 +480,11 @@ public class Client {
                     //Change Meeting to complete and change info in meeting
                     meetings.get(i).receiveScheduledMessage(message);
 
+                    Calendar calendar = Calendar.getInstance();
+                    String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                            + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled " + message.serialize() + "\n", true);
+
                 }
                 return;
             }
@@ -458,6 +499,10 @@ public class Client {
                 if(!meetings.get(i).getState() && meetings.get(i).getUserType()) {
                     synchronized (meetings){
                         meetings.remove(i);
+                        Calendar calendar = Calendar.getInstance();
+                        String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                        FileReaderWriter.WriteFile("log", currentTime + "Not scheduled " + message.serialize() + "\n", true);
                     }
                 }
             }
@@ -485,6 +530,11 @@ public class Client {
                 if(meetings.get(i).getState()){
                     synchronized (meetings){
                         meetings.get(i).setRoomNumber(message.getNewRoomNumber());
+
+                        Calendar calendar = Calendar.getInstance();
+                        String currentTime = "Client[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                        FileReaderWriter.WriteFile("log", currentTime + "Room changed " + message.serialize() + "\n", true);
                     }
                 }
             }
