@@ -251,7 +251,7 @@ public class Server implements Runnable{
                     }
 
                     //Accepted participants should always initialize as 1 for organizer
-                    Meeting meeting = new Meeting(requestMessage, 1, new HashMap<Integer, Boolean>(), 0, name, 1);
+                    Meeting meeting = new Meeting(requestMessage, 0, new HashMap<Integer, Boolean>(), 0, name, 0);
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
@@ -481,14 +481,14 @@ public class Server implements Runnable{
                     }
 
                     //If all participants answer, decide if Scheduled or Not Scheduled
-                    if(acceptMeeting.getAnsweredNumber() >= acceptMeeting.getRequestMessage().getParticipants().size()+1){  //+1 because organizer should not be in list
+                    if(acceptMeeting.getAnsweredNumber() >= acceptMeeting.getRequestMessage().getParticipants().size()){
                         //System.out.println("Answered number:" + acceptMeeting.getAnsweredNumber());
                         //System.out.println("Size: " + acceptMeeting.getRequestMessage().getParticipants().size());
 
 
                         //If the accepted numbers >= minimum
                         if(acceptMeeting.getAcceptedParticipants() >= acceptMeeting.getRequestMessage().getMinimum()){
-                            //Send confirm messages to all participants
+                            //Send confirm messages to all participants (including organizer)
                             ConfirmMessage confirmMessage = new ConfirmMessage();
                             confirmMessage.setMeetingNumber(acceptMeeting.getId());
                             confirmMessage.setRoomNumber(acceptMeeting.getRoomNumber());
@@ -531,6 +531,8 @@ public class Server implements Runnable{
                                 if (acceptMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(scheduledMessage.serialize(), serverSocket, socketAddress);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+
                                 }
                             }
 
@@ -589,6 +591,8 @@ public class Server implements Runnable{
                                 if (acceptMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(notScheduledMessage.serialize(), serverSocket, socketAddress);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+
                                 }
                             }
 
@@ -654,11 +658,11 @@ public class Server implements Runnable{
                     }
 
                     //If all participants answer, decide if Scheduled or Not Scheduled
-                    if(rejectMeeting.getAnsweredNumber() >= rejectMeeting.getRequestMessage().getParticipants().size() + 1){    //+1 because organizer should not be in list
+                    if(rejectMeeting.getAnsweredNumber() >= rejectMeeting.getRequestMessage().getParticipants().size()){
 
                         //If the accepted numbers >= minimum
                         if(rejectMeeting.getAcceptedParticipants() >= rejectMeeting.getRequestMessage().getMinimum()) {
-                            //Send confirm messages to all participants
+                            //Send confirm messages to all participants (including organizer)
                             ConfirmMessage confirmMessage = new ConfirmMessage();
                             confirmMessage.setMeetingNumber(rejectMeeting.getId());
                             confirmMessage.setRoomNumber(rejectMeeting.getRoomNumber());
@@ -700,6 +704,8 @@ public class Server implements Runnable{
                                 if (rejectMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(scheduledMessage.serialize(), serverSocket, socketAddress);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Scheduled message sent to " + s + "\n", true);
+
                                 }
                             }
 
@@ -753,6 +759,8 @@ public class Server implements Runnable{
                                 if (rejectMeeting.getOrganizer().equals(s)){
                                     socketAddress = clientAddressMap.get(s);
                                     UdpSend.sendMessage(notScheduledMessage.serialize(), serverSocket, socketAddress);
+                                    FileReaderWriter.WriteFile("log", currentTime + "Not scheduled message sent to " + s + "\n", true);
+
                                 }
                             }
 
