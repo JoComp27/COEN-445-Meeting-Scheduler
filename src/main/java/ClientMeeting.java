@@ -30,6 +30,7 @@ public class ClientMeeting {
 
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
+        this.requestNumber = -1;
         this.calendar = inviteMessage.getCalendar();
         this.state = false;
         this.userType = false;
@@ -38,6 +39,7 @@ public class ClientMeeting {
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
         this.requestNumber = requestMessage.getRequestNumber();
+        this.meetingNumber = -1;
         this.calendar = requestMessage.getCalendar();
         this.state = false;
         this.userType = true;
@@ -48,6 +50,7 @@ public class ClientMeeting {
 
         this.state = true;
         this.roomNumber = Integer.valueOf(confirmMessage.getRoomNumber());
+        this.meetingNumber = confirmMessage.getMeetingNumber();
 
     }
 

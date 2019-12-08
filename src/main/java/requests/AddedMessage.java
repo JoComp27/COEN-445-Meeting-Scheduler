@@ -2,7 +2,7 @@ package requests;
 
 public class AddedMessage extends Message {
 
-    private String meetingNumber;
+    private Integer meetingNumber;
     private String socketAddress;
 
     public AddedMessage(){
@@ -11,13 +11,13 @@ public class AddedMessage extends Message {
         this.socketAddress = null;
     }
 
-    public AddedMessage(String meetingNumber, String ipAddress) {
+    public AddedMessage(Integer meetingNumber, String ipAddress) {
         super(RequestType.Added);
         this.meetingNumber = meetingNumber;
         this.socketAddress = ipAddress;
     }
 
-    public String getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -35,7 +35,7 @@ public class AddedMessage extends Message {
 
         String[] msg = message.split("\\$");
 
-        this.meetingNumber = (msg[1]);
+        this.meetingNumber = Integer.parseInt(msg[1]);
         this.socketAddress = msg[2];
 
     }

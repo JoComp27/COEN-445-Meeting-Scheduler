@@ -19,10 +19,11 @@ public class Test {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-mm-yyyy HH");
         Calendar calendar = Calendar.getInstance();
         //calendar.set(Integer.parseInt("10"), Integer.parseInt("11"), Integer.parseInt("2019"), Integer.parseInt("08"), 0);
-        calendar.set(2019,10,9,15,0, 0);
+        //calendar.set(2019,10,9,15,0, 0);
         //calendar.setTime(dateFormat.parse(day));
         //calendar.getTime();
-        String time = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":00";
+        String time = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
         System.out.println("Calendar time: " + calendar);
         System.out.println("Current time: " + calendar.getTime());
         System.out.println("Time: " + time);

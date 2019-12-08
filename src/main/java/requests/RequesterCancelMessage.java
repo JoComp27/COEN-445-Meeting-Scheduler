@@ -2,19 +2,19 @@ package requests;
 
 public class RequesterCancelMessage extends Message{
 
-    String meetingNumber;
+    Integer meetingNumber;
 
     public RequesterCancelMessage() {
         super(RequestType.RequesterCancel);
         this.meetingNumber = null;
     }
 
-    public RequesterCancelMessage(String meetingNumber) {
+    public RequesterCancelMessage(Integer meetingNumber) {
         super(RequestType.RequesterCancel);
         this.meetingNumber = meetingNumber;
     }
 
-    public String getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -28,7 +28,7 @@ public class RequesterCancelMessage extends Message{
 
         String[] splitMessage = message.split("\\$");
 
-        this.meetingNumber = splitMessage[1];
+        this.meetingNumber = Integer.parseInt(splitMessage[1]);
 
     }
 }

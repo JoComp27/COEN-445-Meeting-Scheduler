@@ -2,19 +2,19 @@ package requests;
 
 public class WithdrawMessage extends Message {
 
-    String meetingNumber;
+    Integer meetingNumber;
 
     public WithdrawMessage() {
         super(RequestType.Withdraw);
         this.meetingNumber = null;
     }
 
-    public WithdrawMessage(String meetingNumber) {
+    public WithdrawMessage(Integer meetingNumber) {
         super(RequestType.Withdraw);
         this.meetingNumber = meetingNumber;
     }
 
-    public String getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
@@ -25,6 +25,6 @@ public class WithdrawMessage extends Message {
 
     @Override
     public void deserialize(String message) {
-        this.meetingNumber = (message.split("\\$")[1]);
+        this.meetingNumber = Integer.parseInt(message.split("\\$")[1]);
     }
 }

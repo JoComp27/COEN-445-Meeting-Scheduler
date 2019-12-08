@@ -139,21 +139,26 @@ public class Client {
                     case Request:
                         RequestMessage requestMessage = new RequestMessage();
                         requestMessage.deserialize(inp);
+                        //sendRequest(requestMessage.getCalendar(), requestMessage.getMinimum(), requestMessage.getParticipants(), requestMessage.getTopic());
                         UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
                         break;
                     case Add:
                         AddMessage addMessage = new AddMessage();
                         addMessage.deserialize(inp);
+                        //sendAdd(addMessage.getMeetingNumber());
+                        //System.out.println("Did it send?");
                         UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
                         break;
                     case RequesterCancel:
                         RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage();
                         requesterCancelMessage.deserialize(inp);
+                        //sendRequesterCancel(requesterCancelMessage.getMeetingNumber());
                         UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
                         break;
                     case Withdraw:
                         WithdrawMessage withdrawMessage = new WithdrawMessage();
                         withdrawMessage.deserialize(inp);
+                        //sendWithdraw(withdrawMessage.getMeetingNumber());
                         UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
                         break;
                     default:
@@ -274,6 +279,7 @@ public class Client {
     private void sendWithdraw(int meetingNumber){
 
         for(int i = 0 ; i < meetings.size(); i++){
+            System.out.println("RIP");
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState()
                     && !meetings.get(i).getUserType()){
 
@@ -281,7 +287,7 @@ public class Client {
                     meetings.get(i).setCurrentAnswer(false);
                 }
 
-                WithdrawMessage withdrawMessage = new WithdrawMessage(Integer.toString(meetingNumber));
+                WithdrawMessage withdrawMessage = new WithdrawMessage((meetingNumber));
                 UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
 
             }
@@ -291,15 +297,25 @@ public class Client {
 
     private void sendAdd(int meetingNumber){
 
+        //System.out.println("Went in Method but nothing else.");
+        System.out.println("Meetings size: " + meetings.size());
+
         for(int i = 0; i < meetings.size(); i++){
+            System.out.println("RIP");
+            System.out.println("Loop #: " + i);
+            System.out.println("Meetings meeting number: " + meetings.get(i).getMeetingNumber());
+            //System.out.println("Deserialized meetingNumber: " + meetingNumber + "please");
             if(meetingNumber == meetings.get(i).getMeetingNumber()){
                 if(!meetings.get(i).getUserType()) {
                     meetings.get(i).setCurrentAnswer(true);
 
-                    AddMessage addMessage = new AddMessage(Integer.toString(meetingNumber));
+                    System.out.println("Sending");
+
+                    AddMessage addMessage = new AddMessage((meetingNumber));
                     UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
 
                 }
+
                 return;
             }
         }
@@ -309,10 +325,11 @@ public class Client {
     private void sendRequesterCancel(int meetingNumber){
 
         for(int i = 0; i < meetings.size(); i++){
+            System.out.println("RIP");
             if(meetings.get(i).getMeetingNumber() == meetingNumber){
                 if(meetings.get(i).getUserType() && meetings.get(i).getState()){
 
-                    RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage(Integer.toString(meetingNumber));
+                    RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage((meetingNumber));
                     UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
 
                 }
@@ -367,8 +384,9 @@ public class Client {
 
             //Send Accept
 
-            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
+            System.out.println("Accepted meeting");
 
+            UdpSend.sendMessage(new AcceptMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
 
         } else {
@@ -378,6 +396,8 @@ public class Client {
             }
 
             //Send Reject
+
+            System.out.println("Rejected meeting");
 
             UdpSend.sendMessage(new RejectMessage(newMeeting.getMeetingNumber()).serialize(), ds, serverAddress);
 
@@ -500,12 +520,13 @@ public class Client {
                 /**Messages here and sends to client*/
                 while (true) {
                     DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
+
                     try {
                         ds.receive(DpReceive);        //Receive Data in Buffer
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    String message = new String(DpReceive.getData());
+                    String message = new String(DpReceive.getData(), 0, DpReceive.getLength());
                     System.out.println("Server says: " + message);
                     /**NEED TO ADD IN TIMEOUT OPTIONS TO RESEND THE MESSAGE. HAVE YET TO
                      * COMPLETE THIS PORTION OF THE CODE

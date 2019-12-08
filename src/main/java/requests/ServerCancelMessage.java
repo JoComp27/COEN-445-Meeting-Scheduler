@@ -2,7 +2,7 @@ package requests;
 
 public class ServerCancelMessage extends Message {
 
-    String meetingNumber;
+    Integer meetingNumber;
     String reason;
 
     public ServerCancelMessage() {
@@ -11,19 +11,27 @@ public class ServerCancelMessage extends Message {
         this.reason = null;
     }
 
-    public ServerCancelMessage(String meetingNumber, String reason) {
+    public ServerCancelMessage(Integer meetingNumber, String reason) {
         super(RequestType.ServerCancel);
         this.meetingNumber = meetingNumber;
         this.reason = reason;
 
     }
 
-    public String getMeetingNumber() {
+    public Integer getMeetingNumber() {
         return meetingNumber;
     }
 
     public String getReason() {
         return reason;
+    }
+
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override
@@ -35,7 +43,7 @@ public class ServerCancelMessage extends Message {
     public void deserialize(String message) {
         String[] stringArrayMessage = message.split("\\$");
 
-        this.meetingNumber = stringArrayMessage[1];
+        this.meetingNumber = Integer.parseInt(stringArrayMessage[1]);
         this.reason = stringArrayMessage[2];
 
     }

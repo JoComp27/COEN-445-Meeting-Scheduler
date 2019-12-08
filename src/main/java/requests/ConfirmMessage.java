@@ -2,8 +2,8 @@ package requests;
 
 public class ConfirmMessage extends Message {
 
-    private String meetingNumber;
-    private String roomNumber;
+    private Integer meetingNumber;
+    private Integer roomNumber;
 
     public ConfirmMessage(){
         super(RequestType.Confirm);
@@ -11,18 +11,26 @@ public class ConfirmMessage extends Message {
         this.roomNumber = null;
     }
 
-    public ConfirmMessage(String meetingNumber, String roomNumber) {
+    public ConfirmMessage(Integer meetingNumber, int roomNumber) {
         super(RequestType.Confirm);
         this.meetingNumber = meetingNumber;
         this.roomNumber = roomNumber;
     }
 
-    public String getMeetingNumber(){
+    public Integer getMeetingNumber(){
         return  meetingNumber;
     }
 
-    public String getRoomNumber(){
+    public Integer getRoomNumber(){
         return roomNumber;
+    }
+
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setRoomNumber(Integer roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     @Override
@@ -34,7 +42,7 @@ public class ConfirmMessage extends Message {
     public void deserialize(String message) {
         String[] msg = message.split("\\$");
 
-        this.meetingNumber = (msg[1]);
-        this.roomNumber = (msg[2]);
+        this.meetingNumber = Integer.parseInt(msg[1]);
+        this.roomNumber = Integer.parseInt(msg[2]);
     }
 }
