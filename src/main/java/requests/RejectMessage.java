@@ -26,7 +26,7 @@ public class RejectMessage extends Message{
     @Override
     public void deserialize(String message) {
 
-        String[] splitString = message.split("\\$");
+        String[] splitString = message.trim().split("\\$");
 
         this.meetingNumber = Integer.parseInt(splitString[1]);
     }

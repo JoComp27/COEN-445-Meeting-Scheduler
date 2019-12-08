@@ -26,14 +26,22 @@ public class ServerCancelMessage extends Message {
         return reason;
     }
 
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + reason;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + reason;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] stringArrayMessage = message.split("_");
+        String[] stringArrayMessage = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(stringArrayMessage[1]);
         this.reason = stringArrayMessage[2];

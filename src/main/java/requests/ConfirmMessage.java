@@ -25,14 +25,22 @@ public class ConfirmMessage extends Message {
         return roomNumber;
     }
 
+    public void setMeetingNumber(Integer meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
+    public void setRoomNumber(Integer roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
     @Override
     public String serialize() {
-        return requestType.ordinal() + "_" + meetingNumber + "_" + roomNumber;
+        return requestType.ordinal() + "$" + meetingNumber + "$" + roomNumber;
     }
 
     @Override
     public void deserialize(String message) {
-        String[] msg = message.split("_");
+        String[] msg = message.split("\\$");
 
         this.meetingNumber = Integer.parseInt(msg[1]);
         this.roomNumber = Integer.parseInt(msg[2]);
