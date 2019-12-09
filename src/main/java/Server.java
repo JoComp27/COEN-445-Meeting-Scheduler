@@ -207,14 +207,10 @@ public class Server implements Runnable{
                     String name = "";
                     //Find the name using the port number, assign to participantName
                     for (Map.Entry<String, InetSocketAddress> entry : clientAddressMap.entrySet()) {
-                        System.out.println("Key: " + entry.getKey());
-                        System.out.println("Value: " + entry.getValue());
                         try {
                             InetSocketAddress temp = new InetSocketAddress(InetAddress.getLocalHost(), port);
                             if (entry.getValue().equals(temp)) {
                                 name = entry.getKey();
-                                System.out.println("Name: " + name);
-                                System.out.println("Value: " + entry.getValue());
                             }
                         } catch (UnknownHostException e) {
                             e.printStackTrace();
@@ -235,8 +231,6 @@ public class Server implements Runnable{
                         }
 
                         messageToClient = "Room 1 is available";
-
-                        System.out.println("In server: " + messageToClient);
 
                         meeting.setRoomNumber(1);
                         //Set all participants accepted value to false (none have accepted in this stage)
@@ -288,7 +282,6 @@ public class Server implements Runnable{
                                 scheduleMap.put(time, roomArray);
                             }
                             messageToClient = "Room 1 is available";
-                            System.out.println("In server: " + messageToClient);
 
                             InviteMessage inviteMessage = new InviteMessage();
                             inviteMessage.setMeetingNumber(meeting.getId());
@@ -328,7 +321,6 @@ public class Server implements Runnable{
                                 scheduleMap.put(time, roomArray);
                             }
                             messageToClient = "Room 2 is available";
-                            System.out.println("In server: " + messageToClient);
 
                             InviteMessage inviteMessage = new InviteMessage();
                             inviteMessage.setMeetingNumber(meeting.getId());
@@ -505,7 +497,6 @@ public class Server implements Runnable{
 
                     break;
                 case Accept:
-                    System.out.println("Accept from Client");
                     AcceptMessage acceptMessage = new AcceptMessage();
                     acceptMessage.deserialize(message);
                     String meetingNumberAccept = Integer.toString(acceptMessage.getMeetingNumber());

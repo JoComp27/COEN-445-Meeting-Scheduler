@@ -61,6 +61,7 @@ public class ScheduledMessage extends Message{
 
         answer += requestType.ordinal() + "$";
         answer += requestNumber + "$";
+        answer += meetingNumber + "$";
         answer += roomNumber + "$";
 
         for(int i = 0; i < listOfConfirmedParticipants.length ; i++) {
@@ -79,11 +80,11 @@ public class ScheduledMessage extends Message{
 
         String[] splitMessage = message.split("\\$");
 
-        String[] participants = splitMessage[3].split("%");
+        String[] participants = splitMessage[4].split("%");
 
-        this.requestNumber = Integer.parseInt(splitMessage[0]);
-        this.meetingNumber = Integer.parseInt(splitMessage[1]);
-        this.roomNumber = Integer.parseInt(splitMessage[2]);
+        this.requestNumber = Integer.parseInt(splitMessage[1]);
+        this.meetingNumber = Integer.parseInt(splitMessage[2]);
+        this.roomNumber = Integer.parseInt(splitMessage[3]);
         this.listOfConfirmedParticipants = participants;
 
     }
