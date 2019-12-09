@@ -867,7 +867,7 @@ public class Server implements Runnable{
                         }
 
                         /**If the client is invited in the meeting*/
-                        if (withdrawMeeting.getAcceptedMap().containsKey(port)){
+                        if (withdrawMeeting.getAcceptedMap().containsKey(participantWithdraw)){
                             /**If the client is NOT the Host.*/
                             if (withdrawMeeting.getOrganizer() != hostNameWithdraw){
                                 /**Withdraws the client that sent the withdraw command from the meeting
@@ -877,7 +877,7 @@ public class Server implements Runnable{
                                 }
                                 System.out.println(withdrawMeeting.getAcceptedMap());
                                 ServerWidthdrawMessage serverWidthdrawMessage = new ServerWidthdrawMessage(Integer.valueOf(withdrawMeetingNumber), Integer.toString(port));
-                                System.out.println("Removed: " + port);
+                                System.out.println("Removed: " + participantWithdraw);
                                 UdpSend.sendMessage(serverWidthdrawMessage.serialize(), serverSocket, hostSocketAddressWithdraw);
                                 FileReaderWriter.WriteFile("log", currentTime + "Withdrawn " + participantWithdraw + "\n", true);
 

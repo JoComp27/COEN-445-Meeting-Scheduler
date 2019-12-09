@@ -72,3 +72,30 @@ Server[8/11/2019 16:20:49]: You are not invited in the meeting. 192.168.225.128
 Server[8/11/2019 17:44:7]: Registered 192.168.225.128
 Server[8/11/2019 17:44:28]: You are not invited in the meeting. 192.168.225.128
 Server[8/11/2019 17:50:50]: Registered 192.168.225.128
+Server[8/11/2019 19:9:46]: Registered 192.168.225.128
+Server[8/11/2019 19:9:46]: You are not invited in the meeting. 192.168.225.128
+Server[8/11/2019 19:21:58]: Registered Bob
+Server[8/11/2019 19:22:45]: Invite 1$1$2019:10:5:8$asd$Bob
+Server[8/11/2019 19:22:45]: Accepted Bob
+Server[8/11/2019 19:22:45]: Confirm 2$1$1
+Server[8/11/2019 19:22:45]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:22:57]: You have already accepted the meeting Bob
+Server[8/11/2019 19:23:48]: Registered Bob
+Server[8/11/2019 19:24:17]: Invite 1$2$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:24:17]: Accepted Bob
+Server[8/11/2019 19:24:17]: Confirm 2$2$1
+Server[8/11/2019 19:24:17]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:24:21]: You have already accepted the meeting Bob
+Server[8/11/2019 19:29:57]: Registered Bob
+Server[8/11/2019 19:30:0]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:30:0]: Accepted Bob
+Server[8/11/2019 19:30:0]: Confirm 2$1$1
+Server[8/11/2019 19:30:0]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:30:6]: You have already accepted the meeting Bob
+Server[8/11/2019 19:30:39]: Registered Bob
+Server[8/11/2019 19:30:41]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:30:41]: Accepted Bob
+Server[8/11/2019 19:30:41]: Confirm 2$1$1
+Server[8/11/2019 19:30:41]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:30:46]: The meeting number you provided does not exist Bob
+Server[8/11/2019 19:30:52]: You have already accepted the meeting Bob
