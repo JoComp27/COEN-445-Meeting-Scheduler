@@ -20,7 +20,7 @@ public class ClientMeeting {
     //Requester Arguments
     private int requestNumber;
                 //Key=port, bool=approved
-    private HashMap<Integer, Boolean> acceptedMap;
+    private HashMap<String, Boolean> acceptedMap;
 
     //Invitee Arguments
     private int meetingNumber;
@@ -30,6 +30,7 @@ public class ClientMeeting {
 
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
+        this.requestNumber = -1;
         this.calendar = inviteMessage.getCalendar();
         this.state = false;
         this.userType = false;
@@ -38,6 +39,7 @@ public class ClientMeeting {
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
         this.requestNumber = requestMessage.getRequestNumber();
+        this.meetingNumber = -1;
         this.calendar = requestMessage.getCalendar();
         this.state = false;
         this.userType = true;
@@ -47,7 +49,8 @@ public class ClientMeeting {
     public void receiveConfirmMessage(ConfirmMessage confirmMessage){
 
         this.state = true;
-        this.roomNumber = confirmMessage.getRoomNumber();
+        this.roomNumber = Integer.valueOf(confirmMessage.getRoomNumber());
+        this.meetingNumber = confirmMessage.getMeetingNumber();
 
     }
 
@@ -59,7 +62,7 @@ public class ClientMeeting {
         this.acceptedMap = new HashMap<>();
 
         for(String participant : scheduledMessage.getListOfConfirmedParticipants()){
-            acceptedMap.put(Integer.parseInt(participant), true);
+            acceptedMap.put(participant, true);
         }
 
     }
@@ -80,7 +83,7 @@ public class ClientMeeting {
         return requestNumber;
     }
 
-    public HashMap<Integer, Boolean> getAcceptedMap() {
+    public HashMap<String, Boolean> getAcceptedMap() {
         return acceptedMap;
     }
 
@@ -104,6 +107,10 @@ public class ClientMeeting {
         this.roomNumber = roomNumber;
     }
 
+    public void setMeetingNumber(int meetingNumber) {
+        this.meetingNumber = meetingNumber;
+    }
+
     public String serialize(){
         String result = "";
 
@@ -115,7 +122,7 @@ public class ClientMeeting {
         result += requestNumber + ",";
         result += meetingNumber + ",";
 
-        for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
+        for(Map.Entry<String, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";
         }
 
@@ -143,7 +150,7 @@ public class ClientMeeting {
             }
 
             String[] entry = accMsg.split("!");
-            this.acceptedMap.put(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1]));
+            this.acceptedMap.put(entry[0], Boolean.parseBoolean(entry[1]));
         }
 
     }
