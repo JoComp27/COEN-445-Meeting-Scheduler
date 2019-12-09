@@ -147,20 +147,23 @@ public class Client {
                     case Add:
                         AddMessage addMessage = new AddMessage();
                         addMessage.deserialize(inp);
-                        //sendAdd(addMessage.getMeetingNumber());
+                        sendAdd(addMessage.getMeetingNumber());
                         //System.out.println("Did it send?");
-                        UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
+                        //UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
                         break;
                     case RequesterCancel:
                         RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage();
                         requesterCancelMessage.deserialize(inp);
-                        //sendRequesterCancel(requesterCancelMessage.getMeetingNumber());
-                        UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
+                        sendRequesterCancel(requesterCancelMessage.getMeetingNumber());
+                        //UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
                         break;
                     case Withdraw:
                         WithdrawMessage withdrawMessage = new WithdrawMessage();
                         withdrawMessage.deserialize(inp);
                         //sendWithdraw(withdrawMessage.getMeetingNumber());
+                        /*******************************
+                         * sendWithdraw DOES NOT WORK.
+                         * */
                         UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
                         break;
                     default:
@@ -294,7 +297,6 @@ public class Client {
     private void sendWithdraw(int meetingNumber){
 
         for(int i = 0 ; i < meetings.size(); i++){
-            System.out.println("RIP");
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState()
                     && !meetings.get(i).getUserType()){
 
@@ -341,6 +343,10 @@ public class Client {
 
         for(int i = 0; i < meetings.size(); i++){
             System.out.println("RIP");
+            System.out.println("meetings.get(i).getMeetingNumber(): " + meetings.get(i).getMeetingNumber());
+            System.out.println("meetingNumber: " + meetingNumber);
+            System.out.println("meetings.get(i).getUserType(): " + meetings.get(i).getUserType());
+            System.out.println("meetings.get(i).getState(): " + meetings.get(i).getState());
             if(meetings.get(i).getMeetingNumber() == meetingNumber){
                 if(meetings.get(i).getUserType() && meetings.get(i).getState()){
 
