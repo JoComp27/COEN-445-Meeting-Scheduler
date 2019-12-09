@@ -30,6 +30,7 @@ public class ClientMeeting {
 
     public ClientMeeting(InviteMessage inviteMessage){ //Invitee Meeting
         this.meetingNumber = inviteMessage.getMeetingNumber();
+        this.requestNumber = -1;
         this.calendar = inviteMessage.getCalendar();
         this.state = false;
         this.userType = false;
@@ -38,6 +39,7 @@ public class ClientMeeting {
 
     public ClientMeeting(RequestMessage requestMessage){ //Requester Meeting
         this.requestNumber = requestMessage.getRequestNumber();
+        this.meetingNumber = -1;
         this.calendar = requestMessage.getCalendar();
         this.state = false;
         this.userType = true;
@@ -47,7 +49,8 @@ public class ClientMeeting {
     public void receiveConfirmMessage(ConfirmMessage confirmMessage){
 
         this.state = true;
-        this.roomNumber = confirmMessage.getRoomNumber();
+        this.roomNumber = Integer.valueOf(confirmMessage.getRoomNumber());
+        this.meetingNumber = confirmMessage.getMeetingNumber();
 
     }
 
@@ -114,7 +117,6 @@ public class ClientMeeting {
         result += roomNumber + ",";
         result += requestNumber + ",";
         result += meetingNumber + ",";
-
 
         for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";

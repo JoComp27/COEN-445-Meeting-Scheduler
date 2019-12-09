@@ -14,9 +14,10 @@ public class Meeting {
 
     private int acceptedParticipants;
     //Key=port, bool=accepted
-    private HashMap<Integer, Boolean> acceptedMap;
+    private HashMap<String, Boolean> acceptedMap;
     private int roomNumber;
-    private int organizer;
+    private String organizer;
+    private  int answeredNumber;
 
 
     public Meeting(String message){ //Constructor used to deserialize elements
@@ -24,7 +25,7 @@ public class Meeting {
     }
 
 
-    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, int organizer) {
+    public Meeting(RequestMessage requestMessage, int acceptedParticipants, HashMap acceptedMap, int roomNumber, String organizer, int answeredNumber) {
 
         this.id = countID.incrementAndGet();
         this.requestMessage = requestMessage;
@@ -33,6 +34,7 @@ public class Meeting {
         this.acceptedMap = acceptedMap;
         this.roomNumber = roomNumber;
         this.organizer = organizer;
+        this.answeredNumber = answeredNumber;
     }
 
     public int getId() {
@@ -53,7 +55,7 @@ public class Meeting {
         acceptedParticipants++;
     }
 
-    public HashMap<Integer, Boolean> getAcceptedMap() {
+    public HashMap<String, Boolean> getAcceptedMap() {
         return acceptedMap;
     }
 
@@ -61,17 +63,25 @@ public class Meeting {
         return roomNumber;
     }
 
-    public int getOrganizer() {
+    public String getOrganizer() {
         return organizer;
+    }
+
+    public int getAnsweredNumber(){
+        return answeredNumber;
     }
 
     public void setAcceptedMap(){
         for(int i = 0; i<this.requestMessage.getParticipants().size(); i++) {
-            this.acceptedMap.put(Integer.parseInt(this.requestMessage.getParticipants().get(i)), false);
+            this.acceptedMap.put(this.requestMessage.getParticipants().get(i), false);
         }
     }
     public void setRoomNumber(int roomNumber){
         this.roomNumber = roomNumber;
+    }
+
+    public void incrementAnsweredNumber(){
+        answeredNumber++;
     }
 
     public String serialize(){
@@ -83,7 +93,7 @@ public class Meeting {
         result += this.roomNumber + ",";
         result += this.organizer + ",";
 
-        for(Map.Entry<Integer, Boolean> entry :  acceptedMap.entrySet()){
+        for(Map.Entry<String, Boolean> entry :  acceptedMap.entrySet()){
             result += entry.getKey() + "!" + entry.getValue() + "@";
         }
 
@@ -102,7 +112,7 @@ public class Meeting {
 
         this.acceptedParticipants = Integer.parseInt(subMessages[2]);
         this.roomNumber = Integer.parseInt(subMessages[4]);
-        this.organizer = Integer.parseInt(subMessages[5]);
+        this.organizer = subMessages[5];
 
         String[] acceptedMap = subMessages[6].split("@");
 
@@ -113,7 +123,7 @@ public class Meeting {
             }
 
             String[] entry = accMsg.split("!");
-            this.acceptedMap.put(Integer.parseInt(entry[0]), Boolean.parseBoolean(entry[1]));
+            this.acceptedMap.put(entry[0], Boolean.parseBoolean(entry[1]));
         }
 
     }

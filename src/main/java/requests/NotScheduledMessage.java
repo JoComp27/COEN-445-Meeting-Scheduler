@@ -50,21 +50,41 @@ public class NotScheduledMessage extends Message {
         return topic;
     }
 
+    public void setRequestNumber(Integer requestNumber) {
+        this.requestNumber = requestNumber;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public void setMinimum(Integer minimum) {
+        this.minimum = minimum;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
     @Override
     public String serialize() {
         String stringMessage = "";
 
-        stringMessage += getRequestType().ordinal() + "_"; //Message ID
-        stringMessage += requestNumber + "_";
-        stringMessage += calendar.get(Calendar.YEAR) + "," + calendar.get(Calendar.MONTH) + "," + calendar.get(Calendar.DAY_OF_MONTH) + "," + calendar.get(Calendar.HOUR_OF_DAY) + "_";
-        stringMessage += minimum + "_";  // MINIMUM
+        stringMessage += getRequestType().ordinal() + "$"; //Message ID
+        stringMessage += requestNumber + "$";
+        stringMessage += calendar.get(Calendar.YEAR) + ":" + calendar.get(Calendar.MONTH) + ":" + calendar.get(Calendar.DAY_OF_MONTH) + ":" + calendar.get(Calendar.HOUR_OF_DAY) + "$";
+        stringMessage += minimum + "$";  // MINIMUM
 
         for(int i = 0; i < participants.size(); i++){ // LIST_OF_PARTICIPANTS
-            stringMessage += participants.get(i) + ",";
+            stringMessage += participants.get(i) + "%";
         }
 
 
-        stringMessage += "_" +  topic; // TOPIC
+        stringMessage += "$" +  topic.trim(); // TOPIC
 
         return stringMessage;
     }
@@ -72,19 +92,19 @@ public class NotScheduledMessage extends Message {
     @Override
     public void deserialize(String message) {
 
-        String[] subMessages = message.split("_");
+        String[] subMessages = message.trim().split("\\$");
 
         String[] cal = new String[1];
 
         for(int i = 0; i < 4; i++){
-            cal = subMessages[2].split(",");
+            cal = subMessages[2].split(":");
         }
 
         Calendar c = Calendar.getInstance();
         c.set(Integer.parseInt(cal[0]), Integer.parseInt(cal[1]), Integer.parseInt(cal[2]), Integer.parseInt(cal[3]), 0);
 
         List<String> participants = new ArrayList<>();
-        String[] users = subMessages[4].split(",");
+        String[] users = subMessages[4].split("%");
 
         for(String user : users) {
             participants.add(user);
