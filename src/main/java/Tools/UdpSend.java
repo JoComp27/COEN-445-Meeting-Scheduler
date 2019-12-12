@@ -19,7 +19,7 @@ public class UdpSend {
             e.printStackTrace();
         }
 
-        System.out.println("SERVER SENT");
+        //System.out.println("SERVER SENT");
     }
 
 }

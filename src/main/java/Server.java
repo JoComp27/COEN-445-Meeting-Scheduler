@@ -373,7 +373,7 @@ public class Server implements Runnable{
                         List<String> listAccepted = new ArrayList<>();
                         for (Map.Entry<String, Boolean> entry : meeting.getAcceptedMap().entrySet()) {
                             Boolean value = entry.getValue();
-                            if (value == true && entry.getValue().equals(value)) {
+                            if (value == true) {
                                 person = entry.getKey();
 
                                 listAccepted.add(person);
@@ -408,7 +408,7 @@ public class Server implements Runnable{
                         //Find the name if they accepted (true)
                         for (Map.Entry<String, Boolean> entry : meeting.getAcceptedMap().entrySet()) {
                             Boolean value = entry.getValue();
-                            if (value == true && entry.getValue().equals(value)) {
+                            if (value == true) {
                                 person = entry.getKey();
 
                                 socketAddress = clientAddressMap.get(person);
@@ -439,7 +439,7 @@ public class Server implements Runnable{
                         List<String> listAccepted = new ArrayList<>();
                         for (Map.Entry<String, Boolean> entry : meeting.getAcceptedMap().entrySet()) {
                             Boolean value = entry.getValue();
-                            if (value == true && entry.getValue().equals(value)) {
+                            if (value == true) {
                                 person2 = entry.getKey();
 
                                 listAccepted.add(person2);
@@ -493,7 +493,6 @@ public class Server implements Runnable{
                         }
 
                     }
-                    //System.out.println("Meeting number is: " + meetingNumberAccept);
 
                     //Go through all the participants in the existing meetings
                     if(meetingMap.containsKey(meetingNumberAccept)) {
@@ -521,7 +520,6 @@ public class Server implements Runnable{
                             acceptMeeting.incrementAcceptedParticipants();
                             acceptMeeting.incrementAnsweredNumber();
                             //Make accepted boolean true
-                            //System.out.println("You are now true: " + participantName);
                             acceptMeeting.getAcceptedMap().replace(participantName, true);
                         }
 
@@ -1142,7 +1140,6 @@ public class Server implements Runnable{
 
 
                 if (commandMessage[0].equals("RoomChange")) {
-                    System.out.println("Server Command");
 
                     RoomChangeMessage roomChangeMessage = new RoomChangeMessage();
                     roomChangeMessage.deserialize(message);
@@ -1152,13 +1149,12 @@ public class Server implements Runnable{
 
                     if (newRoomNumber != 0 && newRoomNumber != 1) {
                         System.out.println("Choose a room number of 1 or 2");
-                        //break;
+                        continue;
                     }
 
 
                     //If meeting number exists
                     if (meetingMap.containsKey(meetingNumberRC)) {
-                        System.out.println("Has meeting number");
                         System.out.println(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()));
                         //If the new room number found at the same time as the meeting number is false (FREE)
                         if (!scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
@@ -1184,14 +1180,14 @@ public class Server implements Runnable{
 
                             }
 
-                            System.out.println("We are changing rooms!");
+                            //System.out.println("We are changing rooms!");
                         } else if (scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
-                            System.out.println("They are already in that room");
+                            //System.out.println("They are already in that room");
 
                         }
 
                     } else {
-                        System.out.println("Meeting room is busy or number does not exist");
+                        //System.out.println("Meeting room is busy or number does not exist");
 
                         roomChangeMeeting = meetingMap.get(meetingNumberRC);
 
@@ -1203,9 +1199,8 @@ public class Server implements Runnable{
 
                         //Find the name if they accepted (true)
                         for (Map.Entry<String, Boolean> entry : roomChangeMeeting.getAcceptedMap().entrySet()) {
-                            System.out.println(entry);
                             Boolean value = entry.getValue();
-                            if (value == true && entry.getValue().equals(value)) {
+                            if (value == true) {
                                 person = entry.getKey();
                                 System.out.println(person);
 
