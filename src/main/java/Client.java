@@ -149,9 +149,9 @@ public class Client {
                     case Add:
                         AddMessage addMessage = new AddMessage();
                         addMessage.deserialize(inp);
-                        //sendAdd(addMessage.getMeetingNumber());
+                        sendAdd(addMessage.getMeetingNumber());
                         //System.out.println("Did it send?");
-                        UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
+                        //UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
                         break;
                     case RequesterCancel:
                         RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage();
@@ -162,8 +162,8 @@ public class Client {
                     case Withdraw:
                         WithdrawMessage withdrawMessage = new WithdrawMessage();
                         withdrawMessage.deserialize(inp);
-                        //sendWithdraw(withdrawMessage.getMeetingNumber());
-                        UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
+                        sendWithdraw(withdrawMessage.getMeetingNumber());
+                        //UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
                         break;
                     default:
                         System.out.println("Request type does not correspond. Exiting.");
@@ -299,7 +299,6 @@ public class Client {
     private void sendWithdraw(int meetingNumber){
 
         for(int i = 0 ; i < meetings.size(); i++){
-            System.out.println("RIP");
             if(meetings.get(i).getMeetingNumber() == meetingNumber && meetings.get(i).getState()
                     && !meetings.get(i).getUserType()){
 
@@ -324,13 +323,10 @@ public class Client {
     private void sendAdd(int meetingNumber){
 
         //System.out.println("Went in Method but nothing else.");
-        System.out.println("Meetings size: " + meetings.size());
+        //System.out.println("Meetings size: " + meetings.size());
 
         for(int i = 0; i < meetings.size(); i++){
-            System.out.println("RIP");
-            System.out.println("Loop #: " + i);
-            System.out.println("Meetings meeting number: " + meetings.get(i).getMeetingNumber());
-            //System.out.println("Deserialized meetingNumber: " + meetingNumber + "please");
+           //System.out.println("Deserialized meetingNumber: " + meetingNumber + "please");
             if(meetingNumber == meetings.get(i).getMeetingNumber()){
                 if(!meetings.get(i).getUserType()) {
                     meetings.get(i).setCurrentAnswer(true);
@@ -357,6 +353,7 @@ public class Client {
     private void sendRequesterCancel(int meetingNumber){
 
         for(int i = 0; i < meetings.size(); i++){
+
             if(meetings.get(i).getMeetingNumber() == meetingNumber){
 
                 if(meetings.get(i).getUserType() && meetings.get(i).getState()){

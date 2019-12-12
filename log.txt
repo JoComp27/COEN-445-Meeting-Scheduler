@@ -72,3 +72,277 @@ Server[8/11/2019 16:20:49]: You are not invited in the meeting. 192.168.225.128
 Server[8/11/2019 17:44:7]: Registered 192.168.225.128
 Server[8/11/2019 17:44:28]: You are not invited in the meeting. 192.168.225.128
 Server[8/11/2019 17:50:50]: Registered 192.168.225.128
+Server[8/11/2019 19:9:46]: Registered 192.168.225.128
+Server[8/11/2019 19:9:46]: You are not invited in the meeting. 192.168.225.128
+Server[8/11/2019 19:21:58]: Registered Bob
+Server[8/11/2019 19:22:45]: Invite 1$1$2019:10:5:8$asd$Bob
+Server[8/11/2019 19:22:45]: Accepted Bob
+Server[8/11/2019 19:22:45]: Confirm 2$1$1
+Server[8/11/2019 19:22:45]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:22:57]: You have already accepted the meeting Bob
+Server[8/11/2019 19:23:48]: Registered Bob
+Server[8/11/2019 19:24:17]: Invite 1$2$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:24:17]: Accepted Bob
+Server[8/11/2019 19:24:17]: Confirm 2$2$1
+Server[8/11/2019 19:24:17]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:24:21]: You have already accepted the meeting Bob
+Server[8/11/2019 19:29:57]: Registered Bob
+Server[8/11/2019 19:30:0]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:30:0]: Accepted Bob
+Server[8/11/2019 19:30:0]: Confirm 2$1$1
+Server[8/11/2019 19:30:0]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:30:6]: You have already accepted the meeting Bob
+Server[8/11/2019 19:30:39]: Registered Bob
+Server[8/11/2019 19:30:41]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 19:30:41]: Accepted Bob
+Server[8/11/2019 19:30:41]: Confirm 2$1$1
+Server[8/11/2019 19:30:41]: Scheduled 4$1$1$Bob
+Server[8/11/2019 19:30:46]: The meeting number you provided does not exist Bob
+Server[8/11/2019 19:30:52]: You have already accepted the meeting Bob
+Server[8/11/2019 21:45:20]: Registered Bob
+Server[8/11/2019 21:45:28]: Registered Cass
+Server[8/11/2019 21:45:37]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:45:37]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:45:37]: Accepted Bob
+Server[8/11/2019 21:45:37]: Accepted Cass
+Server[8/11/2019 21:45:37]: Confirm 2$1$1
+Server[8/11/2019 21:45:37]: Confirm 2$1$1
+Server[8/11/2019 21:45:37]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 21:45:47]: You have already accepted the meeting Bob
+Server[8/11/2019 21:46:22]: You have already accepted the meeting Cass
+Server[8/11/2019 21:46:38]: You have already accepted the meeting Cass
+Server[8/11/2019 21:47:9]: Registered Bob
+Server[8/11/2019 21:47:13]: Registered Cass
+Server[8/11/2019 21:47:18]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:47:18]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:47:18]: Accepted Bob
+Server[8/11/2019 21:47:18]: Accepted Cass
+Server[8/11/2019 21:47:18]: Confirm 2$1$1
+Server[8/11/2019 21:47:18]: Confirm 2$1$1
+Server[8/11/2019 21:47:18]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 21:47:23]: You have already accepted the meeting Bob
+Server[8/11/2019 21:47:29]: You have already accepted the meeting Cass
+Server[8/11/2019 21:56:5]: Registered Bob
+Server[8/11/2019 21:56:8]: Registered Cass
+Server[8/11/2019 21:56:16]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:56:16]: Invite 1$1$2019:10:5:9$asd$Bob
+Server[8/11/2019 21:56:16]: Accepted Bob
+Server[8/11/2019 21:56:16]: Accepted Cass
+Server[8/11/2019 21:56:16]: Confirm 2$1$1
+Server[8/11/2019 21:56:16]: Confirm 2$1$1
+Server[8/11/2019 21:56:16]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 21:56:23]: You have already accepted the meeting Cass
+Server[8/11/2019 21:59:50]: You are not invited in the meeting. 
+Server[8/11/2019 22:0:19]: Registered Bob
+Server[8/11/2019 22:0:22]: Registered Cass
+Server[8/11/2019 22:0:26]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:0:26]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:0:26]: Accepted Bob
+Server[8/11/2019 22:0:26]: Accepted Cass
+Server[8/11/2019 22:0:26]: Confirm 2$1$1
+Server[8/11/2019 22:0:26]: Confirm 2$1$1
+Server[8/11/2019 22:0:26]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:0:34]: You have already accepted the meeting Cass
+Server[8/11/2019 22:7:5]: Registered Bob
+Server[8/11/2019 22:7:7]: Registered Cass
+Server[8/11/2019 22:7:44]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:7:44]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:7:44]: Accepted Bob
+Server[8/11/2019 22:7:44]: Accepted Cass
+Server[8/11/2019 22:7:44]: Confirm 2$1$1
+Server[8/11/2019 22:7:44]: Confirm 2$1$1
+Server[8/11/2019 22:7:44]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:11:45]: Registered Bob
+Server[8/11/2019 22:11:48]: Registered Cass
+Server[8/11/2019 22:12:1]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:12:1]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:12:1]: Accepted Bob
+Server[8/11/2019 22:12:1]: Accepted Cass
+Server[8/11/2019 22:12:1]: Confirm 2$1$1
+Server[8/11/2019 22:12:1]: Confirm 2$1$1
+Server[8/11/2019 22:12:1]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:14:44]: Registered Bob
+Server[8/11/2019 22:14:48]: Registered Cass
+Server[8/11/2019 22:14:51]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:14:51]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:14:51]: Accepted Bob
+Server[8/11/2019 22:14:51]: Accepted Cass
+Server[8/11/2019 22:14:51]: Confirm 2$1$1
+Server[8/11/2019 22:14:51]: Confirm 2$1$1
+Server[8/11/2019 22:14:51]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:16:21]: Registered Bob
+Server[8/11/2019 22:16:25]: Registered Cass
+Server[8/11/2019 22:16:29]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:16:29]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:16:29]: Accepted Bob
+Server[8/11/2019 22:16:29]: Accepted Cass
+Server[8/11/2019 22:16:29]: Confirm 2$1$1
+Server[8/11/2019 22:16:29]: Confirm 2$1$1
+Server[8/11/2019 22:16:29]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:16:35]: Withdrawn Cass
+Server[8/11/2019 22:21:49]: Registered Bob
+Server[8/11/2019 22:21:52]: Registered Cass
+Server[8/11/2019 22:21:57]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:21:57]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:21:57]: Accepted Bob
+Server[8/11/2019 22:21:57]: Accepted Cass
+Server[8/11/2019 22:21:57]: Confirm 2$1$1
+Server[8/11/2019 22:21:57]: Confirm 2$1$1
+Server[8/11/2019 22:21:57]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:22:15]: Withdrawn Cass
+Server[8/11/2019 22:24:18]: Registered Bob
+Server[8/11/2019 22:24:21]: Registered Cass
+Server[8/11/2019 22:24:24]: Meeting does not exist Bob
+Server[8/11/2019 22:24:27]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:24:27]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:24:27]: Accepted Bob
+Server[8/11/2019 22:24:27]: Accepted Cass
+Server[8/11/2019 22:24:27]: Confirm 2$1$1
+Server[8/11/2019 22:24:27]: Confirm 2$1$1
+Server[8/11/2019 22:24:27]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:24:36]: Not requestor, cannot cancel meeting Cass
+Server[8/11/2019 22:27:34]: Registered Bob
+Server[8/11/2019 22:27:38]: Registered Cass
+Server[8/11/2019 22:27:42]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:27:42]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:27:42]: Accepted Bob
+Server[8/11/2019 22:27:42]: Accepted Cass
+Server[8/11/2019 22:27:42]: Confirm 2$1$1
+Server[8/11/2019 22:27:42]: Confirm 2$1$1
+Server[8/11/2019 22:27:42]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:29:53]: Registered Bob
+Server[8/11/2019 22:29:57]: Registered Cass
+Server[8/11/2019 22:30:1]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:30:1]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:30:1]: Accepted Bob
+Server[8/11/2019 22:30:1]: Accepted Cass
+Server[8/11/2019 22:30:1]: Confirm 2$1$1
+Server[8/11/2019 22:30:1]: Confirm 2$1$1
+Server[8/11/2019 22:30:1]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:32:5]: Registered Bob
+Server[8/11/2019 22:32:7]: Registered Cass
+Server[8/11/2019 22:32:10]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:32:10]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:32:10]: Accepted Bob
+Server[8/11/2019 22:32:10]: Accepted Cass
+Server[8/11/2019 22:32:10]: Confirm 2$1$1
+Server[8/11/2019 22:32:10]: Confirm 2$1$1
+Server[8/11/2019 22:32:10]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:38:15]: Registered Bob
+Server[8/11/2019 22:38:17]: Registered Cass
+Server[8/11/2019 22:38:20]: Meeting does not exist Bob
+Server[8/11/2019 22:38:23]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:38:23]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:38:23]: Accepted Bob
+Server[8/11/2019 22:38:23]: Accepted Cass
+Server[8/11/2019 22:38:23]: Confirm 2$1$1
+Server[8/11/2019 22:38:23]: Confirm 2$1$1
+Server[8/11/2019 22:38:23]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:38:27]: Meeting Cancel sent to  DESKTOP-5JSM3GM/192.168.225.128:59594
+Server[8/11/2019 22:38:27]: Meeting Cancel sent to  DESKTOP-5JSM3GM/192.168.225.128:59593
+Server[8/11/2019 22:48:53]: Registered Bob
+Server[8/11/2019 22:49:1]: Registered Cass
+Server[8/11/2019 22:49:7]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:49:7]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:49:7]: Accepted Bob
+Server[8/11/2019 22:49:7]: Accepted Cass
+Server[8/11/2019 22:49:7]: Confirm 2$1$1
+Server[8/11/2019 22:49:7]: Confirm 2$1$1
+Server[8/11/2019 22:49:7]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:51:52]: Registered Bob
+Server[8/11/2019 22:51:54]: Registered Cass
+Server[8/11/2019 22:51:57]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:51:57]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:51:57]: Accepted Bob
+Server[8/11/2019 22:51:57]: Accepted Cass
+Server[8/11/2019 22:51:57]: Confirm 2$1$1
+Server[8/11/2019 22:51:57]: Confirm 2$1$1
+Server[8/11/2019 22:51:57]: Scheduled 4$1$1$Cass%Bob
+Server[8/11/2019 22:54:19]: Registered Bob
+Server[8/11/2019 22:54:22]: Registered Cass
+Server[8/11/2019 22:54:26]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:54:26]: Invite 1$1$2019:10:5:10$asd$Bob
+Server[8/11/2019 22:54:26]: Accepted Bob
+Server[8/11/2019 22:54:26]: Accepted Cass
+Server[8/11/2019 22:54:26]: Confirm 2$1$1
+Server[8/11/2019 22:54:26]: Confirm 2$1$1
+Server[8/11/2019 22:54:26]: Scheduled 4$1$1$Cass%Bob
+Server[9/11/2019 10:24:39]: Registered 'Bob'
+Server[9/11/2019 10:24:42]: Registered 'Cass'
+Server[9/11/2019 10:25:2]: Invited 'Bob'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:25:2]: Invited 'Cass'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:25:2]: Accepted 'Bob' 
+Server[9/11/2019 10:25:2]: Accepted 'Cass' 
+Server[9/11/2019 10:25:2]: Confirmed 'Bob' 2$1$1
+Server[9/11/2019 10:25:2]: Confirmed 'Cass' 2$1$1
+Server[9/11/2019 10:25:2]: Scheduled 'Bob' 4$1$1$1$Cass%Bob
+Server[9/11/2019 10:26:4]: Meeting Cancel sent to 'DESKTOP-5JSM3GM/192.168.225.128:54669'
+Server[9/11/2019 10:26:4]: Meeting Cancel sent to 'DESKTOP-5JSM3GM/192.168.225.128:54668'
+Server[9/11/2019 10:30:9]: Invited 'Bob'1$2$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:30:9]: Invited 'Cass'1$2$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:30:9]: Accepted 'Bob' 
+Server[9/11/2019 10:30:9]: Rejected 'Cass'
+Server[9/11/2019 10:30:9]: Confirmed 'Bob' 2$2$1
+Server[9/11/2019 10:30:9]: Confirmed 'Cass' 2$2$1
+Server[9/11/2019 10:30:9]: Scheduled 'Bob' 4$2$2$1$Bob
+Server[9/11/2019 10:30:22]: The meeting number you provided does not exist 'Cass'
+Server[9/11/2019 10:30:26]: Added 'Cass'
+Server[9/11/2019 10:30:26]: Added 'Cass' message sent to 'Bob'
+Server[9/11/2019 10:33:20]: Registered 'Bob'
+Server[9/11/2019 10:33:23]: Registered 'Cass'
+Server[9/11/2019 10:33:29]: Invited 'Bob'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:33:29]: Invited 'Cass'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:33:29]: Accepted 'Bob' 
+Server[9/11/2019 10:33:29]: Accepted 'Cass' 
+Server[9/11/2019 10:33:29]: Confirmed 'Bob' 2$1$1
+Server[9/11/2019 10:33:29]: Confirmed 'Cass' 2$1$1
+Server[9/11/2019 10:33:29]: Scheduled 'Bob' 4$1$1$1$Cass%Bob
+Server[9/11/2019 10:33:47]: You have already accepted the meeting 'Cass'
+Server[9/11/2019 10:34:3]: Withdrawn 'Cass' 8$1$Cass
+Server[9/11/2019 10:34:26]: Meeting Cancel sent to 'DESKTOP-5JSM3GM/192.168.225.128:52191'
+Server[9/11/2019 10:34:38]: Registered 'Bob'
+Server[9/11/2019 10:34:40]: Registered 'Cass'
+Server[9/11/2019 10:34:44]: Invited 'Bob'1$2$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:34:44]: Invited 'Cass'1$2$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:34:44]: Accepted 'Bob' 
+Server[9/11/2019 10:34:44]: Accepted 'Cass' 
+Server[9/11/2019 10:34:44]: Confirmed 'Bob' 2$2$1
+Server[9/11/2019 10:34:44]: Confirmed 'Cass' 2$2$1
+Server[9/11/2019 10:34:44]: Scheduled 'Bob' 4$1$2$1$Cass%Bob
+Server[9/11/2019 10:35:11]: You have already accepted the meeting 'Cass'
+Server[9/11/2019 10:35:30]: Invited 'Bob'1$3$2019:10:5:9$asd$Bob
+Server[9/11/2019 10:35:30]: Invited 'Cass'1$3$2019:10:5:9$asd$Bob
+Server[9/11/2019 10:35:30]: Accepted 'Bob' 
+Server[9/11/2019 10:35:30]: Accepted 'Cass' 
+Server[9/11/2019 10:35:30]: Confirmed 'Bob' 2$3$1
+Server[9/11/2019 10:35:30]: Confirmed 'Cass' 2$3$1
+Server[9/11/2019 10:35:30]: Scheduled 'Bob' 4$2$3$1$Cass%Bob
+Server[9/11/2019 10:44:41]: Registered 'Bob'
+Server[9/11/2019 10:44:43]: Registered 'Cass'
+Server[9/11/2019 10:44:47]: Invited 'Bob'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:44:47]: Invited 'Cass'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:44:47]: Accepted 'Bob' 
+Server[9/11/2019 10:44:47]: Accepted 'Cass' 
+Server[9/11/2019 10:44:47]: Confirmed 'Bob' 2$1$1
+Server[9/11/2019 10:44:47]: Confirmed 'Cass' 2$1$1
+Server[9/11/2019 10:44:47]: Scheduled 'Bob' 4$1$1$1$Cass%Bob
+Server[9/11/2019 10:45:12]: Withdrawn 'Cass' 8$1$Cass
+Server[9/11/2019 10:45:36]: Registered 'Bob'
+Server[9/11/2019 10:45:38]: Registered 'Cass'
+Server[9/11/2019 10:45:44]: Invited 'Bob'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:45:44]: Invited 'Cass'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:45:44]: Accepted 'Bob' 
+Server[9/11/2019 10:45:44]: Accepted 'Cass' 
+Server[9/11/2019 10:45:44]: Confirmed 'Bob' 2$1$1
+Server[9/11/2019 10:45:44]: Confirmed 'Cass' 2$1$1
+Server[9/11/2019 10:45:44]: Scheduled 'Bob' 4$1$1$1$Cass%Bob
+Server[9/11/2019 10:46:57]: Registered 'Bob'
+Server[9/11/2019 10:47:0]: Registered 'Cass'
+Server[9/11/2019 10:47:4]: Invited 'Bob'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:47:4]: Invited 'Cass'1$1$2019:10:5:8$asd$Bob
+Server[9/11/2019 10:47:4]: Accepted 'Bob' 
+Server[9/11/2019 10:47:4]: Accepted 'Cass' 
+Server[9/11/2019 10:47:4]: Confirmed 'Bob' 2$1$1
+Server[9/11/2019 10:47:4]: Confirmed 'Cass' 2$1$1
+Server[9/11/2019 10:47:4]: Scheduled 'Bob' 4$1$1$1$Cass%Bob
+Server[9/11/2019 10:47:19]: Withdrawn 'Cass' 8$1$Cass
