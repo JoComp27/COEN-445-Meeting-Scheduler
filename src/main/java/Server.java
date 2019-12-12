@@ -99,9 +99,9 @@ public class Server implements Runnable{
 
             /**Messages here and sends to client*/
 
-//            ServerCommand serverCommand = new ServerCommand();
-//            Thread threadServerCommand = new Thread(serverCommand);
-//            threadServerCommand.start();
+            ServerCommand serverCommand = new ServerCommand();
+            Thread threadServerCommand = new Thread(serverCommand);
+            threadServerCommand.start();
 
             while(true){
                 byte[] buffer = new byte[100];
@@ -1205,10 +1205,43 @@ public class Server implements Runnable{
                             System.out.println("We are changing rooms!");
                         } else if (scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
                             System.out.println("They are already in that room");
+
                         }
 
                     } else {
-                        System.out.println("Meeting number does not exist");
+                        System.out.println("Meeting room is busy or number does not exist");
+
+                        roomChangeMeeting = meetingMap.get(meetingNumberRC);
+
+
+                        ServerCancelMessage serverCancelMessage = new ServerCancelMessage();
+                        serverCancelMessage.setMeetingNumber(roomChangeMeeting.getId());
+                        serverCancelMessage.setReason("Room change");
+                        String person = "";
+
+                        //Find the name if they accepted (true)
+                        for (Map.Entry<String, Boolean> entry : roomChangeMeeting.getAcceptedMap().entrySet()) {
+                            System.out.println(entry);
+                            Boolean value = entry.getValue();
+                            if (value == true && entry.getValue().equals(value)) {
+                                person = entry.getKey();
+                                System.out.println(person);
+
+                                SocketAddress socketAddress = clientAddressMap.get(person);
+
+                                //If you add participant in list that does not have a running client
+                                if (socketAddress == null) {
+                                    continue;
+                                }
+                                UdpSend.sendMessage(serverCancelMessage.serialize(), serverSocket, socketAddress);
+
+                                Calendar calendar = Calendar.getInstance();
+                                String currentTime = "Server[" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR) + " "
+                                        + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]: ";
+                                FileReaderWriter.WriteFile("log", currentTime + "Canceled '" + person + "' " + serverCancelMessage.serialize() + "\n", true);
+                                ServerLog.add("Canceled '" + person + "' " + serverCancelMessage.serialize());
+                            }
+                        }
                     }
                 }
                 else {
