@@ -109,28 +109,11 @@ public class Server implements Runnable{
                 DatagramPacket DpReceive = new DatagramPacket(buffer, buffer.length);   //Create Datapacket to receive the data
                 serverSocket.receive(DpReceive);        //Receive Data in Buffer
 
-                //System.out.println(DpReceive.getData());
-                //System.out.println(DpReceive.getAddress());
                 String message = new String(DpReceive.getData());
-
-
-                //System.out.println("DpReceive getAddress" + DpReceive.getAddress());
-                //System.out.println("DpReceive socket address" + DpReceive.getSocketAddress());
-
-                System.out.println("Client says: " + message);
-
                 int port = DpReceive.getPort();
-                System.out.println("Port: " + port);
 
-
-
-                //threadServerHandle.start();
-                //System.out.println("DpReceive Socket Address: " + DpReceive.getSocketAddress());
                 ServerHandle serverHandle = new ServerHandle(message, port, DpReceive.getSocketAddress());
-
                 Thread threadServerHandle = new Thread(serverHandle);
-                //= new ServerHandle(message, port);
-                //threadServerHandle = new Thread(serverHandle);
                 threadServerHandle.start();
 
 
@@ -169,9 +152,7 @@ public class Server implements Runnable{
 
 
             int messageType = Integer.parseInt(receivedMessage[0]);
-            System.out.println("Message type: " + messageType);
             RequestType receivedRequestType = RequestType.values()[messageType];
-            System.out.println(receivedRequestType);
 
 
             FileReaderWriter file = new FileReaderWriter();
@@ -192,15 +173,9 @@ public class Server implements Runnable{
 
                     break;
                 case Request:
-
-                    //System.out.println(" Receiving Port: " + port);
-
                     RequestMessage requestMessage = new RequestMessage();
 
                     requestMessage.deserialize(message);
-
-                    //clientAddressMap.put(requestMessage.getParticipants().get(0), (InetSocketAddress) socketAddress);
-
 
                     String time = CalendarUtil.calendarToString(requestMessage.getCalendar());
 
@@ -217,13 +192,10 @@ public class Server implements Runnable{
                         }
                     }
 
-
                     Meeting meeting = new Meeting(requestMessage, 0, new HashMap<String, Boolean>(), 0, name, 0);
-
 
                     //If this meeting does not exist yet
                     if(!scheduleMap.containsKey(time)){
-
 
                         //Make first room taken
                         synchronized(scheduleMap) {
@@ -261,9 +233,6 @@ public class Server implements Runnable{
 
                         }
 
-
-                        /**Writes the message in the log file.*/
-                        file.WriteFile(filePath, message, true);
                     }
                     else if(scheduleMap.containsKey(time)){
                         //If first room not taken
@@ -506,8 +475,8 @@ public class Server implements Runnable{
                     for(String typeKey : meetingMap.keySet()){
                         String key = typeKey.toString();
                         String value = meetingMap.get(typeKey).getRequestMessage().getParticipants().toString();
-                        System.out.println("Hashmap for meetings");
-                        System.out.println(key + ": " + value);
+                        //System.out.println("Hashmap for meetings");
+                        //System.out.println(key + ": " + value);
                     }
 
                     String participantName = "";
