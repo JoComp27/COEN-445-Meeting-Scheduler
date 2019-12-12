@@ -94,23 +94,6 @@ public class Client {
 
     }
 
-    private void sendMessageToServer(String message) throws IOException {
-
-        // convert the String input into the byte array.
-        String first = "Request_1_2019,10,6,8_2_59000_asd";
-        RequestMessage firstRequest = new RequestMessage();
-        firstRequest.deserialize(first);
-        UdpSend.sendMessage(firstRequest.serialize(), ds, serverAddress);
-//        byte buf[] = message.getBytes();
-//        byte[] buffer = new byte[100];
-//        DatagramPacket DpSend = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), 9997);
-//        ds.send(DpSend);
-//        System.out.println("MESSAGE SENT");
-
-
-
-    }
-
     public void run() throws IOException {
 
         ClientListen clientListen = new ClientListen(); //Adding thread for client to listen to server messages
@@ -143,27 +126,24 @@ public class Client {
                         requestMessage.deserialize(inp);
 
                         sendRequest(requestMessage.getCalendar(), requestMessage.getMinimum(), requestMessage.getParticipants(), requestMessage.getTopic());
-                        //UdpSend.sendMessage(requestMessage.serialize(), ds, serverAddress);
+
 
                         break;
                     case Add:
                         AddMessage addMessage = new AddMessage();
                         addMessage.deserialize(inp);
                         sendAdd(addMessage.getMeetingNumber());
-                        //System.out.println("Did it send?");
-                        //UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
+
                         break;
                     case RequesterCancel:
                         RequesterCancelMessage requesterCancelMessage = new RequesterCancelMessage();
                         requesterCancelMessage.deserialize(inp);
                         sendRequesterCancel(requesterCancelMessage.getMeetingNumber());
-                        //UdpSend.sendMessage(requesterCancelMessage.serialize(), ds, serverAddress);
                         break;
                     case Withdraw:
                         WithdrawMessage withdrawMessage = new WithdrawMessage();
                         withdrawMessage.deserialize(inp);
                         sendWithdraw(withdrawMessage.getMeetingNumber());
-                        //UdpSend.sendMessage(withdrawMessage.serialize(), ds, serverAddress);
                         break;
                     default:
                         System.out.println("Request type does not correspond. Exiting.");
@@ -179,58 +159,7 @@ public class Client {
 
     }
 
-    private void checkState(){
-        //If meeting list is not empty
-        if(!meetings.isEmpty()){
-            //Get how many meetings this client is part of
-            int meetingNumbers = meetings.size();
-            System.out.println("You are a part of " + meetingNumbers + ", which meeting do you want to choose?");
-            System.out.println("Type 'None' to not select any of the current meetings");
-            Scanner scanner = new Scanner(System.in);
-            String answer = scanner.nextLine();
-            if(!answer.equals("None")) {
-                try {
-                    if (Integer.parseInt(answer) <= meetingNumbers) {
-                        //Use the meeting the user chose
-                        ClientMeeting clientMeeting = meetings.get(Integer.parseInt(answer));
-
-                        if (clientMeeting.getUserType() && clientMeeting.getState()) {
-                            //Organizer and meeting is confirmed
-                            //Organizer can cancel the meeting
-                            System.out.println("This meeting is confirmed");
-                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
-                            System.out.println("Type 'Cancel_MeetingNumber' to cancel the meeting");
-
-                        }
-                        else if (!clientMeeting.getUserType() && clientMeeting.getState() && clientMeeting.isCurrentAnswer()) {
-                            //Invitee, meeting is confirmed and current answer is accepted
-                            //At confirm message, meeting is confirmed, can only withdraw
-                            System.out.println("This meeting is confirmed");
-                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
-                            System.out.println("Type 'Withdraw_MeetingNumber' to withdraw from the meeting");
-                        }
-                        else if (!clientMeeting.getUserType() && clientMeeting.getState() && !clientMeeting.isCurrentAnswer()){
-                            //Invitee, meeting is confirmed and current answer is not accepted
-                            //At add stage
-                            System.out.println("This meeting is confirmed");
-                            System.out.println("Meeting number: " + clientMeeting.getMeetingNumber());
-                            System.out.println("Type 'Add_MeetingNumber' to add yourself to the meeting");
-
-                        }
-
-
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-            else{
-                System.out.println("Type in your new request");
-            }
-        }
-    }
-
-    private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
+        private void sendRequest(Calendar calendar, int minimum, List<String> participants, String topic){
 
         //Create a RequestMessage
         RequestMessage requestMessage = new RequestMessage(countID.incrementAndGet(), calendar, minimum, participants, topic);
@@ -322,16 +251,10 @@ public class Client {
 
     private void sendAdd(int meetingNumber){
 
-        //System.out.println("Went in Method but nothing else.");
-        //System.out.println("Meetings size: " + meetings.size());
-
         for(int i = 0; i < meetings.size(); i++){
-           //System.out.println("Deserialized meetingNumber: " + meetingNumber + "please");
             if(meetingNumber == meetings.get(i).getMeetingNumber()){
                 if(!meetings.get(i).getUserType()) {
                     meetings.get(i).setCurrentAnswer(true);
-
-                    System.out.println("Sending");
 
                     AddMessage addMessage = new AddMessage((meetingNumber));
                     UdpSend.sendMessage(addMessage.serialize(), ds, serverAddress);
@@ -421,7 +344,6 @@ public class Client {
     }
 
     private void handleInvite(InviteMessage message) {
-        System.out.println("Got Invite");
         //Add the new request into your list and make it a standby status meeting
         ClientMeeting newMeeting = new ClientMeeting(message);
 
