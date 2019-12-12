@@ -1146,10 +1146,17 @@ public class Server implements Runnable{
                     String meetingNumberRC = Integer.toString(roomChangeMessage.getMeetingNumber());
                     Meeting roomChangeMeeting = null;
                     int newRoomNumber = roomChangeMessage.getNewRoomNumber() - 1;
+                    int otherRoomNumber = 0;
 
                     if (newRoomNumber != 0 && newRoomNumber != 1) {
                         System.out.println("Choose a room number of 1 or 2");
                         continue;
+                    }
+                    if(newRoomNumber == 0){
+                        otherRoomNumber = 1;
+                    }
+                    else if(newRoomNumber == 1){
+                        otherRoomNumber = 0;
                     }
 
 
@@ -1160,7 +1167,10 @@ public class Server implements Runnable{
                         if (!scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
                             //Make the meeting's room number to the new one
                             meetingMap.get(meetingNumberRC).setRoomNumber(newRoomNumber);
+                            //Set new room to true (taken)
                             scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber] = true;
+                            //Set other room false (not taken)
+                            scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[otherRoomNumber] = false;
 
                             roomChangeMeeting = meetingMap.get(meetingNumberRC);
 
@@ -1180,14 +1190,14 @@ public class Server implements Runnable{
 
                             }
 
-                            //System.out.println("We are changing rooms!");
+                            System.out.println("We are changing rooms!");
                         } else if (scheduleMap.get(CalendarUtil.calendarToString(meetingMap.get(meetingNumberRC).getRequestMessage().getCalendar()))[newRoomNumber]) {
-                            //System.out.println("They are already in that room");
+                            System.out.println("They are already in that room");
 
                         }
 
                     } else {
-                        //System.out.println("Meeting room is busy or number does not exist");
+                        System.out.println("Meeting room is busy or number does not exist");
 
                         roomChangeMeeting = meetingMap.get(meetingNumberRC);
 
