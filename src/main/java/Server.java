@@ -1015,7 +1015,7 @@ public class Server implements Runnable{
                                 UdpSend.sendMessage(serverCancelMessage.serialize(), socketAddress);*/
 
                                 for (String s : participants){
-                                    if (!participants.equals(theMeeting.getOrganizer())){
+                                    if (!s.equals(theMeeting.getOrganizer())){
                                         nonHostSocketAddress.add(clientAddressMap.get(s));
                                     }
                                 }
@@ -1073,7 +1073,7 @@ public class Server implements Runnable{
                                  UdpSend.sendMessage(serverCancelMessage.serialize(), socketAddress);*/
 
                                 for (String s : participants){
-                                    if (!participants.equals(theMeeting.getOrganizer())){
+                                    if (!s.equals(theMeeting.getOrganizer())){
                                         nonHostSocketAddress.add(clientAddressMap.get(s));
                                     }
                                 }
